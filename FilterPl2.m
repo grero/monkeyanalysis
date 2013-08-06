@@ -44,12 +44,12 @@ function status = FilterPl2(fname,chunksize,chunkidx,redo)
 	end
 
 	%this is hackish; to get the frag time stamp, re-read one channel
-	ad = Pl2adSpan(fname,WBChannels(1));
+	ad = Pl2Ad(fname,WBChannels(1));
 	%get the strobed events
 	fprintf(1,'Reading strobe events\n');
 	events = PL2EventTS(fname,'Strobed');
 	%to align events to the continuous recording, subtract the initial delay from the events
-	ts = events.Ts - ad.FraqTs;;
+	ts = events.Ts - ad.FragTs;;
 	sv = events.Strobed;
 	strobeFile = 'event_data.mat';
 	fprintf(1,'Saving strobe events to file %s\n',strobeFile);
