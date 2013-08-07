@@ -10,4 +10,8 @@ To extract experimental markers, as well as high pass- low pass-filtered continu
 
 	FilterPl2.m
 
+To convert stimulus markers from int16's to binary words, use the following function:
+
+	strobesToWords.m
+
 
