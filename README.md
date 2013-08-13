@@ -14,4 +14,14 @@ To convert stimulus markers from int16's to binary words, use the following func
 
 	strobesToWords.m
 
+To replay the experiment, use the following function:
 
+	function ans = replayExperiment(offset,nsamples,edfdata,l)
+		%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+		%Replay the experiment from the eye link data contained in the edfdata structure.
+		%Inputs:
+		%	offset		:		time point index from which to start the replay
+		%	nsamples	:		number of time points to replay
+		%	edfdata		:		eye link data structure contraining the experiment
+		%	l			:		reference to a line plot handle
+		%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
