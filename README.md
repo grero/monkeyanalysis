@@ -25,3 +25,17 @@ To replay the experiment, use the following function:
 		%	edfdata		:		eye link data structure contraining the experiment
 		%	l			:		reference to a line plot handle
 		%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+To load and parse the stimulus markers, use the following function
+
+
+	function trials = loadTrialInfo(fname)
+		%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+		%Load and parse the event markers contained in the file pointed to by
+		%fname
+		%Input:
+		%   fname		:		name of file containing the marker information. The file should contain two variables;
+		%   					sv is the int16 representation of the strobe words and ts is the marker timestamps in seconds
+		%Output:
+		%	trials		:		struct array with inforamtion about each trial
+		%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
