@@ -5,7 +5,7 @@ function words = strobesToWords(strobes)
 	
 	words = dec2bin(2^15-abs(strobes));
 	%get the last 8 bits
-	words = words(:,end-7:end);
+	words = words(:,end-7:end)-'0';
 end
 	 
 	
