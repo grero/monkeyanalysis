@@ -16,12 +16,14 @@ function trials = loadTrialInfo(fname)
 	words = strobesToWords(sv);
 	trials = struct;
 	k = 1;
+	offset = 0;
 	for i=1:length(ts)
 		w = words(i,:);
 		t = ts(i);
 		if all(w == zeros(1,8))
 			%trials(k) = struct;
 			offset = t;
+			trials(k).start = t;
 		elseif all(w == [0,0,0,0,0,0,0,1])
 			trials(k).prestim = t - offset;
 		elseif (w(1) == 0) && (w(2) == 1)
