@@ -76,6 +76,9 @@ function status = FilterPl2(fname,chunksize,chunkidx,redo)
 				%get the wideband data
 				fprintf(1,'\t\tReading channel %d\n', WBChannels(ch));
 				ad = Pl2adSpan(fname,WBChannels(ch),chunks(i)+1,chunks(i+1));
+				if isempty(ad.Values)
+					continue
+				end
 				%highpass filter using nptHighpass	
 				%convert to microvolts before storing as int16
 				fprintf(1,'\t\t\tHighpass filtering...\n');
