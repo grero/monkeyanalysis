@@ -46,15 +46,16 @@ function status = FilterPl2(fname,chunksize,chunkidx,redo)
 	%this is hackish; to get the frag time stamp, re-read one channel
 	ad = Pl2Ad(fname,WBChannels(1));
 	%get the strobed events
-	fprintf(1,'Reading strobe events\n');
-	events = PL2EventTS(fname,'Strobed');
-	%to align events to the continuous recording, subtract the initial delay from the events
-	ts = events.Ts - ad.FragTs;;
-	sv = events.Strobed;
 	strobeFile = 'event_data.mat';
-	fprintf(1,'Saving strobe events to file %s\n',strobeFile);
-	save(strobeFile,'ts','sv');
-
+	if ~exist(strobeFile,'file')
+		fprintf(1,'Reading strobe events\n');
+		events = PL2EventTS(fname,'Strobed');
+		%to align events to the continuous recording, subtract the initial delay from the events
+		ts = events.Ts - ad.FragTs;;
+		sv = events.Strobed;
+		fprintf(1,'Saving strobe events to file %s\n',strobeFile);
+		save(strobeFile,'ts','sv');
+	end
 	%main processing loop
 	fprintf(1,'Processing wide band signal\n');
 	H = zeros(nchannels,chunksize,'int16');
@@ -75,6 +76,9 @@ function status = FilterPl2(fname,chunksize,chunkidx,redo)
 				%get the wideband data
 				fprintf(1,'\t\tReading channel %d\n', WBChannels(ch));
 				ad = Pl2adSpan(fname,WBChannels(ch),chunks(i)+1,chunks(i+1));
+				if isempty(ad.Values)
+					continue
+				end
 				%highpass filter using nptHighpass	
 				%convert to microvolts before storing as int16
 				fprintf(1,'\t\t\tHighpass filtering...\n');
