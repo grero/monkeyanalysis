@@ -1,4 +1,13 @@
 function names = wordsToString(words)
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%Return the string representation of the 8 bit strobe words
+%Input:
+%	words		:	matrix where each row represents a single
+%					8 bit strobe word
+%Output:
+%	names		:	the string representation of each strobe
+%					word
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 	names = {};
 	j = 1;
 	for i=1:size(words,1)
