@@ -57,3 +57,16 @@ To load spike trains produced by the Plexon Offline sorter, use the following fu
 	%                                                     unit j on channel j,
 	%                                                     in units of miliseconds
 	%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+To convert a matrix of 8 bit words to their string representation, use the following function
+
+	function names = wordsToString(words)
+	%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+	%Return the string representation of the 8 bit strobe words
+	%Input:
+	%	words		:	matrix where each row represents a single
+	%					8 bit strobe word
+	%Output:
+	%	names		:	the string representation of each strobe
+	%					word
+	%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
