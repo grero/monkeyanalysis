@@ -6,7 +6,19 @@ function trials = loadTrialInfo(fname)
     %   fname		:		name of file containing the marker information. The file should contain two variables;
 	%   					sv is the int16 representation of the strobe words and ts is the marker timestamps in seconds
 	%Output:
-	%	trials		:		struct array with inforamtion about each trial
+	%	trials		:		struct array with information about each trial
+    %   trials.start    :    start of the trial, absoute time
+    %   trials.prestim  :    start of the prestim-period, relative to trial
+    %                        start
+    %   trials.target.timestamp    : target onset, relative to trial start
+    %   trials.target.row          : row index of the target
+    %   trials.target.column       : column index of the target
+    %   trials.distractors         : array of distractors; rows are time
+    %                                relative to start of the trial, row 
+    %                                and column index
+    %   trials.reward              : time of reward, relative trial start
+    %   trials.failure             : time of failure, relative to trial
+    %                                start
 	%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 	if ~exist(fname,'file')
 		disp(['File ' fname ' does not exist']);
