@@ -70,3 +70,32 @@ To convert a matrix of 8 bit words to their string representation, use the follo
 	%	names		:	the string representation of each strobe
 	%					word
 	%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+To return trials of a certain type, use the following function
+
+	function rtrials  = getTrialType( trials,type )
+	%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+	%Return a subset of the trials of the specified type. The type should
+	%correspond to a field in the trial structure e.g. 
+	%getTrialType(trials,'target') will return all trials in which a
+	%target appeared. 
+	%Input:
+	%   trials          :    trial structure obtained from loadTrialInfo
+	%   type            :    string indicating which trial type to get.
+	%                        Possible values are: 'target' and'failure'. 
+	%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+To align a spike train to trial onset, use the following funcction
+
+	function [spikes,trial_idx] = createAlignedRaster(sptrain,trials)
+	%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+	%Align spike train to trial start
+	%Input:
+	%       sptrain     :       flat vector with spiketimes in miliseconds
+	%       trials      :       trial structure obtained from loadTrialInfo
+	%Output:
+	%       spikes      :       spike time shifted to aligned with the start of
+	%                           each trial
+	%       trial_idx   :       index of the trial to which each spike belongs
+	%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
