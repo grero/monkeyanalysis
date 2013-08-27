@@ -16,6 +16,7 @@ function trials = loadTrialInfo(fname)
     %   trials.distractors         : array of distractors; rows are time
     %                                relative to start of the trial, row 
     %                                and column index
+	%   trial.response			   : time, relative to target onset, of the beginning of the repsonse period
     %   trials.reward              : time of reward, relative trial start
     %   trials.failure             : time of failure, relative to trial
     %                                start
@@ -49,6 +50,8 @@ function trials = loadTrialInfo(fname)
 			row = bin2dec(num2str(w(2:5)));
 			column = bin2dec(num2str(w(6:end)));
 			trials(k).distractors = [trials(k).distractors [t - offset; row; column]];
+		elseif all(w == [0,0,0,0,0,1,0,1])
+			trials(k).response = t-offset;
         elseif all(w == [0,0,0,0,0,1,1,0])
 			trials(k).reward = t - offset;
         elseif all(w == [0,0,0,0,0,1,1,1])
