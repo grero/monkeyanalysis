@@ -7,7 +7,7 @@ function analyzeLocationInformation(sptrains,trials,bins,alignment_event)
 	%	trials			:		structure array of trial information
 	%	bins			:		the bins into which the spike trains should be discretized
 	%	alignment_event	:		the event to which to align the spike trains
-	%
+	%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 	for ch=1:length(sptrains.spikechannels)
 		clusters = sptrains.channels(sptrains.spikechannels(ch)).cluster;
 		for j=1:length(clusters)
