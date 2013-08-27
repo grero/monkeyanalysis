@@ -8,7 +8,7 @@ function plotLocationInformation(I,bins,alignment_event,trials,Is)
 	%	alignment_event	:	the event to which the spike counts were 
 	%						aligned
 	%	trials			:	structure array of trials information
-%	%	Is				:	[optional] shuffle information obtained by shuffle trial labels
+	%	Is				:	[optional] shuffle information obtained by shuffle trial labels
 	%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 	if nargin  == 4
 		Is = [];
