@@ -99,3 +99,33 @@ To align a spike train to trial onset, use the following funcction
 	%       trial_idx   :       index of the trial to which each spike belongs
 	%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
+To compute the spike count for a spike train, use the following function
+
+	function [counts, bins] = getTrialSpikeCounts(sptrain,trials,bins, alignment_event)
+		%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+		%Get the spike count for the supplied spike train in the given bins
+		%Input:
+		%	sptrain				:		array of spike times, in ms
+		%	trials				:		structure array containing trial information
+		%	bins				:		the bins (in ms) in which to compute spike counts
+		%	alignment_event		:		event to which to align the spike trains. The event
+		%								must be a field in the trials structure array,
+		%								e.g. 'response' or 'target'. If the event is not 
+		%								a member of trials, it default to 'prestim', i.e. 
+		%								start of fixation
+		%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+To plot PSTH for different target locations, use the following function
+
+	function plotLocationPSTH(counts,bins,alignment_event,trials)
+		%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+		%Plot raster for different target locations
+		%Input:
+		%	counts			:	[ntrials X nbins] matrix of spike counts
+		%	bins			:	the bins used to compute the spike counts
+		%	alignment_event	:	the event to which the spike counts were 
+		%						aligned
+		%	trials			:	structure array of trials information
+		%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+
