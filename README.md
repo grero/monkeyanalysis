@@ -128,4 +128,43 @@ To plot PSTH for different target locations, use the following function
 		%	trials			:	structure array of trials information
 		%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
+To compute the information encoded about target location, use the following function
+
+	function [H,Hc,bins] = computeInformation(counts,bins,trials,shuffle)
+		%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+		%Compute the information contained in the counts matrix.
+		%Input:
+		%	counts		:		[ntrials X nbins-1]		:		matrix of spike counts
+		%	bins		:		[nbins,1]				:		the bins use to compute the spike counts
+		%	trials		:		structure array containing information about the trials used
+		%	shuffle		:		whether we should also compute shuffle information. Defaults to 0 (no)
+		%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+To plot information encoded about target, use the following function
+
+	function plotLocationInformation(I,bins,alignment_event,trials,Is)
+		%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+		%Plot raster for different target locations
+		%Input:
+		%	I		 		:	[nbins,1] Information encoded about the target locationo
+		%						per bin
+		%	bins			:	the bins used to compute the spike counts
+		%	alignment_event	:	the event to which the spike counts were 
+		%						aligned
+		%	trials			:	structure array of trials information
+		%	Is				:	[optional] shuffle information obtained by shuffle trial labels
+		%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+To compute and plot information for several spike trains, use the following function
+
+	function analyzeLocationInformation(sptrains,trials,bins,alignment_event)
+		%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+		%Compute and plot the information for several spike trains. The plots
+		%are saved under the current directory as gXXcXXsLocationInformation.pdf
+		%Input:
+		%	sptrains		:		structure array of spike strains
+		%	trials			:		structure array of trial information
+		%	bins			:		the bins into which the spike trains should be discretized
+		%	alignment_event	:		the event to which to align the spike trains
+		%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
