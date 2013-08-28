@@ -33,6 +33,7 @@ function plotLocationInformation(I,bins,alignment_event,trials,Is)
 	h1 = plot([R,R], [yl(1),yl(2)],'r','linewidth',2);
 	h2 = plot([rl,rl], [yl(1),yl(2)],'r');
 	h3 = plot([rh,rh], [yl(1),yl(2)],'r');
+	plot([0,0],[yl(1),yl(2)],'k');
 	if ~isempty(Is)
 		%plot the lower bound as mean + 3 std devations of the shuffled information
 		M = mean(Is,1);
