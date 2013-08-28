@@ -33,29 +33,6 @@ function [H,Hc,bins] = computeInformation(counts,bins,trials,shuffle)
 	%get the cardinality of the counts
 	uc = unique(counts);
 	mx = length(uc);
-	%pre-allocate space for probabilities
-%	pC = zeros(nbins,ncond,mx); %conditional
-%	p = zeros(nbins,mx,1); %unconditional
-%    H = zeros(nbins,1);
-%    Hc = zeros(nbins,1);
-%	%construct conditional probabilities
-%    for j=1:nbins
-%        for i=1:ncond
-%            tidx = trial_labels == u(i);
-%            c = counts(tidx,j);
-%            n = histc(c,uc);
-%            %normalize
-%            pC(j,i,:) = n/sum(n);
-%        end
-%        %construct total probabilities
-%        p(j,:) = histc(counts(:,j),uc);
-%        p(j,:) = p(j,:)/sum(p(j,:));
-%
-%        H(j) = -p(j,:)*log2(p(j,:) + (p(j,:)==0))';
-%        hc = -sum(pC(j,:,:).*log2(pC(j,:,:)+(pC(j,:,:)==0)),3);
-%        ns = histc(trial_labels,u);
-%        Hc(j) = (ns/sum(ns))'*hc'; 
-%	end
 	if ~shuffle
 		[H,Hc] = computeEntropies(counts,uc,trial_labels,u,bins);
 	else
