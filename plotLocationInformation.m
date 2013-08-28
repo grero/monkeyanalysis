@@ -38,10 +38,10 @@ function plotLocationInformation(I,bins,alignment_event,trials,Is)
 		%plot the lower bound as mean + 3 std devations of the shuffled information
 		M = mean(Is,1);
 		S = std(Is,1);
-		h4 = plot(bins,M+3*S,'g');
-		legend([h1,h4],'Median response period onset','Shuffle info [mean + 3td]','Location','NorthWest');
+		h4 = plot(bins,M+2*S,'g');
+		legend([h1,h4],'Median response period onset','Shuffle info [mean + 3td]','Location','SouthWest');
 	else
-		legend(h1,'Median response period onset','Location','NorthWest');
+		legend(h1,'Median response period onset','Location','SouthWest');
 	end
 	%prettify plot
 	set(gca,'Box','Off');
