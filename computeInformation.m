@@ -38,9 +38,9 @@ function [H,Hc,bins] = computeInformation(counts,bins,trials,shuffle)
 	else
 		H = zeros(100,nbins);
 		Hc = zeros(100,nbins);
-		for i=1:100
+		for k=1:100
 			tl = randsample(trial_labels,length(trial_labels));
-			[H(i,:),Hc(i,:)] = computeEntropies(counts,uc,tl,u,bins);
+			[H(k,:),Hc(k,:)] = computeEntropies(counts,uc,tl,u,bins);
 		end
 	end
 
