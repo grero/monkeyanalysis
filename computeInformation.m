@@ -6,6 +6,10 @@ function [H,Hc,bins] = computeInformation(counts,bins,trials,shuffle)
 	%	bins		:		[nbins,1]				:		the bins use to compute the spike counts
 	%	trials		:		structure array containing information about the trials used
 	%	shuffle		:		whether we should also compute shuffle information. Defaults to 0 (no)
+	%Output:
+	%	H			:		Total entropy for each time bin
+	%	Hc			:		Conditional entropy for each time bin
+	%	bins		:		bins used to compute the spike counts
 	%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 	if nargin == 3
 		shuffle = 0;
