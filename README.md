@@ -85,19 +85,47 @@ To return trials of a certain type, use the following function
 	%                        Possible values are: 'target' and'failure'. 
 	%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
-To align a spike train to trial onset, use the following funcction
+To align a spike train to trial events, use the following funcction
 
-	function [spikes,trial_idx] = createAlignedRaster(sptrain,trials)
+	function [spikes,trial_idx] = createAlignedRaster(sptrain,trials,alignment_event)
 	%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 	%Align spike train to trial start
 	%Input:
-	%       sptrain     :       flat vector with spiketimes in miliseconds
-	%       trials      :       trial structure obtained from loadTrialInfo
+	%	sptrain     	:   flat vector with spiketimes in miliseconds
+	%   trials      	:    trial structure obtained from loadTrialInfo
+	%	alignment_event	:	event to which to align the spike trains. The event
 	%Output:
-	%       spikes      :       spike time shifted to aligned with the start of
+	%   spikes      	:       spike time shifted to aligned with the start of
 	%                           each trial
-	%       trial_idx   :       index of the trial to which each spike belongs
+	%   trial_idx   	:       index of the trial to which each spike belongs
 	%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+To plot the trial aligned raster, use the following function
+
+	function plotRaster(spikes,trial_idx,trials,alignment_event)
+		%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+		%Plot raster with trials arranged according to location
+		%Input:
+		%	spikes		:		timestamps of spikes to be plotted, in
+		%						units of ms
+		%	trial_idx	:		the trial index of spike
+		%	trials		:		structure array containing information about the 
+		%						trials used to aligned the spikes
+		%	alignment_event:	the event used to align the spikes, .e.g. 'target'
+		%
+		%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+To plot aligned rasters for multiple spike trains, use the following function
+
+	function plotRasters(sptrains,trials,alignment_event)
+		%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+		%Plot rasters for the specified spike trains. The plots
+		%are saved under the current directory as gXXcXXsLocationInformation.pdf
+		%Input:
+		%	sptrains		:		structure array of spike strains
+		%	trials			:		structure array of trial information
+		%	alignment_event	:		the event to which to align the spike trains
+		%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
 To compute the spike count for a spike train, use the following function
 
