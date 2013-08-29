@@ -15,6 +15,7 @@ function plotRasters(sptrains,trials,alignment_event)
 			plotRaster(spikes, trial_idx, trials, alignment_event);
 
 			fname = sprintf('g%.2dc%.2dsTrialRaster.pdf', sptrains.spikechannels(ch),j);
+			%save the figure using a tight bounding box, e.g. with no white space around the plot
 			saveTightFigure(gcf,fname);
 			close
 		end
