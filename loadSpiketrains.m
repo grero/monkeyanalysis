@@ -1,4 +1,4 @@
-function sptrains = loadSpiketrains()
+function sptrains = loadSpiketrains(fname)
 	%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 	%Load spike trains from the current working directory. Search for files with signature
 	%*Spiketrains.mat in the current directory and returns a structure corresponding to the 
@@ -10,13 +10,17 @@ function sptrains = loadSpiketrains()
 	
 	%search for eligible spiketrains
 	sptrains = [];
-	files = dir('*Spiketrains.mat');
-	if isempty(files)
-		disp('No spike trains found')
-		return
+	if nargin == 0
+		files = dir('*Spiketrains.mat');
+		if isempty(files)
+			disp('No spike trains found')
+			return
+		end
+		%load the first file
+		sptrains_ = load(files(1).name);
+	else
+		sptrains_ = load(fname);	
 	end
-	%load the first file
-	sptrains_ = load(files(1).name);
 	F = fields(sptrains_);
 	sptrains = struct;
     spikechannels = [];
