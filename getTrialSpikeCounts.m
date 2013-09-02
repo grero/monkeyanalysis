@@ -1,4 +1,4 @@
-function [counts, bins] = getTrialSpikeCounts(sptrain,trials,bins, alignment_event)
+function [counts, bins] = getTrialSpikeCounts(sptrain,trials,bins, varargin)
 	%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 	%Get the spike count for the supplied spike train in the given bins
 	%Input:
@@ -11,12 +11,13 @@ function [counts, bins] = getTrialSpikeCounts(sptrain,trials,bins, alignment_eve
 	%								a member of trials, it default to 'prestim', i.e. 
 	%								start of fixation
 	%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-	if nargin == 3
-		alignment_event = 'prestim';
-	end
+	Args = struct('alignment_event','prestim','overlap',0);
+	[Args,varargin] = getOptArgs(varargin, Args);
+ 	alignment_event = Args.alignment_event;
 	if ~isfield(trials, alignment_event)
 		alignment_event = 'prestim';
 	end
+	overlap = Args.overlap;
 	ntrials = length(trials);
 	counts = zeros(ntrials,length(bins));
 	trial_idx = [];
