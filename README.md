@@ -196,3 +196,40 @@ To compute and plot information for several spike trains, use the following func
 		%	alignment_event	:		the event to which to align the spike trains
 		%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
+To compute visual response fields, use the following function
+
+	function F = computeSpatioTemporalFields(counts,bins,alignment_event,trials)
+		%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+		%Plot raster for different target locations
+		%Input:
+		%	counts			:	[ntrials X nbins] matrix of spike counts
+		%	bins			:	the bins used to compute the spike counts
+		%	alignment_event	:	the event to which the spike counts were 
+		%						aligned
+		%	trials			:	structure array of trials information
+		%Output:
+		%	F	[nrows X ncols X nbins]	:	mean triggered response for each location
+		%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+To plot visual response fields, use the following function
+
+	function plotResponseFields(F)
+		%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+		%Plot raster for different target locations
+		%Input:
+		%	F			    :	[rnows X ncols X nbins] matrix of mean reponse triggered on target
+		%	bins			:	the bins used to compute the spike counts
+		%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+	
+To compute and plot visual response fields for multiple cells, use the following function
+
+	function analyzeResponseFields(sptrains,trials,bins,alignment_event)
+		%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+		%Compute and plot the information for several spike trains. The plots
+		%are saved under the current directory as gXXcXXsLocationInformation.pdf
+		%Input:
+		%	sptrains		:		structure array of spike strains
+		%	trials			:		structure array of trial information
+		%	bins			:		the bins into which the spike trains should be discretized
+		%	alignment_event	:		the event to which to align the spike trains
+		%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
