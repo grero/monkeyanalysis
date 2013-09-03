@@ -32,7 +32,8 @@ function status = FilterPl2(fname,chunksize,chunkidx,redo)
 	nchannels = length(WBChannels);
 	%construct chunks
 	%convert ticks
-	chunksize = chunksize*pl2.TimestampFrequency;
+	samplingRate = pl2.TimestampFrequency;
+	chunksize = chunksize*samplingRate;
 	chunks = 0:chunksize:pl2.DurationOfRecordingTicks;
 	%make sure we pick up the last chunk as well
 	if pl2.DurationOfRecordingTicks-chunks(end)>0
