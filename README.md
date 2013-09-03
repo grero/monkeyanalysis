@@ -39,3 +39,34 @@ To load and parse the stimulus markers, use the following function
 		%Output:
 		%	trials		:		struct array with inforamtion about each trial
 		%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+To load spike trains produced by the Plexon Offline sorter, use the following function
+
+	function sptrains = loadPlexonSpiketrains(fname)
+	%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+	%Load spike trains from a .txt file produced by the Plexon offline sorter
+	%Input:
+	%   fname         :         name of text file containing the sorted spikes.
+	%                           the file consist of tab-delimited rows where
+	%                           the first column indicates the channel, the
+	%                           second column the unit and the third column the
+	%                           spike time, in seconds.
+	%Output:
+	%   sptrains.spikechannels    :    channels with at least one unit
+	%   sptrains.channels(i).cluster(j).spiketimes   :    the spike times of
+	%                                                     unit j on channel j,
+	%                                                     in units of miliseconds
+	%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+To convert a matrix of 8 bit words to their string representation, use the following function
+
+	function names = wordsToString(words)
+	%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+	%Return the string representation of the 8 bit strobe words
+	%Input:
+	%	words		:	matrix where each row represents a single
+	%					8 bit strobe word
+	%Output:
+	%	names		:	the string representation of each strobe
+	%					word
+	%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
