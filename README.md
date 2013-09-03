@@ -233,3 +233,40 @@ To compute and plot visual response fields for multiple cells, use the following
 		%	bins			:		the bins into which the spike trains should be discretized
 		%	alignment_event	:		the event to which to align the spike trains
 		%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+To compute the information transfer between two spike trains, use the following function
+
+	function [E11,E112,bins] = computeInformationTransfer(sptrains, bins, history, trials, alignment_event,shuffle)
+		%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+		%Input:
+		%	sptrains	:	cell-array of spike trains to compute information transfer between
+		%	bins		:	primary bins, i.e. bins for which we want to predict
+		%	history		:	how far back to look from each bin, i.e. if the bin size is 20 ms
+		%					and history is specified as 50ms, the 50ms prior to each bin will be
+		%					used as the history for that bin
+		%	trials		:	structure array containing information about trials
+		%	alignment_event	:	event to which to align the spike trains
+		%	shuffle			:	whether to compute shuffle information
+		%Output:
+		%	E11			:	Entropy of the spike counts in spike train 1 conditioned on its
+		%					own history
+		%	E112		:	Entropy of the spike counts in spike train 1 conditioned on both its
+		%					own history ond that of spike train 2.
+		%					The difference between these two quantities is the amount of
+		%					information transfered from spike train 2 to spike train 1
+		%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+To compute and plot the transfer information for all pairs of spike trains contained in the structure 'sptrains',
+use the following function
+
+	function analyzeInformationTransfer(sptrains,trials,bins,history, alignment_event)
+		%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+		%Compute and plot the information for several spike trains. The plots
+		%are saved under the current directory as gXXcXXsLocationInformation.pdf
+		%Input:
+		%	sptrains		:		structure array of spike strains
+		%	trials			:		structure array of trial information
+		%	bins			:		the bins into which the spike trains should be discretized
+		%	alignment_event	:		the event to which to align the spike trains
+		%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
