@@ -16,9 +16,11 @@ function trials = loadTrialInfo(fname)
     %   trials.distractors         : array of distractors; rows are time
     %                                relative to start of the trial, row 
     %                                and column index
+	%   trial.response			   : time, relative to target onset, of the beginning of the repsonse period
     %   trials.reward              : time of reward, relative trial start
     %   trials.failure             : time of failure, relative to trial
     %                                start
+    %   trials.end                 : aboslute time of trial end
 	%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 	if ~exist(fname,'file')
 		disp(['File ' fname ' does not exist']);
@@ -39,20 +41,26 @@ function trials = loadTrialInfo(fname)
 		elseif all(w == [0,0,0,0,0,0,0,1])
 			trials(k).prestim = t - offset;
 		elseif (w(1) == 0) && (w(2) == 1)
-			row = bin2dec(num2str(w(2:5)));
-			column = bin2dec(num2str(w(6:end)));
+			row = bin2dec(num2str(w(5:-1:3)));
+			column = bin2dec(num2str(w(end:-1:6)));
 			trials(k).target.timestamp = t - offset;
 			trials(k).target.row = row;
 			trials(k).target.column = column;
         elseif (w(1) == 1) && (w(2) == 0)
 			row = bin2dec(num2str(w(2:5)));
 			column = bin2dec(num2str(w(6:end)));
+            if ~isfield(trials(k),'distractors')
+                trials(k).distractors = [];
+            end
 			trials(k).distractors = [trials(k).distractors [t - offset; row; column]];
+		elseif all(w == [0,0,0,0,0,1,0,1])
+			trials(k).response = t-offset;
         elseif all(w == [0,0,0,0,0,1,1,0])
 			trials(k).reward = t - offset;
         elseif all(w == [0,0,0,0,0,1,1,1])
 			trials(k).failure = t - offset;
         elseif all(w == [0,0,1,0,0,0,0,0])
+            trials(k).end = t;
 			k = k + 1;
 		end
 	end
