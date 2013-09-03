@@ -49,6 +49,9 @@ function trials = loadTrialInfo(fname)
         elseif (w(1) == 1) && (w(2) == 0)
 			row = bin2dec(num2str(w(2:5)));
 			column = bin2dec(num2str(w(6:end)));
+            if ~isfield(trials(k),'distractors')
+                trials(k).distractors = [];
+            end
 			trials(k).distractors = [trials(k).distractors [t - offset; row; column]];
 		elseif all(w == [0,0,0,0,0,1,0,1])
 			trials(k).response = t-offset;
