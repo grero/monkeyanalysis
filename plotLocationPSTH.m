@@ -60,6 +60,15 @@ function plotLocationPSTH(counts,bins,alignment_event,trials)
 			plot([p,p],[yl(1) yl(2)],'b');
             plot([t t],[yl(1) yl(2)],'r');
             plot([rsp,rsp],[yl(1) yl(2)],'k');
+			%prettify plot
+			set(gca, 'Box','off')
+			set(gca, 'TickDir','out');
+			if (r==nrows) && (c==1)
+				xlabel('Time [ms]')
+				ylabel('Trial #')
+			end
         end
     end
+	%prepare figure for printing
+	set(gcf,'PaperOrientation','Landscape','PaperPositionMode','auto')
 end
