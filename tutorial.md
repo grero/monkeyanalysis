@@ -86,6 +86,6 @@ Now we can plot the mean spike count for each bin, separated in the the 24 diffe
 
 	plotLocationPSTH(counts,bins,'target',rtrials)
 
-![PSTH example](http://bitbucket.org/rherikstad/monkeyanalysis/downloads/psth_example.pdf)
+![PSTH example](http://bitbucket.org/rherikstad/monkeyanalysis/downloads/psth_example.png)
 
 
