@@ -55,6 +55,8 @@ function trials = loadTrialInfo(fname)
                 trials(k).distractors = [];
             end
 			trials(k).distractors = [trials(k).distractors [t - offset; row; column]];
+		elseif all(w == [0,0,0,0,0,1,0,0])
+			trials(k).delay = t-offset;
 		elseif all(w == [0,0,0,0,0,1,0,1])
 			trials(k).response = t-offset;
         elseif all(w == [0,0,0,0,0,1,1,0])
