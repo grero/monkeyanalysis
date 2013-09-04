@@ -38,7 +38,6 @@ function trials = loadTrialInfo(fname)
 		w = words(i,:);
 		t = ts(i);
 		if all(w == zeros(1,8))
-			trials(k) = struct;
 			offset = t;
 			trials(k).start = t;
 		elseif all(w == [0,0,0,0,0,0,0,1])
