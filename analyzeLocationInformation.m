@@ -12,7 +12,7 @@ function analyzeLocationInformation(sptrains,trials,bins,alignment_event)
 		clusters = sptrains.channels(sptrains.spikechannels(ch)).cluster;
 		for j=1:length(clusters)
 			%get the counts
-			[counts,bins] = getTrialSpikeCounts(clusters(j),trials,bins,alignment_event);
+			[counts,bins] = getTrialSpikeCounts(clusters(j),trials,bins,'alignment_event',alignment_event);
 			[H,Hc,bins] = computeInformation(counts,bins,trials,0);
 			[Hs,Hcs,bins] = computeInformation(counts,bins,trials,1);
 
