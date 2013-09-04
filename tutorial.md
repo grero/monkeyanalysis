@@ -77,11 +77,18 @@ Again, we have to supply the trial structure and the alignment event, as well as
 
 Each blue dot in this image is a spike.the horizontal axis represnts the time at which each spike happened, relative to the start of the trial (indicated by a black vertical line at zero), and the vertical axis is the trial index of each spike. The trials are sorted according to the location of the target at each trial, such that the bottom trials correspond to target at the upper left corner of the screen, while the top trials correspond to location at the lower right corner. For this paricular unit, we can see increases of spiking activity following a target for the bottom half of the screen (trials near the top). We can also see a sustained increase in activity for trial with targets near the center of the screen (middle trials). The vertical red line indicates the start of the response period, which is the cue for the monkey to make a response, indicating location of the target with an eye movement to that location. There is an increase in activity at a variable delay after the start of the response period for each trial, indicating the this cell encodes information about the onset of the eye movement.   
 
-Instead of looking at invidual spikes, we can also quantify a cell's activity in terms of its firing rate. To do that, we count the number of spikes in windows of e.g. 50 ms and look at the distribution of these counts across trials. Continuing with the same unit, we can get the spike counts like this:
+Instead of looking at invidual spikes, we can also quantify a cell's activity in terms of its firing rate. To do that, we count the number of spikes in windows of e.g. 50 ms and look at the distribution of these counts across trials. Continuing with the same as before unit, we can get the spike counts like this:
 
 	>> [counts,bins] = getTrialSpikeCounts(sptrains.channels(56).cluster(1),rtrials,-200:50:3000,'alignment_event','target');
 
-As we can see, the 'getTrialSpikeCounts' function takes 3 mandatory parameters; the first is a spike train containing spike times in units of the millseconds, the second is again a structure with trial timing information, and the third is the bins in which we want to count spikes. In this case, we want to count spikes from -200 ms before target onset to 3000 ms after target onset using 50 ms bins. We also supply an optional argument 'alignment_event', which again tells the function which event we want to align the spike counts to, i.e. 'target' in this case. 
+As we can see, the 'getTrialSpikeCounts' function takes 3 mandatory parameters; the first is a spike train containing spike times in units of the millseconds, the second is again a structure with trial timing information, and the third is the bins in which we want to count spikes. In this case, we want to count spikes from -200 ms before target onset to 3000 ms after target onset using 50 ms bins. We also supply an optional argument 'alignment_event', which again tells the function which event we want to align the spike counts to, i.e. 'target' in this case. The output of the function is the count matrix with dimensions number of trials X number of bins, as well the bins we used as input.
+	>> size(counts)
+
+	ans =
+
+	   550   161
+
+In this case, we have 550 trials and 161 bins.
 Now we can plot the mean spike count for each bin, separated in the the 24 different locations, with the following command
 
 	plotLocationPSTH(counts,bins,'target',rtrials)
