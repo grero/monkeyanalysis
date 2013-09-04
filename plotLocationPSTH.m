@@ -17,7 +17,13 @@ function plotLocationPSTH(counts,bins,alignment_event,trials)
     for t=1:length(trials)
         row(t) = trials(t).target.row;
         column(t) = trials(t).target.column;
-        alignto(t) = getfield(trials(t),alignment_event)*1000;
+        a = getfield(trials(t),alignment_event);
+        if isstruct(a)
+            alignto(t) = a.timestamp;
+        else
+            alignto(t) = a;
+        end
+        alignto(t) = alignto(t)*1000;
         target(t) = trials(t).target.timestamp*1000;
 		target(t) = target(t)-alignto(t);
 		rr = trials(t).response*1000 - alignto(t);
