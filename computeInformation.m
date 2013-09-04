@@ -1,4 +1,4 @@
-function [H,Hc,bins] = computeInformation(counts,bins,trials,shuffle)
+function [H,Hc,bins] = computeInformation(counts,bins,trials,shuffle,sort_event)
 	%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 	%Compute the information contained in the counts matrix.
 	%Input:
@@ -6,21 +6,27 @@ function [H,Hc,bins] = computeInformation(counts,bins,trials,shuffle)
 	%	bins		:		[nbins,1]				:		the bins use to compute the spike counts
 	%	trials		:		structure array containing information about the trials used
 	%	shuffle		:		whether we should also compute shuffle information. Defaults to 0 (no)
+	%	sort_event	:		the event used to sort the trials. This defaults to 'target'
 	%Output:
 	%	H			:		Total entropy for each time bin
 	%	Hc			:		Conditional entropy for each time bin
 	%	bins		:		bins used to compute the spike counts
 	%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-	if nargin == 3
+	if nargin < 5
+		sort_event = 'target';
+	end
+	if nargin < 4
 		shuffle = 0;
 	end
 	ntrials = size(counts,1);
 	trial_labels = zeros(ntrials,1);
 	rows = zeros(ntrials,1);
 	columns = zeros(ntrials,1);
+	%get the row and column of the target
 	for t=1:length(trials)
-		rows(t) = trials(t).target.row;
-		columns(t) = trials(t).target.column;
+		e = getfield(trials(t),sort_event);
+		rows(t) = e.row;
+		columns(t) = e.column;
 	end
 	nrows = max(rows);
 	ncols = max(columns);
