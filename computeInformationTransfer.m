@@ -17,11 +17,11 @@ function [E11,E112,bins] = computeInformationTransfer(sptrains, bins, history, t
 	%					The difference between these two quantities is the amount of
 	%					information transfered from spike train 2 to spike train 1
 	%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-	[counts1,b] = getTrialSpikeCounts(sptrains{1},trials,bins,'alignment_event','target');
+	[counts1,b] = getTrialSpikeCounts(sptrains{1},trials,bins,'alignment_event',alignment_event);
 	[counts1h,b] = getTrialSpikeCounts(sptrains{1},trials,bins-history,...,
-		'alignment_event','target');
+		'alignment_event',alignment_event);
 	[counts2h,b] = getTrialSpikeCounts(sptrains{2},trials,bins-history,...,
-		'alignment_event','target');
+		'alignment_event',alignment_event);
 	
 	nbins = length(bins);
 	ntrials = size(counts1,1);
