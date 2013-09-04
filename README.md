@@ -193,7 +193,10 @@ To compute and plot information for several spike trains, use the following func
 		%	sptrains		:		structure array of spike strains
 		%	trials			:		structure array of trial information
 		%	bins			:		the bins into which the spike trains should be discretized
-		%	alignment_event	:		the event to which to align the spike trains
+		%	alignment_event	:		the event to which to align the spike trains. Defaults 
+		%							to target
+		%	sort_event		:		the event used to sort the trials. Defaults
+		%							to 'target'
 		%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
 To compute visual response fields, use the following function
