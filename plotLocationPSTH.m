@@ -40,12 +40,12 @@ function plotLocationPSTH(counts,bins,alignment_event,trials)
     centerx= (ncols+1)/2;
 	db = mean(diff(bins))/1000;
 	figure
-    for r=1:nrows
-        for c=1:ncols
+	for c=1:ncols %matlab is column major
+		for r=1:nrows
             if (r==centery) && (c == centerx)
                 continue
             end
-            subplot(nrows,ncols,(r-1)*ncols+c)
+            subplot(nrows,ncols,(c-1)*nrows+r)
             idx = (row==r)&(column==c);
 			M = mean(counts(idx,:),1)/db;
 			S = std(counts(idx,:),1)/db;
