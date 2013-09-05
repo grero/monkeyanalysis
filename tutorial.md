@@ -92,8 +92,30 @@ As we can see, the 'getTrialSpikeCounts' function takes 3 mandatory parameters; 
 In this case, we have 550 trials and 161 bins.
 Now we can plot the mean spike count for each bin, separated in the 24 different locations, with the following command
 
-	plotLocationPSTH(counts,bins,'target',rtrials)
+	>> plotLocationPSTH(counts,bins,'target',rtrials)
 
 ![PSTH example](http://bitbucket.org/rherikstad/monkeyanalysis/downloads/psth_example.png)
 
 Here, we recognize the same trend as we saw above for the rasters, i.e. a marked increase in activity right after target onset (vertical red line) for locations near the bottom of the screen, particularly in the center column, 4th row.
+The modulation of neural activity with target location can be quantified using the mutual information. Essentially, the mutual information between two stochastic variables tells us how much the uncertainty, quantified by the entropy, is reduced if we observe the other variable. We can compute the mutual information between spike counts and target location using the following function
+
+	>> [H,Hc,bins] = computeInformation(counts,bins,rtrials);
+
+As we can see, the function takes three inputs; the count matrix we computed above, the bins over which the counts were computed, and the trial structure containing info about the trial events. The output is the unconditional entropy H, the entropy conditioned on target location, Hc, and the bins. The mutual information is the difference between H and Hc. We can plot the mutual information as function of time from target onset using the following code
+
+	>> plotLocationInformation(H-Hc, bins, 'target',rtrials)
+
+![PSTH example](http://bitbucket.org/rherikstad/monkeyanalysis/downloads/info_example.png)
+
+In the plot, as before, the black vertical line indicates the target onset, while the red lines indicate the distribution (median and quartiles) of the onset of the response period. For this cell, we can see a peak in information at ~80 ms after target onset. Interestingly, there is also a peak after response period onset, which is likely linked to the correct eye movement response of the monkey. Looking at the plot, though, the information trace is quite noisy. We would like to have some measure of significance of the different information peaks. To do so, we can re-compute the conditional entropy after breaking up the relationship between the spikes and the target location. We do this by shuffling the trial labels, such that e.g. spikes elicited by a target at the upper left-hand corner of the screen get re-assigned to a target at the lower-middle part of the screen. We repeat this shuffling 100 times to get a distribution of the shuffled information. Importantly, since we have disrupted the relationship between stimulus, i.e. target location, and neural response, the resulting information is completely spurious. The shuffling procedure is taken care by the same function that we used above, by suppling a fourth argument, which is simply a '1', indicating that we want to shuffle the trials,
+
+	>> [Hs,Hcs,bins] = computeInformation(counts,bins,rtrials,1);
+
+We can now re-plot the information, supplying the shuffled information as the 5th argument,
+
+	>> plotLocationInformation(H-Hc, bins, 'target',rtrials,Hs-Hcs)
+
+![PSTH example](http://bitbucket.org/rherikstad/monkeyanalysis/downloads/info_example_2.png)
+
+The green line now indicates the mean + 3 times the standard deviation of the shuffled information, and represents a lower bound that the true information should exceed in ordered to be considered significant. We see that the information peaks after target onset are in fact above the level expected by chance, as are the peaks after response onset, which suggests that these peaks represent true information about target location.
+
