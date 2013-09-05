@@ -96,4 +96,4 @@ Now we can plot the mean spike count for each bin, separated in the the 24 diffe
 
 ![PSTH example](http://bitbucket.org/rherikstad/monkeyanalysis/downloads/psth_example.png)
 
-
+Here, we recognize the same trend as we saw above for the rasters, i.e. a marked increase in activity right after target onset (vertical red line) for locations near the bottom of the screen, particularly in the center column, 4th row.
