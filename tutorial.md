@@ -2,7 +2,7 @@
 
 The first thing to do is to load the information about the trials. This can be done using the getTrialInfo function. This function takes a single argument; the path to a .mat file containing trial information extracted from the pl2/plx plexon file. Typically, this file is called 'event_data.mat', and is located in the session directory. As an example, say we are working on data from Pancake recorded on the 16th of July. This data will be located in /opt/data2/newMonkey/Pancake/20130716/session01. Let's load the trial info
 
-	trials = getTrialInfo('event_data.mat');
+	trials = loadTrialInfo('event_data.mat');
 
 We now an array of structures containing information about each trial. A typical entry in this array might look like this:
 
