@@ -8,7 +8,11 @@ function [spikes,trial_idx] = createAlignedRaster(sptrain,trials,alignment_event
 %Output:
 %   spikes      	:       spike time shifted to aligned with the start of
 %                           each trial
-%   trial_idx   	:       index of the trial to which each spike belongs
+%   trial_idx   	:       index of the trial to which each spike belongs.
+%                           The trial are sorted according to location,
+%                           using column as the first sorting key and row
+%                           as the second, i.e. from top-left to bottom
+%                           right.
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 	if nargin == 2
 		alignment_event = 'prestim';
@@ -36,9 +40,11 @@ function [spikes,trial_idx] = createAlignedRaster(sptrain,trials,alignment_event
             alignto = getfield(trials(t),alignment_event);
             if isstruct(alignto)
                 alignto = alignto.timestamp;
+            elseif strcmpi(alignment_event,'distractors')
+                alignto = alignto(1);
             end
             spikes = [spikes (spiketimes(idx)'-trials(t).start*1000 - alignto*1000)];
-            trial_idx = [trial_idx ti*ones(1,sum(idx))];
+            trial_idx = [trial_idx t*ones(1,sum(idx))];
         end
     end
    
