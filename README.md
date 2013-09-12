@@ -158,7 +158,7 @@ To plot PSTH for different target locations, use the following function
 
 To compute the information encoded about target location, use the following function
 
-	function [H,Hc,bins] = computeInformation(counts,bins,trials,shuffle)
+	function [H,Hc,bins,bias] = computeInformation(counts,bins,trials,shuffle,sort_event)
 		%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 		%Compute the information contained in the counts matrix.
 		%Input:
@@ -171,6 +171,7 @@ To compute the information encoded about target location, use the following func
 		%	H			:		Total entropy for each time bin
 		%	Hc			:		Conditional entropy for each time bin
 		%	bins		:		bins used to compute the spike counts
+		%	bias		:		the Panzeri-Treves bias correction factor for the information
 		%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
 To plot information encoded about target, use the following function
@@ -240,6 +241,46 @@ To compute and plot visual response fields for multiple cells, use the following
 		%	trials			:		structure array of trial information
 		%	bins			:		the bins into which the spike trains should be discretized
 		%	alignment_event	:		the event to which to align the spike trains
+		%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+To compute the response onset of a cell based on when the information about target becomes significant, use the following function
+
+	function [onset,offset] = getResponseOnset(sptrain,bins,trials,alignment_event,sort_event)
+		%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+		%Compute the response onset of the a cell by identifying where the information
+		%about target locatoin exceeds the 95th percentile of the shuffled information
+		%for at least 5 bins
+		%Input:
+		%	sptrain			:		structure with a field 'spiketimes' corresponding to the 
+		%							spike times of this cell
+		%	bins			:		bins used to compute spike counts
+		%	trials			:		structure array with trial information
+		%	alignment_event	:		event used to align the spikes. Defaults to 'target'
+		%	sort_event		:		event used to sort the trials. Defaults to the same as 
+		%							alignment event
+		%Output:
+		%	onset			:		the response onset of the cell, relative to alignment_event
+		%	offset			:		the end of the response period, i.e. where the information drops
+		%							below the 95th percentile
+		%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+To compute the response onset for a population of cells, use the following function
+
+	function [onset,offset] = analyzeResponseOnset(sptrains,trials,bins,alignment_event,sort_event)
+		%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+		%Compute and plot the information for several spike trains. The plots
+		%are saved under the current directory as gXXcXXsLocationInformation.pdf
+		%Input:
+		%	sptrains		:		structure array of spike strains
+		%	trials			:		structure array of trial information
+		%	bins			:		the bins into which the spike trains should be discretized
+		%	alignment_event	:		the event to which to align the spike trains. Defaults 
+		%							to target
+		%	sort_event		:		the event used to sort the trials. Defaults
+		%							to 'target'
+		%Output:
+		%	onset			:		array of response onsets for each spike train
+		%	offset			:		array of response offsets for each spike train
 		%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
 To compute the information transfer between two spike trains, use the following function
