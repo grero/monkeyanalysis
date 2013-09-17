@@ -8,11 +8,27 @@ These are codes to analyze data recorded from the monkeys performing a delayed m
 
 To extract experimental markers, as well as high pass- low pass-filtered continuous data, use the following function:
 
-	FilterPl2.m
+	function status = FilterPl2(fname,chunksize,chunkidx,redo)
+		%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+		%Extracts strobe events as well as lowpass- and highpass filters wide band data contained in a pl2 file
+		%Inputs:
+		%	fname		:		name of the pl2 file to use
+		%	chunksize	:		size, in seconds,  of each of the chunks into which the wide band data is divided. Defaults to 100 s
+		%	chunkidx	:		optional argument to indicate a specific chunk to analyze. The chunk index is calculated from the specified chunk size
+		%	redo		:		optional argument to redo all computation, even if data already exist
+		%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%	
 
 To convert stimulus markers from int16's to binary words, use the following function:
 
-	strobesToWords.m
+	function words = strobesToWords(strobes)
+		%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+		%Convert int16 strobes to binary words
+		%Input:
+		%	strobes		:	strobes encoded as 16 bit integers
+		%Output:
+		%	words		:	matrix of doubles were each row is the binary represntation
+		%					of a strobe word
+		%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
 To replay the experiment, use the following function:
 
