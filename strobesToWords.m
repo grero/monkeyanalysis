@@ -8,7 +8,7 @@ function words = strobesToWords(strobes)
 %					of a strobe word
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 	%check the value of the first strobe to get the decoding
-	if strobes(1) == 4415
+	if (strobes(1) == 4415) || (strobes(1) == 4606)
 		%we are using an inverted scheme
 		words = ~logical(dec2bin(strobes)-'0');
 		words = double(words(:,end-7:end));
@@ -16,7 +16,8 @@ function words = strobesToWords(strobes)
 		%this is the old scheme
 		words = dec2bin(2^15-abs(strobes)) - '0';
 		words = words(:,end-7:end);
-	else
+    else
+        words = nan;
 		disp('Unknown strobe encoding');
 	end
 end
