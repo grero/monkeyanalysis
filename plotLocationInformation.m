@@ -1,4 +1,4 @@
-function plotLocationInformation(I,bins,alignment_event,trials,Is)
+function plotLocationInformation(I,bins,alignment_event,trials,varargin)
 	%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 	%Plot raster for different target locations
 	%Input:
@@ -8,11 +8,16 @@ function plotLocationInformation(I,bins,alignment_event,trials,Is)
 	%	alignment_event	:	the event to which the spike counts were 
 	%						aligned
 	%	trials			:	structure array of trials information
-	%	Is				:	[optional] shuffle information obtained by shuffle trial labels
+	%	I_shuffled		:	[optional] shuffle information obtained by shuffle trial labels
+	%	I_ind			:	[optional] independent information, e.g. sum of information from 
+	%						two cells
 	%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-	if nargin  == 4
-		Is = [];
-	end
+	Args = struct('I_shuffled',[],'I_ind',[]);
+	[Args,varargin] = getOptArgs(varargin, Args);
+	Is = Args.I_shuffled;
+	Iind = Args.I_ind;
+	figure
+	hold on
 	response = zeros(length(trials),1);
 	for t=1:length(trials)
 		response(t) = trials(t).response;
@@ -26,20 +31,35 @@ function plotLocationInformation(I,bins,alignment_event,trials,Is)
 	Rv = prctile(response(~isnan(response)),[25,75]);
     rl = Rv(1);
     rh = Rv(2);
-	figure
-	plot(bins,I)
+	if ~isempty(Is)
+        M = mean(Is,1);
+        S = std(Is,1);
+		
+        if exist('shadedErrorBar')
+            H = shadedErrorBar(bins,M,2*S);
+            h4 = H.mainLine;
+        else
+            %plot the lower bound as mean + 3 std devations of the shuffled
+            %information
+            h4 = plot(bins,M+2*S,'g');
+        end
+	end
+	if ~isempty(Iind)
+		h5 = plot(bins, Iind,'m');
+    end
+    hold on
+    plot(bins,I)
 	yl = ylim;
-	hold on
 	h1 = plot([R,R], [yl(1),yl(2)],'r','linewidth',2);
 	h2 = plot([rl,rl], [yl(1),yl(2)],'r');
 	h3 = plot([rh,rh], [yl(1),yl(2)],'r');
 	plot([0,0],[yl(1),yl(2)],'k');
-	if ~isempty(Is)
-		%plot the lower bound as mean + 3 std devations of the shuffled information
-		M = mean(Is,1);
-		S = std(Is,1);
-		h4 = plot(bins,M+2*S,'g');
+	if ~isempty(Is) && ~isempty(Iind)
+		legend([h1,h4,h5],'Median response period onset','Shuffle info [mean + 3td]','Independent','Location','SouthWest');
+	elseif ~isempty(Is) 
 		legend([h1,h4],'Median response period onset','Shuffle info [mean + 3td]','Location','SouthWest');
+	elseif ~isempty(Iind) 
+		legend([h1,h5],'Median response period onset','Independent','Location','SouthWest');
 	else
 		legend(h1,'Median response period onset','Location','SouthWest');
 	end
