@@ -45,32 +45,16 @@ function trials = loadTrialInfo(fname)
 		elseif (w(1) == 0) && (w(2) == 1)
 			row = bin2dec(num2str(w(5:-1:3)));
 			column = bin2dec(num2str(w(end:-1:6)));
-            if all(words(i-1,:) == [0,0,0,0,0,1,0,0])
-                %this strobe was preceeded by a delay onset, so we are looking at a distractor
-                if ~isfield(trials(k),'distractors')
-                    trials(k).distractors = [];
-                end
-                trials(k).distractors = [trials(k).distractors [t - offset; row; column]];
-            else
-                trials(k).target.timestamp = t - offset;
-                trials(k).target.row = row;
-                trials(k).target.column = column;
-            end
+            trials(k).target.timestamp = t - offset;
+            trials(k).target.row = row;
+            trials(k).target.column = column;
         elseif (w(1) == 1) && (w(2) == 0)
 			row = bin2dec(num2str(w(5:-1:3)));
 			column = bin2dec(num2str(w(end:-1:6)));
-            if ~all(words(i-1,:) == [0,0,0,0,0,1,0,0])
-                %this strobe was not preceeded by a delay onset, so it is a
-                %target
-                trials(k).target.timestamp = t - offset;
-                trials(k).target.row = row;
-                trials(k).target.column = column;
-            else
-                if ~isfield(trials(k),'distractors')
-                    trials(k).distractors = [];
-                end
-                trials(k).distractors = [trials(k).distractors [t - offset; row; column]];
+            if ~isfield(trials(k),'distractors')
+                trials(k).distractors = [];
             end
+            trials(k).distractors = [trials(k).distractors [t - offset; row; column]];
 			
 		elseif all(w == [0,0,0,0,0,1,0,0])
 			trials(k).delay = t-offset;
