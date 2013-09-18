@@ -22,12 +22,13 @@ function analyzeLocationInformation(sptrains,trials,bins,alignment_event,sort_ev
 		for j=1:length(clusters)
 			%get the counts
 			[counts,bins] = getTrialSpikeCounts(clusters(j),trials,bins,'alignment_event',alignment_event);
-			[H,Hc,bins] = computeInformation(counts,bins,trials,0,sort_event);
-			[Hs,Hcs,bins] = computeInformation(counts,bins,trials,1,sort_event);
+			[H,Hc,bins,bias] = computeInformation(counts,bins,trials,0,sort_event);
+			[Hs,Hcs,bins,biass] = computeInformation(counts,bins,trials,1,sort_event);
 
-			plotLocationInformation(H-Hc,bins,alignment_event,trials,Hs-Hcs)
-			fname = sprintf('g%.2dc%.2dsLocationInformation.pdf', sptrains.spikechannels(ch),j);
+			plotLocationInformation(H-Hc-bias,bins,alignment_event,trials,'I_shuffled',Hs-Hcs-biass)
+			fname = sprintf('g%.2dc%.2ds%sLocationInformation.pdf', sptrains.spikechannels(ch),j,sort_event);
 			print('-dpdf',fname);
+            close
 		end
 	end
 end
