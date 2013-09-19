@@ -1,4 +1,4 @@
-function [Z,Zs,Zi] = analyzePairInformation(sptrains,trials,bins,alignment_event,sort_event,doplot)
+function [Z,Zs,Zi] = analyzePairInformation(sptrains,trials,bins,alignment_event,sort_event,doplot,dosave)
 	%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 	%Compute and plot the paired information for several spike trains. The plots
 	%are saved under the current directory as gXXcXXsJointInformation.pdf
@@ -20,6 +20,9 @@ function [Z,Zs,Zi] = analyzePairInformation(sptrains,trials,bins,alignment_event
 	%	Zi				:		independent version of Z, obtained by adding the 
 	%							information encoded by each cell separately
 	%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+    if nargin < 7
+        dosave = 1;
+    end
     if nargin < 6
         doplot = 1;
     end
@@ -68,22 +71,24 @@ function [Z,Zs,Zi] = analyzePairInformation(sptrains,trials,bins,alignment_event
 							%shuffled pair information
 							%[Hs,Hcs,bins] = computePairInformation(counts,bins,trials,1);
 							%independent
-							if all(Ii(k1,:) == 0)
-								[H1,Hc1,bins] = computeInformation(squeeze(counts(1,:,:)),bins,trials);
-								Ii(k1,:) = H1-Hc1;
-							end
-							if all(Ii(k2) == 0)
-								[H2,Hc2,bins] = computeInformation(squeeze(counts(2,:,:)),bins,trials);
-								Ii(k2,:) = H2-Hc2;
-							end
 							
+                            [H1,Hc1,bins] = computeInformation(squeeze(counts(1,:,:)),bins,trials);
+                            Ii(k1,:) = H1-Hc1;
+                            [H2,Hc2,bins] = computeInformation(squeeze(counts(2,:,:)),bins,trials);
+                            Ii(k2,:) = H2-Hc2;
 
 							%save results
-							disp(['Saving result to file ' dfname '...']);
-							save(dfname,'H','Hc','Hi','Hic','H1','Hc1','H2','Hc2','bins');
-						else
-							load(sprintf('g%.2dc%.2dsg%.2dc%.2ds%sJointInformation.mat', sptrains.spikechannels(ch2),j2,...
-									sptrains.spikechannels(ch1),j1,sort_event));
+							
+                            if dosave
+                                disp(['Saving result to file ' dfname '...']);
+                                save(dfname,'H','Hc','Hi','Hic','H1','Hc1','H2','Hc2','bins');
+                            end
+                        else
+                            dfname = sprintf('g%.2dc%.2dsg%.2dc%.2ds%sJointInformation.mat', sptrains.spikechannels(ch2),j2,...
+									sptrains.spikechannels(ch1),j1,sort_event);
+                            if exist(dfname,'file')   
+                                load(dfname);
+                            end
 
 						end
                     end
