@@ -190,6 +190,26 @@ To compute the information encoded about target location, use the following func
 		%	bias		:		the Panzeri-Treves bias correction factor for the information
 		%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
+To compute temporal information, use the following function
+
+	function [H,Hc,bins,bias] = computeTemporalInformation(counts,bins,word_size,trials,shuffle,sort_event)
+		%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+		%Compute the information contained in the counts matrix.
+		%Input:
+		%	counts		:		[ntrials X nbins-1]		:		matrix of spike counts
+		%	bins		:		[nbins,1]				:		the bins use to compute the spike counts
+		%	word_size	:		the number of bins to concatenate when forming words
+		%	trials		:		structure array containing information about the trials used
+		%	shuffle		:		whether we should also compute shuffle information. Defaults to 0 (no)
+		%	sort_event	:		the event used to sort the trials. This defaults to 'target'
+		%Output:
+		%	H			:		Total entropy for each time bin
+		%	Hc			:		Conditional entropy for each time bin
+		%	bins		:		bins used to compute the spike counts
+		%	bias		:		the Panzeri-Treves bias correction factor for the information
+		%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+
 To plot information encoded about target, use the following function
 
 	function plotLocationInformation(I,bins,alignment_event,trials,Is)
