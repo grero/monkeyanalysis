@@ -28,9 +28,10 @@ function sptrains = loadSpiketrains(fname)
 		f = F(i);
 		q = sscanf(f{:}, 'g%dc%ds');
         spikechannels = [spikechannels q(1)];
-		sptrains.channels(q(1)).cluster(q(2)).spiketimes = getfield(sptrains_,f{:});
+		sptrains.channels(q(1)).cluster(q(2)).spiketimes = getfield(sptrains_,f{:}); 
     end
     sptrains.spikechannels = unique(spikechannels);
+    sptrains.ntrains = length(F);
 end
 
 
