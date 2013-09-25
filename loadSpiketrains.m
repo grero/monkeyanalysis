@@ -24,14 +24,20 @@ function sptrains = loadSpiketrains(fname)
 	F = fields(sptrains_);
 	sptrains = struct;
     spikechannels = [];
+    
 	for i=1:length(F)
 		f = F(i);
 		q = sscanf(f{:}, 'g%dc%ds');
-        spikechannels = [spikechannels q(1)];
+        spikechannels = [spikechannels q(1)]; 
 		sptrains.channels(q(1)).cluster(q(2)).spiketimes = getfield(sptrains_,f{:}); 
     end
     sptrains.spikechannels = unique(spikechannels);
     sptrains.ntrains = length(F);
+    unitsperchannel = zeros(1,length(spikechannels));
+    for i=1:length(spikechannels)
+        unitsperchannel(i) = length(sptrains.channels(spikechannels(i)).cluster);
+    end
+    sptrains.unitsperchannel = unitsperchannel;
 end
 
 
