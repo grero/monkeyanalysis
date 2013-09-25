@@ -1,7 +1,7 @@
 function [onset,offset] = getResponseOnset(sptrain,bins,trials,alignment_event,sort_event)
 	%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 	%Compute the response onset of the a cell by identifying where the information
-	%about target locatoin exceeds the 95th percentile of the shuffled information
+	%about target location exceeds the 95th percentile of the shuffled information
 	%for at least 5 bins
 	%Input:
 	%	sptrain			:		structure with a field 'spiketimes' corresponding to the 
