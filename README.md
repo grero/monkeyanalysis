@@ -160,23 +160,23 @@ To compute the spike count for a spike train, use the following function
 
 To get intervals where a time series exceeds some threshold of a null distribution of the same time series, use the following function
 
-function [onset,offset] = getSignificantInterval(I,Is,bins,limit,minnbins)
-	%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-	%Find the region(s) where the values in I exceed the specified limit 
-	%of the distribution of values in Is
-	%Input:
-	%	I		:		vector of values
-	%	Is		:		matrix of ntrials X nvalues, where each column should be compared
-	%					to the corresponding column in I
-	%	bins	:		the bins in which I and Is are computed
-	%	limit	:		the percentile of Ish which I should exceed to be considered
-	%					significant
-	%	minnbins	:		the number of consecutive bins with I > limit(Ish) for 
-	%					the result to be considered significant
-	%Output:
-	%	onset	:		onset of the significant region(s)
-	%	offset	:		offset of the significant region(s)
-	%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+	function [onset,offset] = getSignificantInterval(I,Is,bins,limit,minnbins)
+		%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+		%Find the region(s) where the values in I exceed the specified limit 
+		%of the distribution of values in Is
+		%Input:
+		%	I		:		vector of values
+		%	Is		:		matrix of ntrials X nvalues, where each column should be compared
+		%					to the corresponding column in I
+		%	bins	:		the bins in which I and Is are computed
+		%	limit	:		the percentile of Ish which I should exceed to be considered
+		%					significant
+		%	minnbins	:		the number of consecutive bins with I > limit(Ish) for 
+		%					the result to be considered significant
+		%Output:
+		%	onset	:		onset of the significant region(s)
+		%	offset	:		offset of the significant region(s)
+		%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
 To plot PSTH for different target locations, use the following function
 
