@@ -246,7 +246,7 @@ To plot information encoded about target, use the following function
 
 To compute and plot information for several spike trains, use the following function
 
-	function analyzeLocationInformation(sptrains,trials,bins,alignment_event)
+	function analyzeLocationInformation(sptrains,trials,bins,alignment_event,sort_event,doplot,dosave,logfile)
 		%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 		%Compute and plot the information for several spike trains. The plots
 		%are saved under the current directory as gXXcXXsLocationInformation.pdf
@@ -258,6 +258,11 @@ To compute and plot information for several spike trains, use the following func
 		%							to target
 		%	sort_event		:		the event used to sort the trials. Defaults
 		%							to 'target'
+		%	doplot			:		indicate whether to plot results for ecah cell
+		%	dosave			:		indicate whether the computed values should be saved
+		%	logfile			:		log file to write the result to, defaults to 1, i.e. 
+		%							standard out. Both a file name and a file handle can
+		%							be specified
 		%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
 To compute visual response fields, use the following function

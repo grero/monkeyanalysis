@@ -10,6 +10,11 @@ function analyzeLocationInformation(sptrains,trials,bins,alignment_event,sort_ev
 	%							to target
 	%	sort_event		:		the event used to sort the trials. Defaults
 	%							to 'target'
+	%	doplot			:		indicate whether to plot results for ecah cell
+	%	dosave			:		indicate whether the computed values should be saved
+	%	logfile			:		log file to write the result to, defaults to 1, i.e. 
+	%							standard out. Both a file name and a file handle can
+	%							be specified
 	%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 	if nargin < 8
 		logfile = 1
