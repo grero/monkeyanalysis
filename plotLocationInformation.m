@@ -45,7 +45,12 @@ function plotLocationInformation(I,bins,alignment_event,trials,varargin)
         end
 	end
 	if ~isempty(Iind)
-		h5 = plot(bins, Iind,'m');
+        if  isvector(Iind)
+            h5 = plot(bins, Iind,'m');
+        elseif exist('shadedErrorBar')
+            H2 = shadedErrorBar(bins,mean(Iind,1),2*std(Iind,1),'r');
+            h5 = H2.mainLine;
+        end
     end
     hold on
     plot(bins,I)
