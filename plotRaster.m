@@ -1,4 +1,4 @@
-function plotRaster(spikes,trial_idx,trials,alignment_event)
+function plotRaster(spikes,trial_idx,trials,alignment_event,prePeriod,postPeriod)
 	%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 	%Plot raster with trials arranged according to location
 	%Input:
@@ -8,9 +8,15 @@ function plotRaster(spikes,trial_idx,trials,alignment_event)
 	%	trials		:		structure array containing information about the 
 	%						trials used to aligned the spikes
 	%	alignment_event:	the event used to align the spikes, .e.g. 'target'
-	%
+	%	prePeriod		:	period before the event
+	%	postPeriod		:	period after the event
 	%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-	
+	if nargin < 6
+		postPeriod = 200
+	end
+	if nargin < 5
+		prePeriod = 200
+	end
 	%get the distribution of response period onsets
 	response = zeros(length(trials),1);
 	for t=1:length(trials)
@@ -28,7 +34,7 @@ function plotRaster(spikes,trial_idx,trials,alignment_event)
 	figure
 	%show spikes that are at least 200 ms before trigger and at most 
 	%3000 ms after the trigger
-	sidx = (spikes > -200)&(spikes < 3000);
+	sidx = (spikes > -prePeriod)&(spikes < postPeriod);
 	plot(spikes(sidx),trial_idx(sidx),'.');
 	set(gca,'Box','Off');
 	set(gca,'TickDir','out');
