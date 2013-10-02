@@ -53,7 +53,7 @@ function plotLocationInformation(I,bins,alignment_event,trials,varargin)
         end
     end
     hold on
-    plot(bins,I)
+    plot(bins,I,'.-')
 	yl = ylim;
 	h1 = plot([R,R], [yl(1),yl(2)],'r','linewidth',2);
 	h2 = plot([rl,rl], [yl(1),yl(2)],'r');
