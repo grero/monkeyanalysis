@@ -32,6 +32,8 @@ function plotLocationPSTH(counts,bins,alignment_event,trials)
 		end
 		response(t) = rr;
     end
+    row = row - min(row)+1;
+    column =column - min(column)+1;
     nrows = max(row);
     ncols = max(column);
     %get the unique locations
