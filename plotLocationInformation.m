@@ -20,12 +20,15 @@ function plotLocationInformation(I,bins,alignment_event,trials,varargin)
 	hold on
 	response = zeros(length(trials),1);
 	for t=1:length(trials)
-		response(t) = trials(t).response;
+        
 		alignto = getfield(trials(t),alignment_event);
 		if isstruct(alignto)
 			alignto = alignto.timestamp;
-		end
-		response(t) = (response(t)-alignto)*1000;
+        end
+        if ~isempty(trials(t).response)
+            response(t) = trials(t).response;
+            response(t) = (response(t)-alignto)*1000;
+        end
 	end
 	R = nanmedian(response);
 	Rv = prctile(response(~isnan(response)),[25,75]);
