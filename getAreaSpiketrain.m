@@ -6,6 +6,7 @@ function out_sptrains = getAreaSpiketrain(sptrains, channels)
 	%	channels	:		the chnanels for which we want to return spike trains
 	%Output:
 	%	out_sptrains	:	the spike trains from the specified channels
+	%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 	ntrains = 0;
 	out_sptrains.ntrains = ntrains;
 	%get those of the requested channels with spikesh

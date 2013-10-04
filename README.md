@@ -73,6 +73,18 @@ To load spike trains produced by the Plexon Offline sorter, use the following fu
 	%                                                     in units of miliseconds
 	%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
+To get spike trains from specific channels, use the following function
+
+	function out_sptrains = getAreaSpiketrain(sptrains, channels)
+		%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+		%Get the spike trains for specific channels
+		%Input:
+		%	sptrains	:		a structure containing all the spike trains
+		%	channels	:		the chnanels for which we want to return spike trains
+		%Output:
+		%	out_sptrains	:	the spike trains from the specified channels
+		%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
 To convert a matrix of 8 bit words to their string representation, use the following function
 
 	function names = wordsToString(words)
