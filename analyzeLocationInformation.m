@@ -1,4 +1,4 @@
-function analyzeLocationInformation(sptrains,trials,bins,alignment_event,sort_event,doplot,dosave,logfile)
+function [I,I_shuffled]  = analyzeLocationInformation(sptrains,trials,bins,alignment_event,sort_event,doplot,dosave,logfile)
 	%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 	%Compute and plot the information for several spike trains. The plots
 	%are saved under the current directory as gXXcXXsLocationInformation.pdf
@@ -17,7 +17,7 @@ function analyzeLocationInformation(sptrains,trials,bins,alignment_event,sort_ev
 	%							be specified
 	%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 	if nargin < 8
-		logfile = 1
+		logfile = 1;
 	end
 	if nargin < 7
 		dosave = 1;
@@ -37,8 +37,11 @@ function analyzeLocationInformation(sptrains,trials,bins,alignment_event,sort_ev
 	onsets = [];
 	offsets = [];
 	cellidx = [];
+    nbins = length(bins);
 	k = 1; %to keep track of cells
-	fprintf(logfile,'Cell\tOnset\tOffset\n')
+    I = zeros(sptrains.ntrains,nbins);
+    I_shuffled = zeros(sptrains.ntrains, 100,nbins);
+	fprintf(logfile,'Cell\tOnset\tOffset\n');
 	for ch=1:length(sptrains.spikechannels)
 		clusters = sptrains.channels(sptrains.spikechannels(ch)).cluster;
 		for j=1:length(clusters)
@@ -55,6 +58,8 @@ function analyzeLocationInformation(sptrains,trials,bins,alignment_event,sort_ev
 				%determine significant regions, i.e. regions where I is larger than the 95th percentile of Is
 				[onset,offset] = getSignificantInterval(H-Hc,Hs-Hcs,bins);
 			end
+			I(k,1:length(bins)) = H-Hc;
+			I_shuffled(k,:,1:length(bins)) = Hs-Hcs;
 			onsets = [onsets;onset];
 			offsets = [offsets;offset];
 			cellidx = [cellidx; k*ones(length(onset),1)];
@@ -87,5 +92,28 @@ function analyzeLocationInformation(sptrains,trials,bins,alignment_event,sort_ev
 	if logfile ~= 1
 		fclose(logfile);
 	end
-	
+	%create a summary plot
+    %only plot the significant points
+    Ic = nan*zeros(size(I));
+    Ic(I > squeeze(prctile(I_shuffled,95,2))) = I(I > squeeze(prctile(I_shuffled,95,2)));
+    h = imagesc(bins,1:size(I,1),Ic);
+    set(h,'AlphaData',~isnan(Ic))
+    xlabel('Time [ms]')
+    ylabel('Cell number');
+    c = colorbar;
+    set(get(c,'YLabel'),'String','Information');
+    %indicate zero
+    hold on
+    plot([0 0], [1 size(I,1)], 'k');
+    cc = cumsum(sptrains.unitsperchannel);
+    %get the limit between fef and dlpfc
+    db = mean(diff(bins));
+    idx_dlpfc = cc(find(sptrains.spikechannels <= 64,1,'last'))-0.5;
+    plot([bins(1) bins(end)] -0.5*db, [idx_dlpfc idx_dlpfc], 'k');
+    
+    idx_fef = cc(find(sptrains.spikechannels <= 32,1,'last'))-0.5;
+    plot([bins(1) bins(end)]-0.5*db, [idx_fef idx_fef], 'k');
+    
+    idx_vdlpfc = cc(find(sptrains.spikechannels <= 96,1,'last')) - 0.5;
+    plot([bins(1) bins(end)] -0.5*db, [idx_vdlpfc idx_vdlpfc], 'k');
 end
