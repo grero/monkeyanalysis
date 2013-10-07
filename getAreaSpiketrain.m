@@ -13,8 +13,10 @@ function out_sptrains = getAreaSpiketrain(sptrains, channels)
 	cchannels = intersect(channels,sptrains.spikechannels);
 	if ~isempty(cchannels) 
 		for ch = 1:length(cchannels)
-			out_sptrains.channels(cchannels(ch)).cluster = sptrains.channels(cchannels(ch)).cluster;
-			ntrains = ntrains + 1;
+            cluster = sptrains.channels(cchannels(ch)).cluster;
+            ntrains = ntrains + length(cluster);
+			out_sptrains.channels(cchannels(ch)).cluster = cluster;
+			
 		end
 	end
 	out_sptrains.spikechannels = cchannels;
