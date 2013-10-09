@@ -1,4 +1,4 @@
-function [H,Hc,bins,bias] = computeInformation(counts,bins,trials,shuffle,sort_event)
+function [H,Hc,bins,bias] = computeInformation(counts,bins,trials,shuffle,sort_event,regroup)
 	%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 	%Compute the information contained in the counts matrix.
 	%Input:
@@ -7,12 +7,16 @@ function [H,Hc,bins,bias] = computeInformation(counts,bins,trials,shuffle,sort_e
 	%	trials		:		structure array containing information about the trials used
 	%	shuffle		:		whether we should also compute shuffle information. Defaults to 0 (no)
 	%	sort_event	:		the event used to sort the trials. This defaults to 'target'
+	%	regroup		:		whether to regroup the trials to reduce the number of categories
 	%Output:
 	%	H			:		Total entropy for each time bin
 	%	Hc			:		Conditional entropy for each time bin
 	%	bins		:		bins used to compute the spike counts
 	%	bias		:		the Panzeri-Treves bias correction factor for the information
 	%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+	if nargin < 6
+		regroup = 0;
+	end
 	if nargin < 5
 		sort_event = 'target';
 	end
@@ -20,24 +24,27 @@ function [H,Hc,bins,bias] = computeInformation(counts,bins,trials,shuffle,sort_e
 		shuffle = 0;
 	end
 	ntrials = size(counts,1);
-	trial_labels = zeros(ntrials,1);
-	rows = zeros(ntrials,1);
-	columns = zeros(ntrials,1);
-	%get the row and column of the target
-	for t=1:length(trials)
-		e = getfield(trials(t),sort_event);
-        if strcmpi(sort_event,'distractors')
-            rows(t) = e(2);
-            columns(t) = e(3);
-        else
-            rows(t) = e.row;
-            columns(t) = e.column;
-        end
+	if ~regroup
+		trial_labels = zeros(ntrials,1);
+		rows = zeros(ntrials,1);
+		columns = zeros(ntrials,1);
+		%get the row and column of the target
+		for t=1:length(trials)
+			e = getfield(trials(t),sort_event);
+			if strcmpi(sort_event,'distractors')
+				rows(t) = e(2);
+				columns(t) = e(3);
+			else
+				rows(t) = e.row;
+				columns(t) = e.column;
+			end
+		end
+		nrows = max(rows);
+		ncols = max(columns);
+		trial_labels = (rows-1).*ncols + columns;
+	else
+		trial_labels = regroupTrials(trials);
 	end
-	nrows = max(rows);
-	ncols = max(columns);
-	trial_labels = (rows-1).*ncols + columns;
-
 	nbins = length(bins);
 	%get the unique labels
 	[u,k,j] = unique(trial_labels);

@@ -1,4 +1,4 @@
-function [I,I_shuffled]  = analyzeLocationInformation(sptrains,trials,bins,alignment_event,sort_event,doplot,dosave,logfile)
+function [I,I_shuffled]  = analyzeLocationInformation(sptrains,trials,bins,alignment_event,sort_event,doplot,dosave,logfile,regroup)
 	%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 	%Compute and plot the information for several spike trains. The plots
 	%are saved under the current directory as gXXcXXsLocationInformation.pdf
@@ -16,6 +16,9 @@ function [I,I_shuffled]  = analyzeLocationInformation(sptrains,trials,bins,align
 	%							standard out. Both a file name and a file handle can
 	%							be specified
 	%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+    if nargin < 9
+        regroup = 0;
+    end
 	if nargin < 8
 		logfile = 1;
 	end
@@ -52,9 +55,9 @@ function [I,I_shuffled]  = analyzeLocationInformation(sptrains,trials,bins,align
 			else
 				%get the counts
 				[counts,bins] = getTrialSpikeCounts(clusters(j),trials,bins,'alignment_event',alignment_event);
-				[H,Hc,bins,bias] = computeInformation(counts,bins,trials,0,sort_event);
+				[H,Hc,bins,bias] = computeInformation(counts,bins,trials,0,sort_event,regroup);
 				%shuffle trials to get a null-distribution
-				[Hs,Hcs,bins,biass] = computeInformation(counts,bins,trials,1,sort_event);
+				[Hs,Hcs,bins,biass] = computeInformation(counts,bins,trials,1,sort_event,regroup);
 				%determine significant regions, i.e. regions where I is larger than the 95th percentile of Is
 				[onset,offset] = getSignificantInterval(H-Hc,Hs-Hcs,bins);
 			end
