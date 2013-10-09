@@ -31,42 +31,44 @@ function trials = loadTrialInfo(fname)
     ts = T.ts;
 	words = strobesToWords(sv);
 	trials = struct;
-	k = 1;
+	k = 0;
 	offset = 0;
 
 	for i=1:length(ts)
 		w = words(i,:);
 		t = ts(i);
 		if all(w == zeros(1,8))
+            k = k + 1;
 			offset = t;
 			trials(k).start = t;
-		elseif all(w == [0,0,0,0,0,0,0,1])
-			trials(k).prestim = t - offset;
-		elseif (w(1) == 0) && (w(2) == 1)
-			row = bin2dec(num2str(w(5:-1:3)));
-			column = bin2dec(num2str(w(end:-1:6)));
-            trials(k).target.timestamp = t - offset;
-            trials(k).target.row = row;
-            trials(k).target.column = column;
-        elseif (w(1) == 1) && (w(2) == 0)
-			row = bin2dec(num2str(w(5:-1:3)));
-			column = bin2dec(num2str(w(end:-1:6)));
-            if ~isfield(trials(k),'distractors')
-                trials(k).distractors = [];
+        elseif k >= 1
+            if all(w == [0,0,0,0,0,0,0,1])
+                trials(k).prestim = t - offset;
+            elseif (w(1) == 0) && (w(2) == 1)
+                row = bin2dec(num2str(w(5:-1:3)));
+                column = bin2dec(num2str(w(end:-1:6)));
+                trials(k).target.timestamp = t - offset;
+                trials(k).target.row = row;
+                trials(k).target.column = column;
+            elseif (w(1) == 1) && (w(2) == 0)
+                row = bin2dec(num2str(w(5:-1:3)));
+                column = bin2dec(num2str(w(end:-1:6)));
+                if ~isfield(trials(k),'distractors')
+                    trials(k).distractors = [];
+                end
+                trials(k).distractors = [trials(k).distractors [t - offset; row; column]];
+
+            elseif all(w == [0,0,0,0,0,1,0,0])
+                trials(k).delay = t-offset;
+            elseif all(w == [0,0,0,0,0,1,0,1])
+                trials(k).response = t-offset;
+            elseif all(w == [0,0,0,0,0,1,1,0])
+                trials(k).reward = t - offset;
+            elseif all(w == [0,0,0,0,0,1,1,1])
+                trials(k).failure = t - offset;
+            elseif all(w == [0,0,1,0,0,0,0,0])
+                trials(k).end = t;
             end
-            trials(k).distractors = [trials(k).distractors [t - offset; row; column]];
-			
-		elseif all(w == [0,0,0,0,0,1,0,0])
-			trials(k).delay = t-offset;
-		elseif all(w == [0,0,0,0,0,1,0,1])
-			trials(k).response = t-offset;
-        elseif all(w == [0,0,0,0,0,1,1,0])
-			trials(k).reward = t - offset;
-        elseif all(w == [0,0,0,0,0,1,1,1])
-			trials(k).failure = t - offset;
-        elseif all(w == [0,0,1,0,0,0,0,0])
-            trials(k).end = t;
-			k = k + 1;
-		end
+        end
 	end
 end
