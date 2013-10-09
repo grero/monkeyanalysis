@@ -12,20 +12,25 @@ function plotRaster(spikes,trial_idx,trials,alignment_event,prePeriod,postPeriod
 	%	postPeriod		:	period after the event
 	%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 	if nargin < 6
-		postPeriod = 200
+		postPeriod = 200;
 	end
 	if nargin < 5
-		prePeriod = 200
+		prePeriod = 200;
 	end
 	%get the distribution of response period onsets
 	response = zeros(length(trials),1);
 	for t=1:length(trials)
-		response(t) = trials(t).response;
+		
 		alignto = getfield(trials(t),alignment_event);
 		if isstruct(alignto)
 			alignto = alignto.timestamp;
-		end
-		response(t) = (response(t)-alignto)*1000;
+        end
+        if isfield(trials,'response')
+            if ~isempty(trials(t).response)
+                response(t) = trials(t).response;
+                response(t) = (response(t)-alignto)*1000;
+            end
+        end
 	end
 	R = nanmedian(response);
 	Rv = prctile(response(~isnan(response)),[25,75]);
@@ -45,9 +50,11 @@ function plotRaster(spikes,trial_idx,trials,alignment_event,prePeriod,postPeriod
 	%indicate zero
 	hold on
 	plot([0 0],[yl(1), yl(2)],'k');
-	h1 = plot([R,R], [yl(1),yl(2)],'r','linewidth',2);
-	h2 = plot([rl,rl], [yl(1),yl(2)],'r');
-	h3 = plot([rh,rh], [yl(1),yl(2)],'r');
-	legend(h1,'Median response period onset','Location','SouthWest');
+    if prePeriod >= R
+        h1 = plot([R,R], [yl(1),yl(2)],'r','linewidth',2);
+        h2 = plot([rl,rl], [yl(1),yl(2)],'r');
+        h3 = plot([rh,rh], [yl(1),yl(2)],'r');
+        legend(h1,'Median response period onset','Location','SouthWest');
+    end
 end
 
