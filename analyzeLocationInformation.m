@@ -97,6 +97,7 @@ function [I,I_shuffled]  = analyzeLocationInformation(sptrains,trials,bins,align
 	end
 	%create a summary plot
     %only plot the significant points
+    figure
     Ic = nan*zeros(size(I));
     Ic(I > squeeze(prctile(I_shuffled,95,2))) = I(I > squeeze(prctile(I_shuffled,95,2)));
     h = imagesc(bins,1:size(I,1),Ic);
@@ -111,12 +112,14 @@ function [I,I_shuffled]  = analyzeLocationInformation(sptrains,trials,bins,align
     cc = cumsum(sptrains.unitsperchannel);
     %get the limit between fef and dlpfc
     db = mean(diff(bins));
-    idx_dlpfc = cc(find(sptrains.spikechannels <= 64,1,'last'))-0.5;
-    plot([bins(1) bins(end)] -0.5*db, [idx_dlpfc idx_dlpfc], 'k');
-    
     idx_fef = cc(find(sptrains.spikechannels <= 32,1,'last'))-0.5;
     plot([bins(1) bins(end)]-0.5*db, [idx_fef idx_fef], 'k');
     
+    idx_dlpfc = cc(find(sptrains.spikechannels <= 64,1,'last'))-0.5;
+    plot([bins(1) bins(end)] -0.5*db, [idx_dlpfc idx_dlpfc], 'k');
+    
     idx_vdlpfc = cc(find(sptrains.spikechannels <= 96,1,'last')) - 0.5;
     plot([bins(1) bins(end)] -0.5*db, [idx_vdlpfc idx_vdlpfc], 'k');
+    %save
+    print('-dpdf','summary.pdf');
 end
