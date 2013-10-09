@@ -18,7 +18,7 @@ function plotLocationInformation(I,bins,alignment_event,trials,varargin)
 	Iind = Args.I_ind;
 	figure
 	hold on
-	response = zeros(length(trials),1);
+	response = nan*zeros(length(trials),1);
 	for t=1:length(trials)
         
 		alignto = getfield(trials(t),alignment_event);
