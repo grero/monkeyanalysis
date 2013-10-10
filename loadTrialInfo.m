@@ -45,14 +45,14 @@ function trials = loadTrialInfo(fname)
             if all(w == [0,0,0,0,0,0,0,1])
                 trials(k).prestim = t - offset;
             elseif (w(1) == 0) && (w(2) == 1)
-                row = bin2dec(num2str(w(5:-1:3)));
-                column = bin2dec(num2str(w(end:-1:6)));
+                column = bin2dec(num2str(w(5:-1:3)));
+                row = bin2dec(num2str(w(end:-1:6)));
                 trials(k).target.timestamp = t - offset;
                 trials(k).target.row = row;
                 trials(k).target.column = column;
             elseif (w(1) == 1) && (w(2) == 0)
-                row = bin2dec(num2str(w(5:-1:3)));
-                column = bin2dec(num2str(w(end:-1:6)));
+                column = bin2dec(num2str(w(5:-1:3)));
+                row = bin2dec(num2str(w(end:-1:6)));
                 if ~isfield(trials(k),'distractors')
                     trials(k).distractors = [];
                 end
