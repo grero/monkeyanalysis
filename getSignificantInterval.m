@@ -20,24 +20,40 @@ function [onset,offset] = getSignificantInterval(I,Is,bins,limit,minnbins)
 	end
 	if nargin < 4
 		limit = 95;
-	end
-	sidx = find(I>prctile(Is,limit,1)');
-	onset = nan;
-	offset = nan;
-	if ~isempty(sidx) 
-		%find the start of each consectuive segment, i.e. where the difference between 
-		%indices is greater than 1
-		qidx =[1;find(diff(sidx)>1)];
-		if ~isempty(qidx)
-			%find the segments with at least 5 bins
-			nbins = diff(qidx);
-			bidx = find(nbins>minnbins);
-			sidx = sidx(qidx(bidx)+1);
-			if ~isempty(sidx)
-				%identify the onset as the first bin
-				onset = bins(sidx(1));
-				offset = bins(sidx(1)+nbins(bidx(1))-1);
-			end
-		end
+    end
+    if size(I,2) ~= size(Is,2)
+        I = I';
+    end
+	sidx = find(I>prctile(Is,limit,1));
+	onset = [];
+	offset = [];
+	if ~isempty(sidx)
+        n = 1;
+        for i=2:length(sidx)
+            if sidx(i) - sidx(i-1) == 1
+                n = n + 1;
+            else
+                if n >= minnbins
+                    onset = [onset;sidx(i-n+1)];
+                    offset = [offset;sidx(i)];
+                end
+                n = 1;
+            end
+        end
+        if n >= minnbins
+            
+            if (i == length(sidx))
+                onset = [onset;sidx(i-n+1)];
+                offset = [offset;sidx(i)];
+            end
+        end
+        if isempty(onset)
+            onset = nan;
+            offset = nan;
+        end
+        
+    else
+        onset = nan;
+        offset = nan;
 	end
 end
