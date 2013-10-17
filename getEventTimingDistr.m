@@ -1,4 +1,4 @@
-function [response_mean, response_std] = getEventTimingDistr(trials,event,alignment_event)
+function [response_mean, response_std, response] = getEventTimingDistr(trials,event,alignment_event)
     %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
     %Return the distribution of timinigs for the specified event
     %Input:
@@ -28,6 +28,8 @@ function [response_mean, response_std] = getEventTimingDistr(trials,event,alignm
         end
         if isstruct(r)
             response(t) = r.timestamp;
+        elseif strcmpi(event,'distractors')
+            response(t) = r(1);
         else
             response(t) = r;
         end
