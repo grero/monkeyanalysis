@@ -59,10 +59,11 @@ function [I,I_shuffled]  = analyzeLocationInformation(sptrains,trials,bins,align
 				%shuffle trials to get a null-distribution
 				[Hs,Hcs,bins,biass] = computeInformation(counts,bins,trials,1,sort_event,regroup);
 				%determine significant regions, i.e. regions where I is larger than the 95th percentile of Is
-				[onset,offset] = getSignificantInterval(H-Hc,Hs-Hcs,bins);
-			end
-			I(k,1:length(bins)) = H-Hc;
-			I_shuffled(k,:,1:length(bins)) = Hs-Hcs;
+				
+            end
+            [onset,offset] = getSignificantInterval(H-Hc,Hs-Hcs,bins);
+			I(k,1:length(H)) = H-Hc;
+			I_shuffled(k,:,1:length(H)) = Hs-Hcs;
 			onsets = [onsets;onset];
 			offsets = [offsets;offset];
 			cellidx = [cellidx; k*ones(length(onset),1)];
