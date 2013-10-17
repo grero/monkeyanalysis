@@ -1,4 +1,4 @@
-function [Z,Zs,Zi,onsets,offsets] = analyzeJointInformation(sptrains,trials,bins,alignment_event,sort_event,doplot,dosave,group1,group2,logfile)
+function [Z,Zs,Zi,onsets,offsets] = analyzeJointInformation(sptrains,trials,bins,alignment_event,sort_event,doplot,dosave,group1,group2,logfile,skip)
 	%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 	%Compute and plot the paired information for several spike trains. The plots
 	%are saved under the current directory as gXXcXXsJointInformation.pdf
@@ -22,6 +22,9 @@ function [Z,Zs,Zi,onsets,offsets] = analyzeJointInformation(sptrains,trials,bins
 	%	Zi				:		independent version of Z, obtained by adding the 
 	%							information encoded by each cell separately
 	%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+    if nargin < 10
+        skip = 0;
+    end
     if nargin < 9
         logfile = 1;
     end
@@ -111,6 +114,9 @@ function [Z,Zs,Zi,onsets,offsets] = analyzeJointInformation(sptrains,trials,bins
                             end
                             [Hs,Hcs,bins] = computeJointInformation(counts,bins,trials,1,alignment_event);
                         end
+                    elseif skip
+                        k = k + 1;
+                        continue;
                     else
                    		if all(Z(k2,k1,:) == 0)
 							
