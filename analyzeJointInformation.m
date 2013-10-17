@@ -99,10 +99,19 @@ function [Z,Zs,Zi,onsets,offsets] = analyzeJointInformation(sptrains,trials,bins
                     trains = {clusters(j1) clusters2(j2)};
                     if exist(dfname,'file')
                         load(dfname);
-                        Ii(k1,:) = H1-Hc1;
-                        Ii(k2,:) = H2-Hc2;
+						if exist('Hic')
+							Hci = Hic;
+						end
+						if exist('Hsc')
+							Hcs = Hsc;
+						end
+						if 
+                        if exist('H1','var')
+                            Ii(k1,:) = H1-Hc1;
+                            Ii(k2,:) = H2-Hc2;
+                        end
                         if exist('Hs','var')
-                            if all((mean(Hs-Hcs,1))'>H-Hc)
+                            if all((mean(Hs-Hcs,1))>H-Hc)
                                 fprintf(1,'Recomputing shuffled..\n');
                                 clear Hs Hcs
                             end
@@ -153,9 +162,9 @@ function [Z,Zs,Zi,onsets,offsets] = analyzeJointInformation(sptrains,trials,bins
                     onsets = [onsets;onset];
                     offsets = [offsets;offset];
                     
-                    Z(k1,k2,:) = H-Hc;
+                    Z(k1,k2,1:size(H,2)) = H-Hc;
 					Z(k2,k1,:) = Z(k1,k2,:);
-                    Zs(k1,k2,:) = mean(Hi-Hic,1) + 3*std(Hi-Hic);
+                    Zs(k1,k2,1:size(Hi,2)) = mean(Hi-Hci,1) + 3*std(Hi-Hci);
 					Zs(k2,k1,:) = Zs(k1,k2,:);
                     Zi(k1,k2,:) = Ii(k1,:) + Ii(k2,:);
 					Zi(k2,k1,:) = Zi(k1,k2,:);
