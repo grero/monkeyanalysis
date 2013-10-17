@@ -47,7 +47,7 @@ function plotLocationInformation(I,bins,alignment_event,trials,varargin)
         S = std(Is,1);
 		
         if exist('shadedErrorBar')
-            H = shadedErrorBar(bins,M,2*S);
+            H = shadedErrorBar(bins(1:size(M,2)),M,2*S);
             h4 = H.mainLine;
         else
             %plot the lower bound as mean + 3 std devations of the shuffled
