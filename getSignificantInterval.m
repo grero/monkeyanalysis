@@ -34,8 +34,8 @@ function [onset,offset] = getSignificantInterval(I,Is,bins,limit,minnbins)
                 n = n + 1;
             else
                 if n >= minnbins
-                    onset = [onset;sidx(i-n+1)];
-                    offset = [offset;sidx(i)];
+                    onset = [onset;bins(sidx(i-n+1))];
+                    offset = [offset;bins(sidx(i))];
                 end
                 n = 1;
             end
@@ -43,8 +43,8 @@ function [onset,offset] = getSignificantInterval(I,Is,bins,limit,minnbins)
         if n >= minnbins
             
             if (i == length(sidx))
-                onset = [onset;sidx(i-n+1)];
-                offset = [offset;sidx(i)];
+                onset = [onset;bins(sidx(i-n+1))];
+                offset = [offset;bins(sidx(i))];
             end
         end
         if isempty(onset)
