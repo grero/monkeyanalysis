@@ -93,7 +93,7 @@ function [Z,Zs,Zi,onsets,offsets] = analyzeJointInformation(sptrains,trials,bins
                         continue
                         
                     end
-                    dfname = sprintf('g%.2dc%.2dsg%.2dc%.2ds%sJointInformation.mat', sptrains.spikechannels(ch1),j1,...
+                    dfname = sprintf('g%dc%.2dsg%dc%.2ds%sJointInformation.mat', sptrains.spikechannels(ch1),j1,...
                             sptrains.spikechannels(ch2),j2,sort_event);
                     %check if we already have the data computed
                     trains = {clusters(j1) clusters2(j2)};
@@ -146,7 +146,7 @@ function [Z,Zs,Zi,onsets,offsets] = analyzeJointInformation(sptrains,trials,bins
                     end
                     [onset,offset] = getSignificantInterval(H-Hc,Hs-Hcs,bins);
                     if ~isnan(onset)
-                        fprintf(logfile,'g%.2dc%.2dsg%.2dc%.2ds\t%f\t%f\n', sptrains.spikechannels(ch2),j2,...
+                        fprintf(logfile,'g%dc%.2dsg%dc%.2ds\t%f\t%f\n', sptrains.spikechannels(ch2),j2,...
 									sptrains.spikechannels(ch1),j1,onset,offset);
                     end
                     comboidx = [comboidx; k*ones(length(onset),1)];
@@ -161,8 +161,8 @@ function [Z,Zs,Zi,onsets,offsets] = analyzeJointInformation(sptrains,trials,bins
 					Zi(k2,k1,:) = Zi(k1,k2,:);
 
                     if doplot
-                        plotLocationInformation(squeeze(Z(k1,k2,:)),bins,alignment_event,trials,'I_shuffled',Hs-Hcs,'I_ind',Hi-Hic);
-                        fname = sprintf('g%.2dc%.2dsg%.2dc%.2ds%sJointInformation.pdf', sptrains.spikechannels(ch1),j1,...
+                        plotLocationInformation(squeeze(Z(k1,k2,:)),bins,alignment_event,trials,'I_shuffled',Hs-Hcs,'I_ind',Hi-Hci);
+                        fname = sprintf('g%dc%.2dsg%dc%.2ds%sJointInformation.pdf', sptrains.spikechannels(ch1),j1,...
                             sptrains.spikechannels(ch2),j2,sort_event);
                         print('-dpdf',fname);
                         close
