@@ -26,7 +26,10 @@ function plotLocationRaster(spikes,trial_idx,trials,alignment_event,regroup)
         
 		row(t) = trials(t).target.row;
 		column(t) = trials(t).target.column;
-        if ~isempty(trials(t).response)
+        if isfield(trials(t),'saccade')
+           response(t) = trials(t).saccade.timestamp; 
+           response(t) = (response(t)-alignto)*1000;
+        elseif ~isempty(trials(t).response)
             response(t) = trials(t).response;
             response(t) = (response(t)-alignto)*1000;
         end
