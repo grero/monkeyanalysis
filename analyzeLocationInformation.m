@@ -49,7 +49,7 @@ function [I,I_shuffled]  = analyzeLocationInformation(sptrains,trials,bins,align
 		clusters = sptrains.channels(sptrains.spikechannels(ch)).cluster;
 		for j=1:length(clusters)
 			%check of already existing data
-			fname = sprintf('g%.2dc%.2ds%sLocationInformation.mat', sptrains.spikechannels(ch),j,sort_event);
+			fname = sprintf('g%dc%.2ds%sInformation.mat', sptrains.spikechannels(ch),j,sort_event);
 			if exist(fname,'file')
 				load(fname);
 			else
@@ -73,7 +73,7 @@ function [I,I_shuffled]  = analyzeLocationInformation(sptrains,trials,bins,align
 				close
 			end
 			if dosave
-				fname = sprintf('g%.2dc%.2ds%sLocationInformation.mat', sptrains.spikechannels(ch),j,sort_event);
+				fname = sprintf('g%dc%.2ds%sInformation.mat', sptrains.spikechannels(ch),j,sort_event);
 				if ~exist(fname,'file')
 					save(fname,'H','Hc','Hs','Hcs','bins','bias','biass','onset','offset');
 				end
