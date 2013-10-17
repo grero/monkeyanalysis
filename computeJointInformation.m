@@ -18,7 +18,12 @@ function [H,Hc,bins,bias,Hi,Hci] = computeJointInformation(counts,bins,trials,sh
 	end
 	if nargin < 4
 		shuffle = 0;
-	end
+    end
+    if ndims(counts)==2
+        %if we are only given a two-dimensional vector, assume that we are
+        %only using a single bin
+        counts = permute(shiftdim(counts,-1),[2,1,3]);
+    end
 	ntrials = size(counts,1);
 	trial_labels = zeros(ntrials,1);
 	rows = zeros(ntrials,1);
