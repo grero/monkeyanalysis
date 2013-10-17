@@ -19,19 +19,27 @@ function plotLocationInformation(I,bins,alignment_event,trials,varargin)
 	figure
 	hold on
 	response = nan*zeros(length(trials),1);
+    distractor = nan*zeros(length(trials),1);
 	for t=1:length(trials)
         
 		alignto = getfield(trials(t),alignment_event);
 		if isstruct(alignto)
 			alignto = alignto.timestamp;
         end
-        if ~isempty(trials(t).response)
+        if isfield(trials(t),'saccade')
+            response(t) = trials(t).saccade.timestamp;
+            response(t) = (response(t)-alignto)*1000;
+        elseif ~isempty(trials(t).response)
             response(t) = trials(t).response;
             response(t) = (response(t)-alignto)*1000;
+        end
+        if isfield(trials(t),'distractors')
+            distractor(t) = (trials(t).distractors(1)-alignto)*1000;
         end
 	end
 	R = nanmedian(response);
 	Rv = prctile(response(~isnan(response)),[25,75]);
+    Rm = min(response);
     rl = Rv(1);
     rh = Rv(2);
 	if ~isempty(Is)
@@ -51,16 +59,20 @@ function plotLocationInformation(I,bins,alignment_event,trials,varargin)
         if  isvector(Iind)
             h5 = plot(bins, Iind,'m');
         elseif exist('shadedErrorBar')
-            H2 = shadedErrorBar(bins,mean(Iind,1),2*std(Iind,1),'r');
+            H2 = shadedErrorBar(bins(1:size(Iind,2)),mean(Iind,1),2*std(Iind,1),'r');
             h5 = H2.mainLine;
         end
     end
     hold on
-    plot(bins,I,'.-')
+    plot(bins(1:length(I)),I,'.-')
 	yl = ylim;
 	h1 = plot([R,R], [yl(1),yl(2)],'r','linewidth',2);
 	h2 = plot([rl,rl], [yl(1),yl(2)],'r');
 	h3 = plot([rh,rh], [yl(1),yl(2)],'r');
+    h8 = plot([Rm,Rm], [yl(1),yl(2)],'r');
+    %also plot distractor
+    mmd = nanmedian(distractor);
+    h10 = plot([mmd,mmd], [yl(1),yl(2)],'g');
 	plot([0,0],[yl(1),yl(2)],'k');
 	if ~isempty(Is) && ~isempty(Iind)
 		legend([h1,h4,h5],'Median response period onset','Shuffle info [mean + 3td]','Independent','Location','SouthWest');
