@@ -68,8 +68,12 @@ function [I,I_shuffled]  = analyzeLocationInformation(sptrains,trials,bins,align
 			offsets = [offsets;offset];
 			cellidx = [cellidx; k*ones(length(onset),1)];
 			if doplot
-				plotLocationInformation(H-Hc-bias,bins,alignment_event,trials,'I_shuffled',Hs-Hcs-biass)
-				fname = sprintf('g%.2dc%.2ds%sLocationInformation.pdf', sptrains.spikechannels(ch),j,sort_event);
+                if exist('bias','var')
+                    plotLocationInformation(H-Hc-bias,bins,alignment_event,trials,'I_shuffled',Hs-Hcs-biass)
+                else
+                    plotLocationInformation(H-Hc,bins,alignment_event,trials,'I_shuffled',Hs-Hcs)
+                end
+				fname = sprintf('g%dc%.2ds%sInformation.pdf', sptrains.spikechannels(ch),j,sort_event);
 				print('-dpdf',fname);
 				close
 			end
