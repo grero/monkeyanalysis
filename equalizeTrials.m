@@ -11,7 +11,7 @@ function [ctrials_m,ictrials_m] = equalizeTrials(ctrials,ictrials)
     ctrial_labels = getTrialLocationLabel(ctrials);
     ictrial_labels = getTrialLocationLabel(ictrials);
     %2. equalize the number of trials by sub-sampling
-    ul = union(unique(ctrial_labels),unique(ictrial_labels));
+    ul = union(ctrial_labels,ictrial_labels);
     s1 = histc(ctrial_labels,ul);
     s2 = histc(ictrial_labels,ul);
 
