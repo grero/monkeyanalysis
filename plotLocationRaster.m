@@ -1,4 +1,4 @@
-function plotLocationRaster(spikes,trial_idx,trials,alignment_event,regroup)
+function plotLocationRaster(spikes,trial_idx,trials,alignment_event,regroup,squash_trial_labels)
 	%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 	%Plot raster with trials arranged according to location
 	%Input:
@@ -10,7 +10,10 @@ function plotLocationRaster(spikes,trial_idx,trials,alignment_event,regroup)
 	%	alignment_event:	the event used to align the spikes, .e.g. 'target'
 	%
 	%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-	if nargin < 5
+	if nargin < 6
+        squash_trial_labels = 0;
+    end
+    if nargin < 5
         regroup = 0;
     end
 	%get the distribution of response period onsets
@@ -64,9 +67,15 @@ function plotLocationRaster(spikes,trial_idx,trials,alignment_event,regroup)
             end
             %h = subplot(nrows,ncols,(r-1)*ncols + c);
 			h = subplot('Position',[0.05 + (c-1)*width,0.95 - r*width, 0.9*width, 0.9*width]);
-			plot(h,spikes(qidx),trial_idx(qidx),'.','MarkerSize',5);
+            if squash_trial_labels
+                [~,~,y] = unique(trial_idx(qidx));
+            else
+                y = trial_idx(qidx);
+            end
+            
+            plot(h,spikes(qidx),y,'.','MarkerSize',5);
             xlim([-200,3000]);
-            ylim([0,length(row)]);
+            %ylim([0,length(row)]);
 			if  r == nrows && c ==1 
 				xlabel('Time [ms]');
 				ylabel('Trial')
