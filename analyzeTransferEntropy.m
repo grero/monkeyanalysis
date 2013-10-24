@@ -20,9 +20,10 @@ function [onsets_f,offsets_f, onsets_b,offsets_b, comboidx_f, comboidx_b] = anal
 	dlpfc_fef_lat = [];
     fef_dlpfc_cnx = [];
     dlpfc_fef_cnx = [];
-    
+    processed_combos = {};
     ntrains = sptrains.ntrains;
     ncombos = ntrains*(ntrains-1)/2;
+    sig_cnx = [];
     fprintf(1,'Analyzing %d combinations...\n' ,ncombos);
     %progress = ['|','/','-','\'];
 	for ch1=1:length(sptrains.spikechannels)
@@ -35,22 +36,24 @@ function [onsets_f,offsets_f, onsets_b,offsets_b, comboidx_f, comboidx_b] = anal
 				clusters2 = sptrains.channels(sptrains.spikechannels(ch2)).cluster;
                 spch2 = sptrains.spikechannels(ch2);
                 for j2=1:length(clusters2)
+                    
+                    cell2 = sprintf('g%dc%.2ds', sptrains.spikechannels(ch2), j2);
+                    combo = [cell1 cell2];
                     %skip if both clusters are the same
                     if (ch1 == ch2) && (j1==j2)
                         k2 = k2 + 1; %make sure we still increae the counter
                         continue
-                    elseif k1 > k2
+                    elseif (ismember(combo,processed_combos)) || (ismember([cell2 cell1], processed_combos))
                         k2 = k2 + 1;
                         continue
                     end
-					cell2 = sprintf('g%dc%.2ds', sptrains.spikechannels(ch2), j2);
+					
                     %if logfile ~= 1
                     %    fprintf(1,'\b
                     %end
 					fname = [cell1 cell2 'transferEntropy.pdf'];
 					if ~exist(fname)
 						[onset_f,offset_f,onset_b,offset_b,z1,z2] = plotTransferEntropy(cell1,cell2,trials,1,1,minnbins);
-						close
 					else
 						[onset_f,offset_f,onset_b,offset_b,z1,z2] = plotTransferEntropy(cell1,cell2,trials,0,1,minnbins);
                     end
@@ -59,6 +62,7 @@ function [onsets_f,offsets_f, onsets_b,offsets_b, comboidx_f, comboidx_b] = anal
                         fprintf(logfile, '%s%s\t', cell1,cell2);
                         fprintf(logfile, '%f ', [onset_f offset_f]');
                         fprintf(logfile,'\n');
+                        sig_cnx = [sig_cnx z1];
 						if (ismember(spch1, 32:64))&&(ismember(spch2, 65:96))
 							fef_dlpfc_lat = [fef_dlpfc_lat onset_f'];
                             fef_dlpfc_cnx = [fef_dlpfc_cnx z1];
@@ -71,6 +75,7 @@ function [onsets_f,offsets_f, onsets_b,offsets_b, comboidx_f, comboidx_b] = anal
                         fprintf(logfile, '%s%s\t', cell2,cell1);
                         fprintf(logfile, '%f ', [onset_b offset_b]');
                         fprintf(logfile,'\n');
+                        sig_cnx = [sig_cnx z2];
 						if (ismember(spch2, 32:64))&&(ismember(spch1, 65:96))
 							fef_dlpfc_lat = [fef_dlpfc_lat onset_b'];
                             fef_dlpfc_cnx = [fef_dlpfc_cnx z2];
@@ -89,6 +94,7 @@ function [onsets_f,offsets_f, onsets_b,offsets_b, comboidx_f, comboidx_b] = anal
                     %fprintf(1,'\b%s', progress(
                     fprintf(1,[repmat('\b',[1,length(num2str(k-1))]) '%d'],k);
 					k = k+1;
+                    processed_combos = [processed_combos combo];
                     close
 				end
 			end
@@ -96,7 +102,12 @@ function [onsets_f,offsets_f, onsets_b,offsets_b, comboidx_f, comboidx_b] = anal
 		end
     end
     fprintf('\n');
+	cell1 = sprintf('g%dc%.2ds', sptrains.spikechannels(1), 1);
+	cell2 = sprintf('g%dc%.2ds', sptrains.spikechannels(2), 1);
     fname = [cell1 cell2 'transferEntropy.mat'];
+    if ~exist(fname,'file')
+        fname = [cell2 cell1 'transferEntropy.mat'];
+    end
     load(fname);
     %summary
 	npairs_f = length(unique(comboidx_f(~isnan(onsets_f))));
@@ -107,7 +118,8 @@ function [onsets_f,offsets_f, onsets_b,offsets_b, comboidx_f, comboidx_b] = anal
 	fprintf(logfile, 'Number of fef -> dlpfc connections: %d\n', length(fef_dlpfc_lat));
 	fprintf(logfile, '\t Median connection onset %f\n', nanmedian(fef_dlpfc_lat));
 
-    save('summary.mat','onsets_f','offsets_f','onsets_b','offsets_b','comboidx_f','comboidx_b','fef_dlpfc_lat','dlpfc_fef_lat','fef_dlpfc_cnx','dlpfc_fef_cnx','bins');
+    save('summary.mat','onsets_f','offsets_f','onsets_b','offsets_b','comboidx_f','comboidx_b','fef_dlpfc_lat','dlpfc_fef_lat','fef_dlpfc_cnx','dlpfc_fef_cnx','bins',...
+        'sig_cnx');
 	if logfile ~= 1
 		fclose(logfile);
     end
