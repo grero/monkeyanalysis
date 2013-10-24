@@ -35,8 +35,8 @@ function [dI,dI_shuffled]  = analyzeInformationCorrectVsIncorrect(sptrains,corre
 	if ischar(logfile)
 		logfile = fopen(logfile,'w');
 	end
-	onsets = [];
-	offsets = [];
+	allonsets = [];
+	alloffsets = [];
 	cellidx = [];
     nbins = length(bins);
 	k = 1; %to keep track of cells
@@ -47,32 +47,52 @@ function [dI,dI_shuffled]  = analyzeInformationCorrectVsIncorrect(sptrains,corre
 		clusters = sptrains.channels(sptrains.spikechannels(ch)).cluster;
 		for j=1:length(clusters)
 			%check of already existing data
-			fname = sprintf('g%.2dc%.2ds%sInformationCorrectVsIncorrect.mat', sptrains.spikechannels(ch),j,sort_event);
+			fname = sprintf('g%dc%.2ds%sInformationCorrectVsIncorrect.mat', sptrains.spikechannels(ch),j,sort_event);
 			if exist(fname,'file')
 				load(fname);
 			else
 				[I_c,I_ic,I_cs,I_ics] = compareInformation(clusters(j),-200:50:3000,correct_trials,incorrect_trials);
 				%determine significant regions, i.e. regions where I is larger than the 95th percentile of Is
-				[onset,offset] = getSignificantInterval(mean(I_c,1)'-mean(I_ic,1)',I_cs-I_ics,bins);
-			end
-			dI(k,:) = mean(I_c,1) - mean(I_ic,1);
-			dI_shuffled(k,:,:) = I_cs - I_ics;
-			onsets = [onsets;onset];
-			offsets = [offsets;offset];
-			cellidx = [cellidx; k*ones(length(onset),1)];
-			if doplot
-				fname = sprintf('g%.2dc%.2ds%sInformationCorrectVsIncorrect.pdf', sptrains.spikechannels(ch),j,sort_event);
-				print(gcf,'-dpdf',fname);
-				close
-			end
+				[onsets,offsets] = getSignificantInterval(mean(I_c,1)'-mean(I_ic,1)',I_cs-I_ics,bins);
+            end
+            if exist('I_correct','var')
+                I_c = I_correct;
+                I_ic = I_incorrect;
+                if ~exist('onsets','var')
+                    [onsets,offsets] = getSignificantInterval(mean(I_c)-mean(I_ic)',I_cs-I_ics,bins);
+                end
+            end
+            if ~exist('I_cs','var')
+                if doplot
+                    figure
+                    h = shadedErrorBar(squeeze(bins(1:size(I_c,1))),squeeze(mean(I_c,2)),squeeze(2*std(I_c,0,2)),'b');
+                    hold on
+                    h2 = shadedErrorBar(squeeze(bins(1:size(I_ic,1))),squeeze(mean(I_ic,2)),squeeze(2*std(I_ic,0,2)),'r');
+                    fname = sprintf('g%dc%.2ds%sInformationCorrectVsIncorrect.pdf', sptrains.spikechannels(ch),j,sort_event);
+                    print(gcf,'-dpdf',fname);
+                end
+            else
+            
+                dI(k,:) = mean(I_c,2) - mean(I_ic,2);
+                dI_shuffled(k,:,:) = I_cs - I_ics;
+                 if doplot
+                    fname = sprintf('g%dc%.2ds%sInformationCorrectVsIncorrect.pdf', sptrains.spikechannels(ch),j,sort_event);
+                    print(gcf,'-dpdf',fname);
+                    close
+                 end
+            end
+            allonsets = [allonsets;onsets];
+            alloffsets = [alloffsets;offsets];
+            cellidx = [cellidx; k*ones(length(onsets),1)];
+               
 			if dosave
-				fname = sprintf('g%.2dc%.2ds%sInformationCorrectVsIncorrect.mat', sptrains.spikechannels(ch),j,sort_event);
+				fname = sprintf('g%dc%.2ds%sInformationCorrectVsIncorrect.mat', sptrains.spikechannels(ch),j,sort_event);
 				if ~exist(fname,'file')
 					save(fname,'I_c','I_ic','I_ics','I_cs','bins','onset','offset');
 				end
 			end
-			if ~isnan(onset)
-				fprintf(logfile,'g%dc%.2ds\t%f\t%f\n', sptrains.spikechannels(ch),j,onset,offset);
+			if ~isnan(onsets)
+				fprintf(logfile,'g%dc%.2ds\t%f\t%f\n', sptrains.spikechannels(ch),j,onsets,offsets);
 			else
 				%fprintf(1,'g%dc%.2ds\t-\t-', sptrain.spikechannels(ch);
 			end
@@ -82,9 +102,9 @@ function [dI,dI_shuffled]  = analyzeInformationCorrectVsIncorrect(sptrains,corre
 	end
 	%print out a table of
 	fprintf(logfile,'Number of cells with at least one significant interval: %d\n', length(unique(cellidx(~isnan(onsets)))));
-	fprintf(logfile,'Median onset: %f\n', nanmedian(onsets));
-	fprintf(logfile,'Median offset: %f\n', nanmedian(offsets));
-	fprintf(logfile,'Median interval length: %f\n', nanmedian(offsets-onsets));
+	fprintf(logfile,'Median onset: %f\n', nanmedian(allonsets));
+	fprintf(logfile,'Median offset: %f\n', nanmedian(alloffsets));
+	fprintf(logfile,'Median interval length: %f\n', nanmedian(alloffsets-allonsets));
 	if logfile ~= 1
 		fclose(logfile);
 	end
