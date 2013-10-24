@@ -33,9 +33,9 @@ function sptrains = loadSpiketrains(fname)
     end
     sptrains.spikechannels = unique(spikechannels);
     sptrains.ntrains = length(F);
-    unitsperchannel = zeros(1,length(spikechannels));
-    for i=1:length(spikechannels)
-        unitsperchannel(i) = length(sptrains.channels(spikechannels(i)).cluster);
+    unitsperchannel = zeros(1,length(sptrains.spikechannels));
+    for i=1:length(sptrains.spikechannels)
+        unitsperchannel(i) = length(sptrains.channels(sptrains.spikechannels(i)).cluster);
     end
     sptrains.unitsperchannel = unitsperchannel;
 end
