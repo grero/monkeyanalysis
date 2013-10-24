@@ -24,27 +24,27 @@ function [onset,offset] = getSignificantInterval(I,Is,bins,limit,minnbins)
     if size(I,2) ~= size(Is,2)
         I = I';
     end
-	sidx = find(I>prctile(Is,limit,1));
+	sidx = I>prctile(Is,limit,1);
 	onset = [];
 	offset = [];
-	if ~isempty(sidx)
-        n = 1;
-        for i=2:length(sidx)
-            if sidx(i) - sidx(i-1) == 1
+	if any(sidx)
+        n = 0;
+        for i=1:length(sidx)
+            if sidx(i) == 1
                 n = n + 1;
             else
                 if n >= minnbins
-                    onset = [onset;bins(sidx(i-n+1))];
-                    offset = [offset;bins(sidx(i))];
+                    onset = [onset;bins(i-n)];
+                    offset = [offset;bins(i)];
                 end
-                n = 1;
+                n = 0;
             end
         end
         if n >= minnbins
             
             if (i == length(sidx))
-                onset = [onset;bins(sidx(i-n+1))];
-                offset = [offset;bins(sidx(i))];
+                onset = [onset;bins(i-n+1)];
+                offset = [offset;bins(i)];
             end
         end
         if isempty(onset)
