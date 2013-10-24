@@ -15,4 +15,12 @@ function plotTransferEntropySummary(fname)
 	c = colorbar
 	set(get(c,'ylabel'),'string','Z-score')
 	print('-dpng','fef_dlpfc_cnx.png')
+    
+    figure
+    [mx,mxi] = max(sig_cnx,[],1);
+    [s,idx] = sort(mxi)
+    imagesc(bins(1:size(sig_cnx,1)), 1:length(idx), sig_cnx(:,idx)')
+	c = colorbar
+	set(get(c,'ylabel'),'string','Z-score')
+	print('-dpng','all_sig_cnx.png')
 end
