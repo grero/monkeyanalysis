@@ -27,24 +27,7 @@ function [onset,offset] = getResponseOnset(sptrain,bins,trials,alignment_event,s
 	[Hs,Hcs,bins,bias] = computeInformation(counts,bins,trials,1,sort_event);
 	I = H-Hc;
 	Is = Hs-Hcs;
-	%find where I exceeds 95th percentile of Is
-	sidx = find(I>prctile(Is,95,1)');
-	onset = nan;
-	offset = nan;
-	if ~isempty(sidx) 
-		%find the start of each consectuive segment, i.e. where the difference between 
-		%indices is greater than 1
-		qidx =find(diff(sidx)>1);
-		if ~isempty(qidx)
-			%find the segments with at least 5 bins
-			nbins = diff(qidx);
-			sidx = sidx(qidx(nbins>5)+1);
-			if ~isempty(sidx)
-				%identify the onset as the first bin
-				onset = bins(sidx(1));
-				offset = bins(sidx(1)+nbins(1)-1);
-			end
-		end
-	end
+	%find where I exceeds 97.5th percentile of Is
+	[onset,offset] = getSignificantInterval(I,Is,bins,97.5,5);
 end
 
