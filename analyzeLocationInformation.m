@@ -41,6 +41,7 @@ function [I,I_shuffled]  = analyzeLocationInformation(sptrains,trials,bins,align
 	offsets = [];
 	cellidx = [];
     nbins = length(bins);
+	cells = {};
 	k = 1; %to keep track of cells
     I = zeros(sptrains.ntrains,nbins);
     I_shuffled = zeros(sptrains.ntrains, 100,nbins);
@@ -48,6 +49,7 @@ function [I,I_shuffled]  = analyzeLocationInformation(sptrains,trials,bins,align
 	for ch=1:length(sptrains.spikechannels)
 		clusters = sptrains.channels(sptrains.spikechannels(ch)).cluster;
 		for j=1:length(clusters)
+			cells{k} = sprintf('g%dc%.2ds',sptrains.spikechannels(ch),j);
 			%check of already existing data
 			fname = sprintf('g%dc%.2ds%sInformation.mat', sptrains.spikechannels(ch),j,sort_event);
 			if exist(fname,'file')
@@ -100,6 +102,9 @@ function [I,I_shuffled]  = analyzeLocationInformation(sptrains,trials,bins,align
 	if logfile ~= 1
 		fclose(logfile);
 	end
+	%save data
+	fprintf(1,'Saving data to %s\n', 'summary.mat');
+	save('summary.mat', 'onsets','offsets','cellidx','cells');
 	%create a summary plot
     %only plot the significant points
     figure
