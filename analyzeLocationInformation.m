@@ -107,6 +107,25 @@ function [I,I_shuffled]  = analyzeLocationInformation(sptrains,trials,bins,align
 	save('summary.mat', 'onsets','offsets','cellidx','cells');
 	%create a summary plot
     %only plot the significant points
+	response = nan*zeros(length(trials),1);
+    distractor = nan*zeros(length(trials),1);
+	for t=1:length(trials)
+        
+		alignto = getfield(trials(t),alignment_event);
+		if isstruct(alignto)
+			alignto = alignto.timestamp;
+        end
+        if isfield(trials(t),'saccade')
+            response(t) = trials(t).saccade.timestamp;
+            response(t) = (response(t)-alignto)*1000;
+        elseif ~isempty(trials(t).response)
+            response(t) = trials(t).response;
+            response(t) = (response(t)-alignto)*1000;
+        end
+        if isfield(trials(t),'distractors')
+            distractor(t) = (trials(t).distractors(1)-alignto)*1000;
+        end
+	end
     figure
     Ic = nan*zeros(size(I));
     Ic(I > squeeze(prctile(I_shuffled,95,2))) = I(I > squeeze(prctile(I_shuffled,95,2)));
@@ -130,6 +149,14 @@ function [I,I_shuffled]  = analyzeLocationInformation(sptrains,trials,bins,align
     
     idx_vdlpfc = cc(find(sptrains.spikechannels <= 96,1,'last')) - 0.5;
     plot([bins(1) bins(end)] -0.5*db, [idx_vdlpfc idx_vdlpfc], 'k');
+	yl = ylim
+	%indicate distracot onset, if any
+	if sum(~isnan(distractor)) >0
+		mmd = nanmedian(distractor);
+		h10 = plot([mmd,mmd], [yl(1),yl(2)],'g');
+	end
+	Rm = nanmedian(response)
+    h8 = plot([Rm,Rm], [yl(1),yl(2)],'r');
     %save
     print('-dpdf','summary.pdf');
 end
