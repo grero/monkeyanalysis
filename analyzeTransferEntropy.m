@@ -39,12 +39,13 @@ function [onsets_f,offsets_f, onsets_b,offsets_b, comboidx_f, comboidx_b] = anal
                 for j2=1:length(clusters2)
                     
                     cell2 = sprintf('g%dc%.2ds', sptrains.spikechannels(ch2), j2);
+                    fname = [cell1 cell2 'transferEntropy.mat'];
                     combo = [cell1 cell2];
                     %skip if both clusters are the same
                     if (ch1 == ch2) && (j1==j2)
                         k2 = k2 + 1; %make sure we still increae the counter
                         continue
-                    elseif (ismember(combo,processed_combos)) || (ismember([cell2 cell1], processed_combos))
+                    elseif (ismember(combo,processed_combos)) || (ismember([cell2 cell1], processed_combos)) || ~exist(fname,'file')
                         k2 = k2 + 1;
                         continue
                     end
