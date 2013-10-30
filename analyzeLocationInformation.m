@@ -107,7 +107,7 @@ function [I,I_shuffled]  = analyzeLocationInformation(sptrains,trials,bins,align
 	end
 	%save data
 	fprintf(1,'Saving data to %s\n', 'summary.mat');
-	save('summary.mat', 'onsets','offsets','cellidx','cells');
+	save('summary.mat', 'onsets','offsets','cellidx','cells','bins','I','I_shuffled');
 	%create a summary plot
     %only plot the significant points
 	response = nan*zeros(length(trials),1);
