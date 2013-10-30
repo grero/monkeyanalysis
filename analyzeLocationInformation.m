@@ -1,4 +1,4 @@
-function [I,I_shuffled]  = analyzeLocationInformation(sptrains,trials,bins,alignment_event,sort_event,doplot,dosave,logfile,regroup)
+function [I,I_shuffled]  = analyzeLocationInformation(sptrains,trials,bins,alignment_event,sort_event,doplot,dosave,logfile,regroup,minnbins)
 	%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 	%Compute and plot the information for several spike trains. The plots
 	%are saved under the current directory as gXXcXXsLocationInformation.pdf
@@ -16,6 +16,9 @@ function [I,I_shuffled]  = analyzeLocationInformation(sptrains,trials,bins,align
 	%							standard out. Both a file name and a file handle can
 	%							be specified
 	%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+	if nargin < 10
+		minnbins = 5;
+	end
     if nargin < 9
         regroup = 0;
     end
@@ -63,7 +66,7 @@ function [I,I_shuffled]  = analyzeLocationInformation(sptrains,trials,bins,align
 				%determine significant regions, i.e. regions where I is larger than the 95th percentile of Is
 				
             end
-            [onset,offset] = getSignificantInterval(H-Hc,Hs-Hcs,bins);
+            [onset,offset] = getSignificantInterval(H-Hc,Hs-Hcs,bins,97.5,minnbins);
 			I(k,1:length(H)) = H-Hc;
 			I_shuffled(k,:,1:length(H)) = Hs-Hcs;
 			onsets = [onsets;onset];
