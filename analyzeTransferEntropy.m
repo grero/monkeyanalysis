@@ -24,6 +24,7 @@ function [onsets_f,offsets_f, onsets_b,offsets_b, comboidx_f, comboidx_b] = anal
     ntrains = sptrains.ntrains;
     ncombos = ntrains*(ntrains-1)/2;
     sig_cnx = [];
+    all_cnx = [];
     fprintf(1,'Analyzing %d combinations...\n' ,ncombos);
     %progress = ['|','/','-','\'];
 	for ch1=1:length(sptrains.spikechannels)
@@ -57,7 +58,7 @@ function [onsets_f,offsets_f, onsets_b,offsets_b, comboidx_f, comboidx_b] = anal
 					else
 						[onset_f,offset_f,onset_b,offset_b,z1,z2] = plotTransferEntropy(cell1,cell2,trials,0,1,minnbins);
                     end
-                    
+                    all_cnx = [all_cnx z1 z2];
                     if sum(~isnan(onset_f)) > 0
                         fprintf(logfile, '%s%s\t', cell1,cell2);
                         fprintf(logfile, '%f ', [onset_f offset_f]');
@@ -119,7 +120,7 @@ function [onsets_f,offsets_f, onsets_b,offsets_b, comboidx_f, comboidx_b] = anal
 	fprintf(logfile, '\t Median connection onset %f\n', nanmedian(fef_dlpfc_lat));
 
     save('summary.mat','onsets_f','offsets_f','onsets_b','offsets_b','comboidx_f','comboidx_b','fef_dlpfc_lat','dlpfc_fef_lat','fef_dlpfc_cnx','dlpfc_fef_cnx','bins',...
-        'sig_cnx');
+        'sig_cnx','all_cnx','processed_combos');
 	if logfile ~= 1
 		fclose(logfile);
     end
