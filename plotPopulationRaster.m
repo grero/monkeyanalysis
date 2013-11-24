@@ -30,5 +30,6 @@ function plotPopulationRaster(aligned_spikes,trial_idx,cell_idx, trials_to_plot)
 		plot(spikes(cidx),y(cidx),'.');
 	end
 	set(gca,'TickDir','out','Box','Off')
+	xlabel('Time [ms]')
 end
 
