@@ -12,6 +12,10 @@ function [aligned_sptrains, trial_idx, cellidx] = getPopulationRaster(sptrains,t
 	%							and all trials
 	%	trial_idx			:	the trial to which each spike belongs
 	%	cellidx				:	the cell to which eac spike belongs
+	%Example usage:
+	%	[aligned_sptrains, trial_idx, cellidx] = getPopulationRaster(sptrains,rtrials,[-200,2300])
+	%		return all spikes from the spike trains in sptrains falling between 200 ms before and 2300 
+	%		ms after target onset
 	%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 	aligned_sptrains = [];
 	trial_idx = [];
