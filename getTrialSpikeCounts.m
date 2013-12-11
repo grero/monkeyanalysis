@@ -11,11 +11,11 @@ function [counts, bins] = getTrialSpikeCounts(sptrain,trials,bins, varargin)
 	%								a member of trials, it default to 'prestim', i.e. 
 	%								start of fixation
 	%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-	Args = struct('alignment_event','prestim','overlap',0);
+	Args = struct('alignment_event','target','overlap',0);
 	[Args,varargin] = getOptArgs(varargin, Args);
  	alignment_event = Args.alignment_event;
 	if ~isfield(trials, alignment_event)
-		alignment_event = 'prestim';
+		alignment_event = 'target';
 	end
 	overlap = Args.overlap;
 	ntrials = length(trials);
