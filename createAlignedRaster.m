@@ -1,10 +1,12 @@
-function [spikes,trial_idx] = createAlignedRaster(sptrain,trials,alignment_event)
+function [spikes,trial_idx] = createAlignedRaster(sptrain,trials,alignment_event,window)
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %Align spike train to trial start
 %Input:
 %	sptrain     	:   flat vector with spiketimes in miliseconds
 %   trials      	:    trial structure obtained from loadTrialInfo
 %	alignment_event	:	event to which to align the spike trains. The event
+%	window			:	only include spike within the specified window, referenced to
+%						the alignment event
 %Output:
 %   spikes      	:       spike time shifted to aligned with the start of
 %                           each trial
@@ -14,11 +16,14 @@ function [spikes,trial_idx] = createAlignedRaster(sptrain,trials,alignment_event
 %                           as the second, i.e. from top-left to bottom
 %                           right.
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-	if nargin == 2
-		alignment_event = 'prestim';
+	if nargin < 4
+		window = [-200 3000];
+	end
+	if nargin < 3
+		alignment_event = 'target';
 	end
 	if ~isfield(trials,alignment_event)
-		alignment_event = 'prestim';
+		alignment_event = 'target';
 	end
 	%get the row and column of each trial so that we can sort the trials according to location
 	row = zeros(length(trials),1);
@@ -47,5 +52,8 @@ function [spikes,trial_idx] = createAlignedRaster(sptrain,trials,alignment_event
             trial_idx = [trial_idx t*ones(1,sum(idx))];
         end
     end
+	idx = (spikes < window(2))&(spikes > window(1));
+	spikes = spikes(idx);
+	trial_idx = trial_idx(idx);
    
 end
