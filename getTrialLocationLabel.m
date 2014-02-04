@@ -15,5 +15,8 @@ function [row,column] = getTrialLocationLabel(trials,event)
 	nrows = max(row);
 	column = column - min(column)+1;
 	ncols = max(column);
-	labels = (row-1)*ncols + column;
+	if nargout == 2
+		labels = (row-1)*ncols + column;
+		row = labels;
+	end
 end
