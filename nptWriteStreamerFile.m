@@ -19,7 +19,7 @@ else
 end
 
 fwrite(fid, header_size, 'int32');					% 4 bytes reserved for header size which is 73 bytes
-fwrite(fid,num_channels, 'uchar');				% 1 byte
+fwrite(fid,num_channels, 'uint16');				% 2 bytes
 fwrite(fid,sampling_rate, 'uint32');				% 4 bytes
 fwrite(fid,scan_order,'uchar');				% 1 byte for each channel up to 64 channels
 fwrite(fid,pad,'int8');
