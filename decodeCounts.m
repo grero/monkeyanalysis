@@ -11,7 +11,11 @@ function [class_errs,decoded,actual] = decodeCounts(counts,training,testing,tria
 	%	type		:									: the type of discriminant used for decoding. Default
 	%													  is 'linear'. See help(classify) for more options
 	%   nruns		:									: number of training/testing runs to do. Defaults to 100
-	%
+	%Output:
+	%	class_errs	:	[ncats X nbins X nruns]			: the classification error for each trial category,
+	%													  for each bin and run
+	%	decoded		:	[ntest X nbins X nruns]			: the decoded category for each test trial and for each run
+	%	actual		:	[ntest X nruns]					: the ground truth for the testing set
 	%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
     if nargin < 6
         nruns = 1;
