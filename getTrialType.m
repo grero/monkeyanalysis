@@ -8,7 +8,10 @@ function rtrials  = getTrialType( trials,varargin )
 	%   trials          :    trial structure obtained from loadTrialInfo
 	%   varargin        :    strings indicating which trial type to get.
 	%   					 any combination of fields found in the trials
-	%   					 structure can be specified
+	%   					 structure can be specified. To indicate that a field
+	%   					 should *not* be present, prefix with '~'. E.g,
+	%   					 specifying '~response' will return all trials in which
+	%   					 the response cue was *not* given.
 	%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
     k = 1;
 	types = varargin;
@@ -16,10 +19,16 @@ function rtrials  = getTrialType( trials,varargin )
     for t=1:length(trials)
 		include = 1;
 		i = 1;
-		while include && (i <= ntypes) 
-			if isempty(getfield(trials(t),types{i}))
-				include = 0;
-			end
+		while include && (i <= ntypes)
+            if strfind(types{i},'~') == 1
+                if ~isempty(getfield(trials(t),types{i}(2:end)))
+                    include = 0;
+                end
+            else
+                if isempty(getfield(trials(t),types{i}))
+                    include = 0;
+                end
+            end
 			i = i + 1;
 		end
 		if include == 1
