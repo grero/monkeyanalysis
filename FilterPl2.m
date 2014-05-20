@@ -8,6 +8,7 @@ function status = FilterPl2(fname,chunksize,chunkidx,redo)
 	%	redo		:		optional argument to redo all computation, even if data already exist
 	%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%	
 	%
+	status = 0;
 	[pth,fn,ex] = fileparts(fname);
 	mkdir('.','highpass');
 	mkdir('.','lowpass');
