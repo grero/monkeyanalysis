@@ -15,6 +15,8 @@ function status = FilterPl2(fname,chunksize,chunkidx,redo)
 	lowpassOutput = ['lowpass/' fn '_lowpass.bin'];
 	if nargin == 1
 		chunksize = 100;
+	elseif ischar(chunksize)
+		chunksize = num2str(chunksize);
 	end
 	if nargin <=3
 		redo = 0;
@@ -42,6 +44,9 @@ function status = FilterPl2(fname,chunksize,chunkidx,redo)
 	end
 	%check if we are only analyzing a single chunck
 	if nargin >= 3
+		if ischar(chunkidx)
+			chunkidx = str2num(chunkidx)
+		end
 		chunks = chunks(chunkidx:chunkidx+1)
 	end
 
@@ -53,12 +58,13 @@ function status = FilterPl2(fname,chunksize,chunkidx,redo)
 	L = zeros(nchannels,chunksize,'int16');
 	try
 		for i=1:length(chunks)-1
+			ci = chunkidx(i);
 			hcsize = chunks(i+1)-chunks(i);
 			lcsize = hcsize/(pl2.TimestampFrequency/1000);
 			%check whether this chunk already exists
-			hfname = sprintf('highpass/%s_highpass.%.4d',fn,i);
-			lfname = sprintf('lowpass/%s_lowpass.%.4d',fn,i);
-			fprintf(1,'\tAnalyzing chunk %d\n', i);
+			hfname = sprintf('highpass/%s_highpass.%.4d',fn,ci);
+			lfname = sprintf('lowpass/%s_lowpass.%.4d',fn,ci);
+			fprintf(1,'\tAnalyzing chunk %d\n', ci);
 			if exist(hfname,'file') && exist(lfname,'file')
 				fprintf('\t\tChunk already processed. Skipping...\n')
 				continue
@@ -66,7 +72,7 @@ function status = FilterPl2(fname,chunksize,chunkidx,redo)
 			for ch=1:length(WBChannels)
 				%get the wideband data
 				fprintf(1,'\t\tReading channel %d\n', WBChannels(ch));
-				ad = Pl2adSpan(fname,WBChannels(ch),chunks(i)+1,chunks(i+1));
+				ad = PL2AdSpan(fname,WBChannels(ch),chunks(i)+1,chunks(i+1));
 				if isempty(ad.Values)
 					continue
 				end
