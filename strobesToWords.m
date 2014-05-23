@@ -16,6 +16,9 @@ function words = strobesToWords(strobes)
 		%this is the old scheme
 		words = dec2bin(2^15-abs(strobes)) - '0';
 		words = words(:,end-7:end);
+    elseif strobes(1) == -256
+        words = dec2bin(abs(strobes));
+        words = words(:,end-1:-1:1);
     else
         words = nan;
 		disp('Unknown strobe encoding');
