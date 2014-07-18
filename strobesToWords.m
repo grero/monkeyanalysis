@@ -17,10 +17,10 @@ function words = strobesToWords(strobes)
 		words = dec2bin(2^15-abs(strobes)) - '0';
 		words = words(:,end-7:end);
     elseif strobes(1) == -256
-        words = dec2bin(abs(strobes));
+        words = dec2bin(abs(strobes)) -'0';
         words = words(:,end-1:-1:1);
 	elseif strobes[1] == -64
-		words = dec2bin(2^16-abs(strobes),13)
+		words = dec2bin(2^16-abs(strobes),13) - '0';
 		words = words(:,end-7:end);
     else
         words = nan;
