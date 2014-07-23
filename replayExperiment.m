@@ -26,7 +26,7 @@ function M = replayExperiment(offset,nsamples,edfdata,samplingRate,l)
         end
         hold on
         %Try replacing with a fixation dot
-        fill([144+2*xdiff, 144+3*xdiff, 144+3*xdiff, 144+2*xdiff],...
+        fp = fill([144+2*xdiff, 144+3*xdiff, 144+3*xdiff, 144+2*xdiff],...
             [90+3*ydiff, 90+3*ydiff, 90+2*ydiff, 90+2*ydiff],[0.5,0.5,0.5]);
         l = plot(edfdata.FSAMPLE.gx(1,1),edfdata.FSAMPLE.gy(1,1),'.');
         %draw a rectangle around the grid; these numbers are from Jit Hon's code
@@ -82,6 +82,10 @@ function M = replayExperiment(offset,nsamples,edfdata,samplingRate,l)
                     px = bin2dec(m(5:-1:3))-1;
                     py = bin2dec(m(8:-1:6))-1;
                     dlifetime = 0;
+				elseif strcmp(m, '00000000') %trial start
+					set(fp,'FaceColor',[0.5, 0.5, 0.5])
+				elseif strcmp(m,'00000101') %go-cueue
+					set(fp,'FaceColor','w')
                 end
             end
             nextevent = nextevent + 1;
