@@ -55,6 +55,10 @@ function status = FilterPl2(fname,chunksize,chunkidx,redo)
 		fid = open('best_chunk.txt','w');
 		fprintf(fid,'%d\n', best_chunk);
 		fclose(fid);
+	else
+		fid = fopen('best_chunk.txt','r');
+		best_chunk = fscanf(fid,'%d');
+		fclose(fid);
 	end
 	%check if we are only analyzing a single chunck
 	if nargin >= 3
