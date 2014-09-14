@@ -16,11 +16,13 @@ function status = FilterPl2(fname,chunksize,chunkidx,redo)
 	if nargin == 1
 		chunksize = 100;
 	elseif ischar(chunksize)
-		chunksize = num2str(chunksize);
+		chunksize = str2num(chunksize);
 	end
 	if nargin <=3
 		redo = 0;
 	end
+	%get the strobed events
+	readStrobes(fname);
 
 	%get the available channels
 	pl2 = PL2GetFileIndex(fname);
@@ -42,16 +44,31 @@ function status = FilterPl2(fname,chunksize,chunkidx,redo)
 	if pl2.DurationOfRecordingTicks-chunks(end)>0
 		chunks = [chunks pl2.DurationOfRecordingTicks];
 	end
+	if ~exist('best_chunk.txt','file')
+		%get the best chunk, i.e. the one containing the most number of trials
+		%read the trials back so that we can get the master chunk
+		trials = loadTrialInfo('event_data.mat');
+		%get the start time of each trial, in seconds
+		starttime = getEventTimingDistr(trials,'start')/1000;
+		n = histc(starttime, 0:chunksize/samplingRate:length(chunks)*chunksize/samplingRate);
+		[ntrials,best_chunk] = max(n);
+		fid = open('best_chunk.txt','w');
+		fprintf(fid,'%d\n', best_chunk);
+		fclose(fid);
+	end
 	%check if we are only analyzing a single chunck
 	if nargin >= 3
 		if ischar(chunkidx)
-			chunkidx = str2num(chunkidx)
+			if strcmpi(chunkidx,'best')
+				chunkidx = best_chunk;
+				fprintf(1,'Processing best chunk, chunk %d\n', best_chunk);
+			else
+				chunkidx = str2num(chunkidx)
+			end
 		end
 		chunks = chunks(chunkidx:chunkidx+1)
 	end
 
-	%get the strobed events
-	readStrobes(fname);
 	%main processing loop
 	fprintf(1,'Processing wide band signal\n');
 	H = zeros(nchannels,chunksize,'int16');
