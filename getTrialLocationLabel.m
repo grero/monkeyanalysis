@@ -7,8 +7,8 @@ function [row,column] = getTrialLocationLabel(trials,event)
 	column = nan*zeros(ntrials,1);
 	for t=1:ntrials
 		if ~isempty(getfield(trials(t),event))
-			row(t) = getfield(trials(t),event).row;
-			column(t) = getfield(trials(t),event).column;
+			row(t) = getfield(getfield(trials(t),event),'row');
+			column(t) = getfield(getfield(trials(t),event),'column');
 		end
 	end
 	row = row - min(row) + 1;
