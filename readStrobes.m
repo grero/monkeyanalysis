@@ -18,6 +18,9 @@ function readStrobes(fname)
 		%check if we have more than one fragment
 		%this is hackish; to get the frag time stamp, re-read one channel
 		ad = PL2Ad(fname,WBChannels(1));
+        if isempty(ad.Values)
+            ad = Pl2Ad(fname,513);
+        end
 		if size(ad.FragTs,1)>1
 			ts = events.Ts;
 			offset = 0;
