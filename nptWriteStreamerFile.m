@@ -4,7 +4,7 @@ function status=nptWriteStreamerFile(filename,sampling_rate,data,scan_order)
 %scanorder is optional
 
 num_channels=size(data,1);
-header_size=73;
+header_size=74;
 
 fid=fopen(filename,'w','ieee-le');
 if fid~=-1
