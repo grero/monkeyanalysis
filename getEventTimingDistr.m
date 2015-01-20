@@ -1,4 +1,4 @@
-function [response_mean, response_std, response] = getEventTimingDistr(trials,event,alignment_event)
+function [response, response_mean,response_std] = getEventTimingDistr(trials,event,alignment_event)
     %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
     %Return the distribution of timinigs for the specified event
     %Input:
@@ -20,7 +20,7 @@ function [response_mean, response_std, response] = getEventTimingDistr(trials,ev
         disp('Invalid alignment event')
         return
     end
-    response = zeros(length(trials),1);
+    response = nan*zeros(length(trials),1);
     for t=1:length(trials)
         r = getfield(trials(t),event);
         if isempty(r)
@@ -33,13 +33,20 @@ function [response_mean, response_std, response] = getEventTimingDistr(trials,ev
         else
             response(t) = r;
         end
-        alignto = getfield(trials(t),alignment_event);
-        if isstruct(alignto)
-            alignto = alignto.timestamp;
+		if ~strcmpi(event,'start')
+			alignto = getfield(trials(t),alignment_event);
+			if isstruct(alignto)
+				alignto = alignto.timestamp;
+			end
+		else
+			alignto = 0;
+        end
+        if strcmpi(alignment_event,'start')
+            alignto = 0;
         end
         response(t) = (response(t)-alignto)*1000;
     end
-    response = response(response>0);
+    %response = response(~isnan(response));
     response_mean = mean(response);
     response_std = std(response);
 end
