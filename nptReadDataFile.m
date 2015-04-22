@@ -23,16 +23,15 @@ function [data,num_channels,sampling_rate,datatype,points]=nptReadDataFile(rawfi
 % 13 => 'double';  
 % 14 => 'float64'; 
 if nargin == 1
-	channel = inf 
+	channel = inf ;
 end
-
 is_transposed = 0;
 fid=fopen(rawfile,'r','ieee-le');
-header_size=fread(fid, 1, 'int32')					% 4 bytes reserved for header size which is 73 bytes
+header_size=fread(fid, 1, 'int32');					% 4 bytes reserved for header size which is 73 bytes
 if header_size >= 74
 	num_channels=fread(fid, 1, 'uint16');				% 1 byte
 	if header_size == 75
-		is_transposed = fread(fid, 1, 'uint8')
+		is_transposed = fread(fid, 1, 'uint8');
 	end
 else
 	num_channels=fread(fid, 1, 'uint8');				% 1 byte
@@ -41,15 +40,15 @@ sampling_rate=fread(fid, 1, 'uint32');				% 4 bytes
 datatype = fread(fid,1,'int8');	% datatype assume for now int16 
 fseek(fid, 0, 'eof');
 fsize = ftell(fid);
-points = (fsize - header_size)/num_channels/2
+points = (fsize - header_size)/num_channels/2;
 fseek(fid, header_size, 'bof');						% skip to the end 
 
 	if is_transposed == 0
 		if channel ==  inf
 			[data,count]=fread(fid, [num_channels,inf], 'int16');
 		else
-			fseek(fid, (channel(1)-1)*2,0)
-			[data,count]=fread(fid, [1,points], 'int16',num_channels);
+			fseek(fid, (channel(1)-1)*2,0);
+			[data,count]=fread(fid, [1,points], 'int16',2*(num_channels-1));
 		end
 
 	else
