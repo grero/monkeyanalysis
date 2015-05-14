@@ -1,4 +1,4 @@
-function words = readEvents(fname)
+function [words,ts] = readEvents(fname)
 
     %get the available channels
     pl2 = PL2GetFileIndex(fname);
@@ -48,6 +48,7 @@ function words = readEvents(fname)
 	for i=1:length(TO)
 		if TO(i) - t0 > 1
 			row = row  +1;
+			ts(row) = TO(i);
 		end
 		words(row,IO(i));
 		t0 = TO(i);
