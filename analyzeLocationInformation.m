@@ -17,7 +17,7 @@ function [I,I_shuffled]  = analyzeLocationInformation(sptrains,trials,bins,align
 	%							be specified
 	%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 	if nargin < 10
-		minnbins = 5;
+		minnbins = 3;
 	end
     if nargin < 9
         regroup = 0;
@@ -74,7 +74,7 @@ function [I,I_shuffled]  = analyzeLocationInformation(sptrains,trials,bins,align
 			cellidx = [cellidx; k*ones(length(onset),1)];
 			if doplot
                 if exist('bias','var')
-                    plotLocationInformation(H-Hc-bias,bins,alignment_event,trials,'I_shuffled',Hs-Hcs-biass)
+                    plotLocationInformation(H-Hc-reshape(bias(1:length(H)),size(H)),bins,alignment_event,trials,'I_shuffled',Hs-Hcs-biass(:,1:size(Hcs,2)))
                 else
                     plotLocationInformation(H-Hc,bins,alignment_event,trials,'I_shuffled',Hs-Hcs)
                 end
@@ -132,8 +132,12 @@ function [I,I_shuffled]  = analyzeLocationInformation(sptrains,trials,bins,align
     figure
     Ic = nan*zeros(size(I));
     Ic(I > squeeze(prctile(I_shuffled,95,2))) = I(I > squeeze(prctile(I_shuffled,95,2)));
-    h = imagesc(bins,1:size(I,1),Ic);
-    set(h,'AlphaData',~isnan(Ic))
+    Z = (I-squeeze(mean(I_shuffled,2)))./squeeze(std(I_shuffled,0,2));
+    %h = imagesc(bins,1:size(I,1),Ic);
+    %plot z-score instead
+    h = imagesc(bins,1:size(I,1),Z);
+
+    %set(h,'AlphaData',~isnan(Ic))
     xlabel('Time [ms]')
     ylabel('Cell number');
     c = colorbar;
@@ -161,5 +165,6 @@ function [I,I_shuffled]  = analyzeLocationInformation(sptrains,trials,bins,align
 	Rm = nanmedian(response)
     h8 = plot([Rm,Rm], [yl(1),yl(2)],'r');
     %save
-    print('-dpdf','summary.pdf');
+    set(gca,'TickDir','out')
+    print('-depsc','summary.eps');
 end
