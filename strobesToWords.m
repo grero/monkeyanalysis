@@ -19,7 +19,7 @@ function words = strobesToWords(strobes)
     elseif strobes(1) == -256
         words = dec2bin(abs(strobes)) -'0';
         words = words(:,end-1:-1:1);
-	elseif strobes[1] == -64
+	elseif strobes(1) == -64
 		words = dec2bin(2^16-abs(strobes),13) - '0';
 		words = words(:,end-7:end);
     else
