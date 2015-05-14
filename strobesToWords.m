@@ -22,6 +22,9 @@ function words = strobesToWords(strobes)
 	elseif strobes(1) == -64
 		words = dec2bin(2^16-abs(strobes),13) - '0';
 		words = words(:,end-7:end);
+	elseif min(strobes) == 63
+		w = ~logical(dec2bin(strobes,13)-'0');
+		words = double(w(:,end-7:end));
     else
         words = nan;
 		disp('Unknown strobe encoding');
