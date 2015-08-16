@@ -30,7 +30,8 @@ function plotDecoderMisses(decoded, actual, row,col,nrows,ncols)
 		n = zeros(length(qu),1);
 		for i=1:size(decoded,2)
 			s = decoded(:,i,:);
-			nn = histc(s(idx),qu);
+            ss = s(idx);
+			nn = histc(ss(~isnan(ss)),qu);
 			qq = ~isnan(nn);
 			n(qq) = n(qq) + nn(qq);
 		end
@@ -47,6 +48,7 @@ function plotDecoderMisses(decoded, actual, row,col,nrows,ncols)
 			set(ax,'YTickLabel',[]);
 		else
 			xlabel('Position')
+            set(gca,'XTick',qu)
 			set(gca,'XTicklabel',qu)
 		end
 		set(ax,'Box','off');
