@@ -1,4 +1,4 @@
-function class_errs = decode(counts,trial_labels,runs,type,trial_shuffle)
+function [class_errs,decoded,actual,coeffs,P,trials] = decode(counts,trial_labels,runs,type,trial_shuffle)
 	%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 	%Decode the trial labels using joint counts
 	%Input:
@@ -24,30 +24,36 @@ function class_errs = decode(counts,trial_labels,runs,type,trial_shuffle)
     err = zeros(nbins,runs);
     ntrain = floor(0.8*n); %number of training samples
     ntest = n-ntrain; %number of test samples
-    class = nan*zeros(ntest,nbins,runs); %test result
+    decoded = nan*zeros(ntest,nbins,runs); %test result
+    actual = nan*zeros(ntest,runs); %test result
+	trials = zeros(ntest,runs);
     class_errs = nan*zeros(length(unique(trial_labels)),nbins,runs); %errors per class
+	P = nan*zeros(ntest,size(class_errs,1),nbins,runs);
     ul = unique(trial_labels); %unique trial labels
+	coeffs = {};
     for k=1:runs
         idx = randsample(1:n,ntrain); %grab a random set of trial for training
         tidx = setdiff(1:n,idx); %grab the remaining trials for testing
+		actual(:,k) = trial_labels(tidx);
+		trials(:,k) = tidx;
         for i=1:nbins
             try
                 if ~trial_shuffle
-                    class(:,i,k) = classify(squeeze(counts(:,tidx,i))',squeeze(counts(:,idx,i))',trial_labels(idx),type);
+                    [decoded(:,i,k),er,P(:,:,i,k),logp,coeffs{k}{i}] = classify(squeeze(counts(:,tidx,i))',squeeze(counts(:,idx,i))',trial_labels(idx),type);
                 else
 					%shuffle the training sample; note that since we are shuffling within conditions, the labels remain unchanged
 					tcounts = shuffleTrials(counts(:,idx,i),trial_labels(idx));
-                    class(:,i,k) = classify(squeeze(counts(:,tidx,i))',tcounts',trial_labels(idx),type);
+                    [decoded(:,i,k),er,P(:,:,i,k),logp,coeffs{k}{i}] = classify(squeeze(counts(:,tidx,i))',tcounts',trial_labels(idx),type);
                 end
                 for j=1:size(class_errs,1)
                     qidx = trial_labels(tidx)==ul(j);
-                    class_errs(j,i,k) = sum(class(qidx,i,k)~=ul(j))./sum(qidx);
+                    class_errs(j,i,k) = sum(decoded(qidx,i,k)~=ul(j))./sum(qidx);
                 end
             catch e
-                e;
+                e
             end
         end
-        err(:,k) = sum(squeeze(class(:,:,k))==repmat(trial_labels(tidx),1,nbins))/ntest;
+        err(:,k) = sum(squeeze(decoded(:,:,k))==repmat(trial_labels(tidx),1,nbins))/ntest;
     end
 end
     
