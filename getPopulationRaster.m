@@ -1,4 +1,4 @@
-function [aligned_sptrains, trial_idx, cellidx] = getPopulationRaster(sptrains,trials,window)
+function [aligned_sptrains, trial_idx, cellidx] = getPopulationRaster(sptrains,trials,window,event)
 	%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 	%Return population raster aligned to target onset
 	%Input:
@@ -21,10 +21,13 @@ function [aligned_sptrains, trial_idx, cellidx] = getPopulationRaster(sptrains,t
 	trial_idx = [];
 	cellidx = [];
 	k = 1;
+    if nargin < 4
+        event = 'target';
+    end
 	for ch=1:length(sptrains.spikechannels)
 		clusters = sptrains.channels(sptrains.spikechannels(ch)).cluster;
 		for c=1:length(clusters)
-			[a,t] = createAlignedRaster(clusters(c),trials,'target');
+			[a,t] = createAlignedRaster(clusters(c),trials,event,window);
 			idx = (a>window(1))&(a<window(2));
 			aligned_sptrains = [aligned_sptrains a(idx)];
 			trial_idx = [trial_idx t(idx)];
