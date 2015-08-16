@@ -1,4 +1,4 @@
-function [class_errs,decoded,actual] = decodeCounts(counts,training,testing,trial_labels,type,nruns)
+function [class_errs,decoded,actual,P,test] = decodeCounts(counts,training,testing,trial_labels,type,nruns)
 	%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 	%function [class_errs,decoded,actual] = decodeCounts(counts,training,testing,trial_labels,type,nruns)
 	%Decode the counts specified by testing, by training an LDA classifier using the indices specified
@@ -16,6 +16,7 @@ function [class_errs,decoded,actual] = decodeCounts(counts,training,testing,tria
 	%													  for each bin and run
 	%	decoded		:	[ntest X nbins X nruns]			: the decoded category for each test trial and for each run
 	%	actual		:	[ntest X nruns]					: the ground truth for the testing set
+	%	P			:	[ntest X ncats X nbins X nruns]	:estimate of posterior
 	%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
     if nargin < 6
         nruns = 1;
@@ -34,7 +35,9 @@ function [class_errs,decoded,actual] = decodeCounts(counts,training,testing,tria
     ntrain = length(training);
     decoded = nan*zeros(ntest,nbins,nruns); %test result
    	actual = nan*zeros(ntest,nruns); %test result
+   	test = nan*zeros(ntest,nruns); %test result
     class_errs = nan*zeros(length(ul),nbins,nruns); %errors per class
+	P = nan*zeros(ntest,size(class_errs,1),nbins,nruns);
     for k=1:nruns
 		if ntest == length(testing)
 			%bootrap
@@ -45,16 +48,17 @@ function [class_errs,decoded,actual] = decodeCounts(counts,training,testing,tria
 			%for testing, bootstrap from those trials not used in training
 			tidx = randsample(setdiff(training,tridx),ntest,true);
 		end
+		test(:,k) = tidx;
 		actual(:,k) = trial_labels(tidx);
         for i=1:nbins
             try
-                decoded(:,i,k) = classify(squeeze(counts(:,tidx,i))',squeeze(counts(:,tridx,i))',trial_labels(tridx),type);
+                [decoded(:,i,k),err,P(:,:,i,k)] = classify(squeeze(counts(:,tidx,i))',squeeze(counts(:,tridx,i))',trial_labels(tridx),type);
                 for j=1:size(class_errs,1)
                     qidx = trial_labels(tidx)==ul(j);
                     class_errs(j,i,k) = sum(decoded(qidx,i,k)~=ul(j))./sum(qidx);
                 end
             catch e
-                e;
+                e
             end
         end
     end
