@@ -8,7 +8,7 @@ function words = strobesToWords(strobes)
 %					of a strobe word
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 	%check the value of the first strobe to get the decoding
-	if (strobes(1) == 4415) || (strobes(1) == 4606)
+	if (strobes(1) == 4415) || (strobes(1) == 4606) || (strobes(1) == 4159)
 		%we are using an inverted scheme
 		words = ~logical(dec2bin(strobes)-'0');
 		words = double(words(:,end-7:end));
