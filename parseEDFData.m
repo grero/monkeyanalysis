@@ -1,8 +1,10 @@
-function trials  = parseEDFData(edfdata)
+function trials  = parseEDFData(edfdata,nrows,ncols)
     %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
     %Parse eye link data into a trial structure
     %Input:
     %edfdata    :   eyelink data structure or name of edffile
+    %nrows      :   number of grid rwos
+    %ncols      :   number of grid columns
     %
 	%Output:
 	%	trials		:		struct array with information about each trial
@@ -24,6 +26,10 @@ function trials  = parseEDFData(edfdata)
     if ischar(edfdata)
         edfdata = edfmex(edfdata);
     end
+    if nargin < 3
+        ncols = 5;
+        nrows = 5;
+    end
     nevents = length(edfdata.FEVENT);
     trialnr = 0;
     trials = struct;
@@ -32,13 +38,24 @@ function trials  = parseEDFData(edfdata)
         if ~isempty(m)
             if ((m(1) == '0') && (m(2) == '1')) %target
                 %get the row and column index
-                px = bin2dec(m(5:-1:3))-1;
-                py = 5-bin2dec(m(8:-1:6));
+                if length(m) == 8
+                    px = bin2dec(m(5:-1:3))-1;
+                    py = 5-bin2dec(m(8:-1:6));
+                elseif length(m) == 14
+                    px = bin2dec(m(8:-1:3))-1;
+                    py = ncols-bin2dec(m(end:-1:9));
+                end
+
                 trials(trialnr).target = struct('row', py, 'column', px, 'timestamps', edfdata.FEVENT(nextevent).sttime);
 
             elseif ((m(1) == '1') && (m(2) == '0'))  %distractor
-                px = bin2dec(m(5:-1:3))-1;
-                py = 5-bin2dec(m(8:-1:6));
+                if length(m) == 8
+                    px = bin2dec(m(5:-1:3))-1;
+                    py = ncols-bin2dec(m(8:-1:6));
+                elseif length(m) == 14
+                    px = bin2dec(m(8:-1:3))-1;
+                    py = ncols-bin2dec(m(end:-1:9));
+                end
                 trials(trialnr).distractor = struct('row', py, 'column', px, 'timestamps', edfdata.FEVENT(nextevent).sttime);
             elseif strcmp(m, '00000000') %trial start
                 trialnr  = trialnr + 1;
