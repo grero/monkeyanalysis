@@ -391,3 +391,30 @@ use the following function
 		%	alignment_event	:		the event to which to align the spike trains
 		%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
+To extract a trial structure from an EDF file, use the following function
+
+    function trials  = parseEDFData(edfdata,nrows,ncols)
+        %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+        %Parse eye link data into a trial structure
+        %Input:
+        %edfdata    :   eyelink data structure or name of edffile
+        %nrows      :   number of grid rwos
+        %ncols      :   number of grid columns
+        %
+            %Output:
+            %	trials		:		struct array with information about each trial
+        %   trials.start    :    start of the trial, absoute time
+        %   trials.prestim  :    start of the prestim-period, relative to trial
+        %                        start
+        %   trials.target.timestamp    : target onset, relative to trial start
+        %   trials.target.row          : row index of the target
+        %   trials.target.column       : column index of the target
+        %   trials.distractors         : array of distractors; rows are time
+        %                                relative to start of the trial, row
+        %                                and column index
+            %   trial.response			   : time, relative to target onset, of the beginning of the repsonse period
+        %   trials.reward              : time of reward, relative trial start
+        %   trials.failure             : time of failure, relative to trial
+        %                                start
+        %   trials.end                 : aboslute time of trial end
+        %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
