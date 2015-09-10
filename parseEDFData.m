@@ -1,4 +1,4 @@
-function trials  = parseEDFData(edfdata,nrows,ncols)
+function sessions  = parseEDFData(edfdata,nrows,ncols)
     %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
     %Parse eye link data into a trial structure
     %Input:
@@ -32,7 +32,8 @@ function trials  = parseEDFData(edfdata,nrows,ncols)
     end
     nevents = length(edfdata.FEVENT);
     trialnr = 0;
-    trials = struct;
+    sessions = struct;
+    sessionnr = 0;
     for nextevent=1:nevents
         m = edfdata.FEVENT(nextevent).message(1:3:end);
         if ~isempty(m)
@@ -46,7 +47,7 @@ function trials  = parseEDFData(edfdata,nrows,ncols)
                     py = ncols-bin2dec(m(end:-1:9));
                 end
 
-                trials(trialnr).target = struct('row', py, 'column', px, 'timestamps', edfdata.FEVENT(nextevent).sttime);
+                sessions(sessionnr).trials(trialnr).target = struct('row', py, 'column', px, 'timestamp', edfdata.FEVENT(nextevent).sttime);
 
             elseif ((m(1) == '1') && (m(2) == '0'))  %distractor
                 if length(m) == 8
@@ -56,25 +57,29 @@ function trials  = parseEDFData(edfdata,nrows,ncols)
                     px = bin2dec(m(8:-1:3))-1;
                     py = ncols-bin2dec(m(end:-1:9));
                 end
-                trials(trialnr).distractor = struct('row', py, 'column', px, 'timestamps', edfdata.FEVENT(nextevent).sttime);
+                sessions(sessionnr).trials(trialnr).distractor = struct('row', py, 'column', px, 'timestamp', edfdata.FEVENT(nextevent).sttime);
             elseif strcmp(m, '00000000') %trial start
                 trialnr  = trialnr + 1;
                 trialstart = edfdata.FEVENT(nextevent).sttime;
-                trials(trialnr).start = trialstart;
+                sessions(sessionnr).trials(trialnr).start = trialstart;
             elseif strcmp(m,'00000101') %go-cueue
-                trials(trialnr).response_cue = edfdata.FEVENT(nextevent).sttime;
+                sessions(sessionnr).trials(trialnr).response_cue = edfdata.FEVENT(nextevent).sttime;
             elseif strcmp(m,'00000110') %reward
-                trials(trialnr).reward = edfdata.FEVENT(nextevent).sttime;
+                sessions(sessionnr).trials(trialnr).reward = edfdata.FEVENT(nextevent).sttime;
             elseif strcmp(m,'00000111') %failure
-                trials(trialnr).failure = edfdata.FEVENT(nextevent).sttime;
+                sessions(sessionnr).trials(trialnr).failure = edfdata.FEVENT(nextevent).sttime;
             elseif strcmpi(m,'00000011') %stimulus blank
-                trials(trialnr).stimblank = edfdata.FEVENT(nextevent).sttime;
+                sessions(sessionnr).trials(trialnr).stimblank = edfdata.FEVENT(nextevent).sttime;
             elseif strcmpi(m,'00000100') %delay
-                trials(trialnr).delay = edfdata.FEVENT(nextevent).sttime;
+                sessions(sessionnr).trials(trialnr).delay = edfdata.FEVENT(nextevent).sttime;
             elseif strcmpi(m,'00000001') %fixation start
-                trials(trialnr).fixation_start = edfdata.FEVENT(nextevent).sttime;
+                sessions(sessionnr).trials(trialnr).fixation_start = edfdata.FEVENT(nextevent).sttime;
             elseif strcmpi(m,'00100000') %trial end
-                trials(trialnr).end = edfdata.FEVENT(nextevent).sttime;
+                sessions(sessionnr).trials(trialnr).end = edfdata.FEVENT(nextevent).sttime;
+	    elseif strcmpi(m, '11000000') %session start
+		    sessionnr = sessionnr + 1;
+		    sessions(sessionnr).trials = struct;
+		    trialnr = 0; %reset the trial counter
             end
         else
             if strcmpi(edfdata.FEVENT(nextevent).codestring, 'ENDSACC')
@@ -82,7 +87,7 @@ function trials  = parseEDFData(edfdata,nrows,ncols)
                 m = edfdata.FEVENT(nextevent-3).message(1:3:end);
                 if strcmp(m,'00000101') %go-cueue
                     event = edfdata.FEVENT(nextevent);
-                    trials(trialnr).saccade = struct('startx', event.gstx, 'starty', event.gsty, 'endx', event.genx', 'endy', event.geny, 'start_time', event.sttime, 'end_time', event.entime);
+                    sessions(sessionnr).trials(trialnr).saccade = struct('startx', event.gstx, 'starty', event.gsty, 'endx', event.genx', 'endy', event.geny, 'start_time', event.sttime, 'end_time', event.entime);
                 end
             end
         end %if ~isempty(m)
