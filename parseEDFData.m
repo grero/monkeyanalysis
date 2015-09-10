@@ -40,22 +40,22 @@ function sessions  = parseEDFData(edfdata,nrows,ncols)
             if ((m(1) == '0') && (m(2) == '1')) %target
                 %get the row and column index
                 if length(m) == 8
-                    px = bin2dec(m(5:-1:3))-1;
-                    py = 5-bin2dec(m(8:-1:6));
+                    px = bin2dec(m(5:-1:3));
+                    py = bin2dec(m(8:-1:6));
                 elseif length(m) == 14
-                    px = bin2dec(m(8:-1:3))-1;
-                    py = ncols-bin2dec(m(end:-1:9));
+                    px = bin2dec(m(8:-1:3));
+                    py = bin2dec(m(end:-1:9));
                 end
 
                 sessions(sessionnr).trials(trialnr).target = struct('row', py, 'column', px, 'timestamp', edfdata.FEVENT(nextevent).sttime);
 
             elseif ((m(1) == '1') && (m(2) == '0'))  %distractor
                 if length(m) == 8
-                    px = bin2dec(m(5:-1:3))-1;
-                    py = ncols-bin2dec(m(8:-1:6));
+                    px = bin2dec(m(5:-1:3));
+                    py = bin2dec(m(8:-1:6));
                 elseif length(m) == 14
-                    px = bin2dec(m(8:-1:3))-1;
-                    py = ncols-bin2dec(m(end:-1:9));
+                    px = bin2dec(m(8:-1:3));
+                    py = bin2dec(m(end:-1:9));
                 end
                 sessions(sessionnr).trials(trialnr).distractor = struct('row', py, 'column', px, 'timestamp', edfdata.FEVENT(nextevent).sttime);
             elseif strcmp(m, '00000000') %trial start
