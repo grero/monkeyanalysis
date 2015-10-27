@@ -52,7 +52,7 @@ function status = FilterPl2(fname,chunksize,chunkidx,redo)
 		starttime = getEventTimingDistr(trials,'start')/1000;
 		n = histc(starttime, 0:chunksize/samplingRate:length(chunks)*chunksize/samplingRate);
 		[ntrials,best_chunk] = max(n);
-		fid = open('best_chunk.txt','w');
+		fid = fopen('best_chunk.txt','w');
 		fprintf(fid,'%d\n', best_chunk);
 		fclose(fid);
 	else
@@ -105,7 +105,7 @@ function status = FilterPl2(fname,chunksize,chunkidx,redo)
 				L(ch,1:lcsize) = (nptLowPassFilter(ad.Values, ad.ADFreq)*1e3);
 			end
 			fprintf(1,'\tSaving highpass filtered chunk to %s\n',hfname);
-			nptWriteStreamerFile(hfname,pl2.TimestampFrequency,H);
+			nptWriteStreamerFile(hfname,pl2.TimestampFrequency,H,1);
 			fprintf(1,'\tSaving lowhpass filtered chunk to %s\n',lfname);
 			nptWriteStreamerFile(lfname,1000,L(:,1:lcsize));
 		end
