@@ -13,7 +13,7 @@ function readStrobes(fname)
     strobeFile = 'event_data.mat';
     if ~exist(strobeFile,'file')
 		fprintf(1,'Reading strobe events\n');
-		events = PL2EventTS(fname,'Strobed');
+		events = PL2EventTs(fname,'Strobed');
 		%to align events to the continuous recording, subtract the initial delay from the events
 		%check if we have more than one fragment
 		%this is hackish; to get the frag time stamp, re-read one channel
