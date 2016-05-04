@@ -20,6 +20,7 @@ function plotLocationInformation(I,bins,alignment_event,trials,varargin)
 	hold on
 	response = nan*zeros(length(trials),1);
     distractor = nan*zeros(length(trials),1);
+    nbins = size(I,1);
 	for t=1:length(trials)
         
 		alignto = getfield(trials(t),alignment_event);
@@ -52,7 +53,7 @@ function plotLocationInformation(I,bins,alignment_event,trials,varargin)
         else
             %plot the lower bound as mean + 3 std devations of the shuffled
             %information
-            h4 = plot(bins,M+2*S,'g');
+            h4 = plot(bins(1:nbins),M+2*S,'g');
         end
 	end
 	if ~isempty(Iind)

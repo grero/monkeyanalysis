@@ -45,7 +45,7 @@ function [H,Hc,bins,bias] = computeInformation(counts,bins,trials,shuffle,sort_e
 	else
 		trial_labels = regroupTrials(trials);
 	end
-	nbins = length(bins);
+	nbins =size(counts,2);
 	%get the unique labels
 	[u,k,j] = unique(trial_labels);
 	ncond = length(u);

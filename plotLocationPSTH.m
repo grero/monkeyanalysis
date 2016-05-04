@@ -51,7 +51,7 @@ function plotLocationPSTH(counts,bins,alignment_event,trials)
             idx = (row==r)&(column==c);
 			M = mean(counts(idx,:),1)/db;
 			S = std(counts(idx,:),1)/db;
-			plot(bins,M);
+			plot(bins(1:length(M)),M);
 			xlim([bins(1) bins(end)]);
             tidx = find(idx);
             t = median(target(tidx));

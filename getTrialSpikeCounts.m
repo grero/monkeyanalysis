@@ -1,4 +1,4 @@
-function [counts, bins] = getTrialSpikeCounts(sptrain,trials,bins, varargin)
+function [counts, obins] = getTrialSpikeCounts(sptrain,trials,bins, varargin)
 	%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 	%Get the spike count for the supplied spike train in the given bins
 	%Input:
@@ -20,7 +20,7 @@ function [counts, bins] = getTrialSpikeCounts(sptrain,trials,bins, varargin)
 	overlap = Args.overlap;
 	ntrials = length(trials);
 	if overlap == 0
-		counts = zeros(ntrials,length(bins));
+		counts = zeros(ntrials,length(bins)-1);
 	else
 		bs = diff(bins);
 		steps = bs(1)/overlap;
@@ -43,7 +43,7 @@ function [counts, bins] = getTrialSpikeCounts(sptrain,trials,bins, varargin)
             spikes = (spiketimes(idx)'-trials(t).start*1000 - alignto*1000);
 			if overlap == 0
 				c = histc(spikes,bins);
-				counts(t,:) = c;
+				counts(t,:) = c(1:end-1);
 			else
 				for j=1:steps
 					counts(t,j:steps:end-(steps-j)) = histc(spikes,bins+(j-1)*overlap);
@@ -52,7 +52,9 @@ function [counts, bins] = getTrialSpikeCounts(sptrain,trials,bins, varargin)
         end
     end
 	if overlap > 0
-		bins = outbins;
+		obins = outbins;
+    else
+        obins = bins;
 	end
    
 end
