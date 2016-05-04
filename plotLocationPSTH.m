@@ -47,7 +47,7 @@ function plotLocationPSTH(counts,bins,alignment_event,trials)
             if (r==centery) && (c == centerx)
                 continue
             end
-            subplot(nrows,ncols,(c-1)*nrows+r)
+            subplot(nrows,ncols,(r-1)*ncols+c)
             idx = (row==r)&(column==c);
 			M = mean(counts(idx,:),1)/db;
 			S = std(counts(idx,:),1)/db;
