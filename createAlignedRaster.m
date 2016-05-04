@@ -49,7 +49,7 @@ function [spikes,trial_idx] = createAlignedRaster(sptrain,trials,alignment_event
                 alignto = alignto(1);
             end
             spikes = [spikes (spiketimes(idx)'-trials(t).start*1000 - alignto*1000)];
-            trial_idx = [trial_idx t*ones(1,sum(idx))];
+            trial_idx = [trial_idx ti*ones(1,sum(idx))];
         end
     end
 	idx = (spikes < window(2))&(spikes > window(1));
