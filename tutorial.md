@@ -79,7 +79,7 @@ Each blue dot in this image is a spike.the horizontal axis represents the time a
 
 Instead of looking at individual spikes, we can also quantify a cell's activity in terms of its firing rate. To do that, we count the number of spikes in windows of e.g. 50 ms and look at the distribution of these counts across trials. Continuing with the same as before unit, we can get the spike counts like this:
 
-	>> [counts,bins] = getTrialSpikeCounts(sptrains.channels(56).cluster(1),rtrials,-200:50:3000,'alignment_event','target');
+	>> [counts,bins] = getTrialSpikeCounts(sptrains.channels(40).cluster(1),rtrials,-200:50:3000,'alignment_event','target');
 
 As we can see, the 'getTrialSpikeCounts' function takes 3 mandatory parameters; the first is a spike train containing spike times in units of the milliseconds, the second is again a structure with trial timing information, and the third is the bins in which we want to count spikes. In this case, we want to count spikes from -200 ms before target onset to 3000 ms after target onset using 50 ms bins. We also supply an optional argument 'alignment_event', which again tells the function which event we want to align the spike counts to, i.e. 'target' in this case. The output of the function is the count matrix with dimensions number of trials X number of bins, as well the bins we used as input.
 
