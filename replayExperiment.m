@@ -12,55 +12,92 @@ function M = replayExperiment(offset,nsamples,edfdata,samplingRate,decoded,M,l)
 	end
 	if nargin < 5 
 		decoded = [];
-	end
+    end
+    
+    screen_height = 1200;
+    screen_width= 1920;
+    rows = 21;
+    cols = 21;
+    %parse the data first
+    qq = parseEDFData(edfdata,rows,cols);
+    %get the unique rows and columns
+    rowcol = [];
+    for i=1:length(qq.trials)
+        if ~isempty(qq.trials(i).target)
+            rowcol = [rowcol; [qq.trials(i).target.row qq.trials(i).target.column]];
+        end
+    end
+    locations = unique(rowcol,'rows');
+    
+    square_area = floor((screen_height-screen_height/10)/rows);
+    xmargin = (screen_width - cols*square_area)/2;
+    ymargin = (screen_height - rows*square_area)/2;
+    xdiff = (screen_width - 2*xmargin)/cols;
+    ydiff = (screen_height - 2*ymargin)/rows;
     if nargin < 7 
         %we were not given a line handle, so create it here
         figure
         axis
-        rectangle('Position', [144,90,1440-2*144,900-2*90]);
-        %the width and height of each square
-        xdiff = (1440-2*144)/5;
-        ydiff = (900-2*90)/5;
-        %draw the grid
-        for j=0:4
-            line([144, 1440-144], [90+j*ydiff 90+j*ydiff],'Color','k');
+        set(gcf,'PaperUnits', 'Points')
+        set(gcf, 'Position', [1 1 1200 686])
+        if isempty(locations)
+            rectangle('Position', [xmargin,ymargin,screen_width-2*xmargin,screen_height-2*ymargin]);
         end
-        for i=0:4
-            line([144+i*xdiff, 144+i*xdiff], [90 900-90],'Color','k');
+        %the width and height of each square
+        
+        %draw the grid
+        if isempty(locations)
+            for j=0:rows
+                line([xmargin, screen_width-xmargin], [ymargin+j*ydiff ymargin+j*ydiff],'Color','k');
+            end
+            for i=0:cols
+                line([xmargin+i*xdiff, xmargin+i*xdiff], [ymargin screen_height-ymargin],'Color','k');
+            end
+        else
+            plot_locations;
         end
         hold on
+        %response square
+        %h2 = fill([xmargin+(px-2)*xdiff, xmargin+(px+3)*xdiff, xmargin+(px+3)*xdiff, xmargin+(px-2)*xdiff],...
+        %    [ymargin+(rows-py-2)*ydiff, ymargin+(rows-py-2)*ydiff, ymargin+(rows-py+3)*ydiff, ymargin+(rows-py+3)*ydiff],[1.0, 1.0, 1.0]);
+        h2 = rectangle('Position', [xmargin, ymargin, 4*xdiff, 4*ydiff], 'FaceColor', 'w', 'EdgeColor', 'w');
 		%fixation point
-		fp = rectangle('Position',[1440/2-25,900/2-25,50,50],'Curvature',[1 1],'FaceColor',[0.5,0.5,0.5],'EdgeColor','w');
+		fp = rectangle('Position',[screen_width/2-25,screen_height/2-25,50,50],'Curvature',[1 1],'FaceColor',[0.5,0.5,0.5],'EdgeColor','w');
 		%decoded location
-        dp = fill([144+2*xdiff, 144+3*xdiff, 144+3*xdiff, 144+2*xdiff],...
-            [90+3*ydiff, 90+3*ydiff, 90+2*ydiff, 90+2*ydiff],'w');
+        dp = fill([xmargin+2*xdiff, xmargin+3*xdiff, xmargin+3*xdiff, xmargin+2*xdiff],...
+            [ymargin+3*ydiff, ymargin+3*ydiff, ymargin+2*ydiff, ymargin+2*ydiff],'w');
 		set(dp,'Edgecolor','k','FaceAlpha',0,'LineWidth',0.5)
-		%reward indicator
-        rp = fill([144+2*xdiff, 144+3*xdiff, 144+3*xdiff, 144+2*xdiff],...
-            [90+3*ydiff, 90+3*ydiff, 90+2*ydiff, 90+2*ydiff],[0.5,0.5,0.5]);
-		set(rp,'FaceAlpha',0,'LineWidth',0.5)
+		%stim indicator
+        rp = fill([xmargin+2*xdiff, xmargin+3*xdiff, xmargin+3*xdiff, xmargin+2*xdiff],...
+            [ymargin+3*ydiff, ymargin+3*ydiff, ymargin+2*ydiff, ymargin+2*ydiff],[1.0,1.0,1.0]);
+		%set(rp,'FaceAlpha',0,'LineWidth',0.5)
 		%text to indicate the result of the trial
-		T = text(1440/2,450,'');
+		T = text(screen_width/2,screen_height/2,'');
         l = plot(edfdata.FSAMPLE.gx(1,1),edfdata.FSAMPLE.gy(1,1),'.',...
 			'MarkerSize',20.0);
 		%decoded position
         ddp = plot(10000,10000,'+','MarkerSize',20.0);
         %draw a rectangle around the grid; these numbers are from Jit Hon's code
-        rectangle('Position', [144,90,1440-2*144,900-2*90]);
+        if isempty(locations)
+            rectangle('Position', [xmargin,ymargin,screen_width-2*xmargin,screen_height-2*ymargin]);
+        end
         %the width and height of each square
-        xdiff = (1440-2*144)/5;
-        ydiff = (900-2*90)/5;
         %draw the grid
-        for j=0:4
-            line([144, 1440-144], [90+j*ydiff 90+j*ydiff],'Color','k');
+        if isempty(locations)
+            for j=0:rows
+                line([xmargin, screen_width-xmargin], [ymargin+j*ydiff ymargin+j*ydiff],'Color','k');
+            end
+            for i=0:cols
+                line([xmargin+i*xdiff, xmargin+i*xdiff], [ymargin screen_height-ymargin],'Color','k');
+            end
+        else
+            plot_locations;
         end
-        for i=0:4
-            line([144+i*xdiff, 144+i*xdiff], [90 900-90],'Color','k');
-        end
+                
         hold on
         %draw the fixation rectangle; we probably shouldn't do this, since the monkey doens't see a rectangle. 
-        xlim([0,1440]);
-        ylim([0,900]);
+        xlim([0,screen_width]);
+        ylim([0,screen_height]);
 		axPos = get(gca,'Position'); %get the position of the axis in the figure
     end
 	if nargin == 3
@@ -68,6 +105,7 @@ function M = replayExperiment(offset,nsamples,edfdata,samplingRate,decoded,M,l)
 	end
     tlifetime = -1;
 	dlifetime = -1;
+    glifetime = -1;
     nextevent = 1;
     %fast-forward the events based on the specified offset
 	trialnr = 0;
@@ -86,9 +124,9 @@ function M = replayExperiment(offset,nsamples,edfdata,samplingRate,decoded,M,l)
         nextevent = nextevent + 1;
     end
 	%fast forward to to the next event, which should be prestim
-	while ~strcmpi(edfdata.FEVENT(nextevent).message(1:3:end),'00000001')
-		nextevent = nextevent + 1;
-	end
+	%while ~strcmpi(edfdata.FEVENT(nextevent).message(1:3:end),'00000001')
+	%	nextevent = nextevent + 1;
+	%end
     while edfdata.FEVENT(nextevent).sttime >= edfdata.FSAMPLE.time(offset)
 		offset  = offset + 1;
 	end
@@ -104,7 +142,7 @@ function M = replayExperiment(offset,nsamples,edfdata,samplingRate,decoded,M,l)
 		xx(xx>10000) = nan;
 		yy = double(edfdata.FSAMPLE.gy(1,offset+(i-1)*samplingRate+1:offset+i*samplingRate));
 		yy(yy>10000) = nan;
-        set(l,'XData',nanmean(xx),'YData',900-nanmean(yy));
+        set(l,'XData',nanmean(xx),'YData',screen_height-nanmean(yy));
         %wait for 10 ms; this can be changed, and probably should be parameter
 		%original sampling rate is 2000 Hz, i.e. 0.5 ms between frames
         pause(0.0005*samplingRate);
@@ -117,26 +155,42 @@ function M = replayExperiment(offset,nsamples,edfdata,samplingRate,decoded,M,l)
             if ~isempty(m)
                 if ((m(1) == '0') && (m(2) == '1')) %target
                     %get the row and column index
-                    px = bin2dec(m(5:-1:3))-1;
-                    py = 5-bin2dec(m(8:-1:6));
+                    if length(m) == 8
+                        px = bin2dec(m(5:-1:3))-1;
+                        py = bin2dec(m(8:-1:6))-1;
+                    elseif length(m) == 14
+                        px = bin2dec(m(8:-1:3))-1;
+                        py = bin2dec(m(end:-1:9))-1;
+                    end
                     tlifetime = 0;
 					lasttarget = nextevent;
 					title('Target')
 				elseif ((m(1) == '1') && (m(2) == '0'))  %distractor
-                    px = bin2dec(m(5:-1:3))-1;
-                    py = 5-bin2dec(m(8:-1:6));
+                    if length(m) == 8
+                        px = bin2dec(m(5:-1:3))-1;
+                        py = bin2dec(m(8:-1:6))-1;
+                    elseif length(m) == 14
+                        px = bin2dec(m(8:-1:3))-1;
+                        py = bin2dec(m(end:-1:9))-1;
+                    end
                     dlifetime = 0;
 					title('Distractor')
 				elseif strcmp(m, '00000000') %trial start
 					set(fp,'FaceColor',[0.5,0.5,0.5])
-					set(rp,'EdgeColor','k', 'LineWidth',0.1)
+					%set(rp,'EdgeColor','k', 'LineWidth',0.1)
+                    set(rp,'FaceColor',[1.0,1.0,1.0]);
 					set(T,'String','')
 					trialnr  = trialnr + 1
 					trialstart = edfdata.FEVENT(nextevent).sttime;
 					title('Trial start')
 				elseif strcmp(m,'00000101') %go-cueue
 					set(fp,'FaceColor','w')
+                    glifetime = 0;
 					title('Go-cue')
+                elseif strcmpi(m,'00001111') %stimulation
+                    set(fp, 'FaceColor', 'w')
+                    set(rp,'FaceColor','y');
+                    title('Stimulation')
 				elseif strcmp(m,'00000110') %reward
 					%set(rp,'EdgeColor','g', 'LineWidth',3.0)
 					set(T,'String','O','FontSize',36,'Color','g','HorizontalAlignment','center')
@@ -153,14 +207,18 @@ function M = replayExperiment(offset,nsamples,edfdata,samplingRate,decoded,M,l)
 					title('Acquired fixation')
 				elseif strcmpi(m,'00100000') %trial end
 					title('End of trial')
+                    glifetime = -1;
+                    %delete(h2);
+                    set(h2, 'FaceColor', 'w');
 					dostop = 1;
+                    set(rp, 'FaceColor', 'w');
 					break;
 				end
             end
             nextevent = nextevent + 1;
                 
         end
-		if ismember(trialnr, decoded.test_orig) %check we have a decoding for this event
+		if ~isempty(decoded) && ismember(trialnr, decoded.test_orig) %check we have a decoding for this event
 			try
 				delete(dp);
 				delete(aa);
@@ -207,23 +265,34 @@ function M = replayExperiment(offset,nsamples,edfdata,samplingRate,decoded,M,l)
 				delete(aa);
 			catch
 			end
-		end
+        end
         
+        if glifetime == 0 %draw the response window around the target
+            %h2 = fill([xmargin+(px-2)*xdiff, xmargin+(px+3)*xdiff, xmargin+(px+3)*xdiff, xmargin+(px-2)*xdiff],...
+            %[ymargin+(rows-py-2)*ydiff, ymargin+(rows-py-2)*ydiff, ymargin+(rows-py+3)*ydiff, ymargin+(rows-py+3)*ydiff],[0.5, 0.5, 0.5]);
+            set(h2, 'Position', [xmargin + (px-1.5)*xdiff, ymargin + (rows - py - 2.5)*ydiff, 4*xdiff, 4*ydiff]);
+            set(h2, 'FaceColor', [0.5, 0.5, 0.5]);
+        end 
         %check if we have a target event
         if tlifetime == 0 
             %fill the appropriate square
-            h = fill([144+px*xdiff, 144+(px+1)*xdiff, 144+(px+1)*xdiff, 144+px*xdiff],...
-            [90+(py+1)*ydiff, 90+(py+1)*ydiff, 90+py*ydiff, 90+py*ydiff],'r');
+            h = fill([xmargin+px*xdiff, xmargin+(px+1)*xdiff, xmargin+(px+1)*xdiff, xmargin+px*xdiff],...
+            [ymargin+(rows-py)*ydiff, ymargin+(rows-py)*ydiff, ymargin+(rows-py-1)*ydiff, ymargin+(rows-py-1)*ydiff],'r');
                 %end
 		elseif  dlifetime == 0
-            h = fill([144+px*xdiff, 144+(px+1)*xdiff, 144+(px+1)*xdiff, 144+px*xdiff],...
-            [90+(py+1)*ydiff, 90+(py+1)*ydiff, 90+py*ydiff, 90+py*ydiff],'g');
+            h = fill([xmargin+px*xdiff, xmargin+(px+1)*xdiff, xmargin+(px+1)*xdiff, xmargin+px*xdiff],...
+            [ymargin+(py+1)*ydiff, ymargin+(rows-py)*ydiff, ymargin+py*ydiff, ymargin+py*ydiff],'g');
         end
+        
+            
         %if we are plotting a target, increase it's life time by one
         if tlifetime>-1
             tlifetime = tlifetime + 1;
 		elseif dlifetime > -1
             dlifetime = dlifetime + 1;
+        end
+        if glifetime > -1
+            glifetime = glifetime +1;
         end
         %check if target should be extinguished; 50 is completely arbitrary here. It should be set based on the actual
         %sampling rate (2000 Hz) and the argument to pause above to simulate the actual target offset
@@ -244,18 +313,27 @@ function M = replayExperiment(offset,nsamples,edfdata,samplingRate,decoded,M,l)
 	end
 
 	function [dp,aa] = highlightSquare(dp,row,col,xdiff,ydiff)
-        dp = fill([144+(col-1)*xdiff, 144+col*xdiff, 144+col*xdiff, 144+(col-1)*xdiff],...
-            [90+row*ydiff, 90+row*ydiff, 90+(row-1)*ydiff, 90+(row-1)*ydiff],'w');
+        dp = fill([xmargin+(col-1)*xdiff, xmargin+col*xdiff, xmargin+col*xdiff, xmargin+(col-1)*xdiff],...
+            [ymargin+row*ydiff, ymargin+row*ydiff, ymargin+(row-1)*ydiff, ymargin+(row-1)*ydiff],'w');
 		set(dp,'Edgecolor','m','FaceAlpha',0,'LineWidth',2.0)
 		if nargout == 2
 			%annotate
 			axPos = get(gca,'Position');
-			xa(2) = axPos(1) + (((144+col*xdiff))/1440)*axPos(3);
-			xa(1) = axPos(1) + (((144+(col+0.5)*xdiff))/1440)*axPos(3);
+			xa(2) = axPos(1) + (((xmargin+col*xdiff))/screen_width)*axPos(3);
+			xa(1) = axPos(1) + (((xmargin+(col+0.5)*xdiff))/screen_width)*axPos(3);
 
-			ya(2) = axPos(2) + (((90+row*ydiff))/900)*axPos(3);
-			ya(1) = axPos(2) + (((90+(row+0.5)*ydiff))/900)*axPos(3);
+			ya(2) = axPos(2) + (((ymargin+row*ydiff))/screen_height)*axPos(3);
+			ya(1) = axPos(2) + (((ymargin+(row+0.5)*ydiff))/screen_height)*axPos(3);
 			aa = annotation('textarrow', xa, ya,'String','Decoded position');
 		end
-	end 
+    end 
+
+    function plot_locations()
+        for i=1:size(locations,1)
+                px = locations(i,2)-1;
+                py = locations(i,1)-1;
+                fill([xmargin+px*xdiff, xmargin+(px+1)*xdiff, xmargin+(px+1)*xdiff, xmargin+px*xdiff],...
+            [ymargin+(rows-py)*ydiff, ymargin+(rows-py)*ydiff, ymargin+(rows-py-1)*ydiff, ymargin+(rows-py-1)*ydiff],[1.0, 0.8, 0.8]);
+        end
+    end
 end
