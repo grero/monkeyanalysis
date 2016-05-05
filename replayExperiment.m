@@ -34,6 +34,8 @@ function M = replayExperiment(offset,nsamples,edfdata,samplingRate,decoded,M,l)
     ymargin = (screen_height - rows*square_area)/2;
     xdiff = (screen_width - 2*xmargin)/cols;
     ydiff = (screen_height - 2*ymargin)/rows;
+    
+    trace_on = false;
     if nargin < 7 
         %we were not given a line handle, so create it here
         figure
@@ -73,8 +75,10 @@ function M = replayExperiment(offset,nsamples,edfdata,samplingRate,decoded,M,l)
 		%set(rp,'FaceAlpha',0,'LineWidth',0.5)
 		%text to indicate the result of the trial
 		T = text(screen_width/2,screen_height/2,'');
-        l = plot(edfdata.FSAMPLE.gx(1,1),edfdata.FSAMPLE.gy(1,1),'.',...
+        lp = plot(edfdata.FSAMPLE.gx(1,offset),edfdata.FSAMPLE.gy(1,offset),'.',...
 			'MarkerSize',20.0);
+        ll = plot(edfdata.FSAMPLE.gx(1,offset),edfdata.FSAMPLE.gy(1,offset),'-',...
+			'LineWidth',1.0,'color',[1.0, 1.0, 1.0]);
 		%decoded position
         ddp = plot(10000,10000,'+','MarkerSize',20.0);
         %draw a rectangle around the grid; these numbers are from Jit Hon's code
@@ -142,7 +146,14 @@ function M = replayExperiment(offset,nsamples,edfdata,samplingRate,decoded,M,l)
 		xx(xx>10000) = nan;
 		yy = double(edfdata.FSAMPLE.gy(1,offset+(i-1)*samplingRate+1:offset+i*samplingRate));
 		yy(yy>10000) = nan;
-        set(l,'XData',nanmean(xx),'YData',screen_height-nanmean(yy));
+        xmm = nanmean(xx);
+        ymm = screen_height-nanmean(yy);
+        set(lp,'XData',xmm,'YData',ymm);
+        pxm = get(ll,'XData');
+        pym = get(ll, 'YData');
+        if trace_on
+            set(ll, 'XData',[pxm xmm], 'YData', [pym ymm]);
+        end
         %wait for 10 ms; this can be changed, and probably should be parameter
 		%original sampling rate is 2000 Hz, i.e. 0.5 ms between frames
         pause(0.0005*samplingRate);
@@ -187,17 +198,24 @@ function M = replayExperiment(offset,nsamples,edfdata,samplingRate,decoded,M,l)
 					set(fp,'FaceColor','w')
                     glifetime = 0;
 					title('Go-cue')
+                    %turn on saccade trace
+                    trace_on = true;
+                    set(ll, 'XData', [xmm], 'YData', [ymm],'Color','b');
                 elseif strcmpi(m,'00001111') %stimulation
                     set(fp, 'FaceColor', 'w')
                     set(rp,'FaceColor','y');
                     title('Stimulation')
 				elseif strcmp(m,'00000110') %reward
+                    glifetime = -1;
+                    set(h2, 'FaceColor', 'w');
 					%set(rp,'EdgeColor','g', 'LineWidth',3.0)
 					set(T,'String','O','FontSize',36,'Color','g','HorizontalAlignment','center')
+                    trace_on = false;
 					title('Reward')
 				elseif strcmp(m,'00000111') %failure
 					%set(rp,'EdgeColor','r', 'LineWidth',3.0)
 					set(T,'String','X','FontSize',36,'Color','r','HorizontalAlignment','center')
+                    trace_on = false;
 					title('Failure')
 				elseif strcmpi(m,'00000011') %stimulus blank
 					title('First delay')
@@ -207,9 +225,7 @@ function M = replayExperiment(offset,nsamples,edfdata,samplingRate,decoded,M,l)
 					title('Acquired fixation')
 				elseif strcmpi(m,'00100000') %trial end
 					title('End of trial')
-                    glifetime = -1;
-                    %delete(h2);
-                    set(h2, 'FaceColor', 'w');
+                                      
 					dostop = 1;
                     set(rp, 'FaceColor', 'w');
 					break;
