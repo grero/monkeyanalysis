@@ -1,4 +1,4 @@
-function M = replayExperiment(offset,nsamples,edfdata,samplingRate,decoded,M,l)
+function [tidx,M] = replayExperiment(offset,nsamples,edfdata,samplingRate,decoded,M,l)
 	%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 	%Replay the experiment from the eye link data contained in the edfdata structure.
 	%Inputs:
@@ -22,11 +22,28 @@ function M = replayExperiment(offset,nsamples,edfdata,samplingRate,decoded,M,l)
     qq = parseEDFData(edfdata,rows,cols);
     %get the unique rows and columns
     rowcol = [];
+    tidx = [];
+    stimulated = [];
+    response = [];
+    reward = [];
     for i=1:length(qq.trials)
         if ~isempty(qq.trials(i).target)
             rowcol = [rowcol; [qq.trials(i).target.row qq.trials(i).target.column]];
+            if qq.trials(i).target.row == 15 && qq.trials(i).target.column == 15
+                tidx = [tidx i];
+                stimulated = [stimulated ~isempty(qq.trials(i).stim)];
+                response = [response ~isempty(qq.trials(i).response_cue)];
+                reward = [reward ~isempty(qq.trials(i).reward)];
+                
+            end
         end
     end
+    %tidx = tidx(find(response));
+    %stimulated = stimulated(find(response));
+    ntrials = min(3, floor(length(tidx)/2));
+    iidx = [randsample(intersect(find(stimulated),find(response)),ntrials), randsample(intersect(find(~stimulated), find(reward)),ntrials)];
+    tidx = sort(tidx(iidx));
+    ntrials = length(tidx);
     locations = unique(rowcol,'rows');
     
     square_area = floor((screen_height-screen_height/10)/rows);
@@ -36,6 +53,7 @@ function M = replayExperiment(offset,nsamples,edfdata,samplingRate,decoded,M,l)
     ydiff = (screen_height - 2*ymargin)/rows;
     
     trace_on = false;
+    traces = [];
     if nargin < 7 
         %we were not given a line handle, so create it here
         figure
@@ -115,11 +133,15 @@ function M = replayExperiment(offset,nsamples,edfdata,samplingRate,decoded,M,l)
 	trialnr = 0;
 	lasttarget = 0
 	trialstart = NaN;
-    while edfdata.FEVENT(nextevent).sttime <= edfdata.FSAMPLE.time(offset)
+    for tt=1:ntrials
+        
+    while (nextevent < length(edfdata.FEVENT)) && (trialnr < tidx(tt))
+    %while edfdata.FEVENT(nextevent).sttime <= edfdata.FSAMPLE.time(offset)
 		m = edfdata.FEVENT(nextevent).message(1:3:end);
 		if ~isempty(m)
 			if strcmp(m,'00000000') %trial start
 					trialnr  = trialnr + 1; %keep track of trials
+                    
 					trialstart = edfdata.FEVENT(nextevent).sttime;
 			elseif ((m(1) == '0') && (m(2) == '1')) %target
 				lasttarget = nextevent;
@@ -201,8 +223,12 @@ function M = replayExperiment(offset,nsamples,edfdata,samplingRate,decoded,M,l)
                     %turn on saccade trace
                     trace_on = true;
                     set(ll, 'XData', [xmm], 'YData', [ymm],'Color','b');
+                  
+                    
+                            
                 elseif strcmpi(m,'00001111') %stimulation
-                    set(fp, 'FaceColor', 'w')
+    
+                    %set(fp, 'FaceColor', 'w')
                     set(rp,'FaceColor','y');
                     title('Stimulation')
 				elseif strcmp(m,'00000110') %reward
@@ -211,11 +237,18 @@ function M = replayExperiment(offset,nsamples,edfdata,samplingRate,decoded,M,l)
 					%set(rp,'EdgeColor','g', 'LineWidth',3.0)
 					set(T,'String','O','FontSize',36,'Color','g','HorizontalAlignment','center')
                     trace_on = false;
+                    set(ll, 'Color', 'g');
+                    set(gca, 'Children', [get(gca, 'Children'); line(get(ll, 'XData'), get(ll, 'YData'), 'Color', 'g', 'LineWidth', 1.0)]);
+                    traces = [traces ll];
 					title('Reward')
 				elseif strcmp(m,'00000111') %failure
 					%set(rp,'EdgeColor','r', 'LineWidth',3.0)
 					set(T,'String','X','FontSize',36,'Color','r','HorizontalAlignment','center')
                     trace_on = false;
+                    set(h2, 'FaceColor', 'w');
+                    set(ll, 'Color', 'r');
+                    set(gca, 'Children', [get(gca, 'Children'); line(get(ll, 'XData'), get(ll, 'YData'), 'Color', 'r', 'LineWidth', 1.0)]);
+                    traces = [traces ll];
 					title('Failure')
 				elseif strcmpi(m,'00000011') %stimulus blank
 					title('First delay')
@@ -225,7 +258,7 @@ function M = replayExperiment(offset,nsamples,edfdata,samplingRate,decoded,M,l)
 					title('Acquired fixation')
 				elseif strcmpi(m,'00100000') %trial end
 					title('End of trial')
-                                      
+                    set(T, 'String', '');                  
 					dostop = 1;
                     set(rp, 'FaceColor', 'w');
 					break;
@@ -324,7 +357,8 @@ function M = replayExperiment(offset,nsamples,edfdata,samplingRate,decoded,M,l)
 		M = addframe(M,getframe(gcf));
 		i = i+1;
     end
-	if nargout == 0
+    end
+	if nargout == 1
 		M = close(M);
 	end
 
