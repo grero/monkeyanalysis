@@ -1,4 +1,4 @@
-function [tidx,M] = replayExperiment(offset,nsamples,edfdata,samplingRate,decoded,M,l)
+function [tidx,M] = replayExperiment(offset,nsamples,edfdata,samplingRate,mytidx, decoded,M,l)
 	%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 	%Replay the experiment from the eye link data contained in the edfdata structure.
 	%Inputs:
@@ -10,7 +10,7 @@ function [tidx,M] = replayExperiment(offset,nsamples,edfdata,samplingRate,decode
 	if nargin < 6	
 		M = avifile('tmp.avi','FPS',10);
 	end
-	if nargin < 5 
+	if nargin < 6 
 		decoded = [];
     end
     
@@ -29,21 +29,29 @@ function [tidx,M] = replayExperiment(offset,nsamples,edfdata,samplingRate,decode
     for i=1:length(qq.trials)
         if ~isempty(qq.trials(i).target)
             rowcol = [rowcol; [qq.trials(i).target.row qq.trials(i).target.column]];
-            if qq.trials(i).target.row == 15 && qq.trials(i).target.column == 15
-                tidx = [tidx i];
-                stimulated = [stimulated ~isempty(qq.trials(i).stim)];
-                response = [response ~isempty(qq.trials(i).response_cue)];
-                reward = [reward ~isempty(qq.trials(i).reward)];
-                
-            end
         end
     end
-    %tidx = tidx(find(response));
-    %stimulated = stimulated(find(response));
-    ntrials = min(3, floor(length(tidx)/2));
-    iidx = [randsample(intersect(find(stimulated),find(response)),ntrials), randsample(intersect(find(~stimulated), find(reward)),ntrials)];
-    tidx = sort(tidx(iidx));
-    ntrials = length(tidx);
+      
+    if nargin < 5
+        for i=1:length(qq.trials)
+            if ~isempty(qq.trials(i).target)
+                if qq.trials(i).target.row == 15 && qq.trials(i).target.column == 15
+                    tidx = [tidx i];
+                    stimulated = [stimulated ~isempty(qq.trials(i).stim)];
+                    response = [response ~isempty(qq.trials(i).response_cue)];
+                    reward = [reward ~isempty(qq.trials(i).reward)];
+                end
+            end
+        end
+        %tidx = tidx(find(response));
+        %stimulated = stimulated(find(response));
+        ntrials = min(2, floor(length(tidx)/2));
+        iidx = [randsample(intersect(find(stimulated),find(response)),ntrials), randsample(intersect(find(~stimulated), find(reward)),ntrials)];
+        tidx = sort(tidx(iidx));
+    else
+        tidx = mytidx;
+    end
+    ntrials = length(tidx)
     locations = unique(rowcol,'rows');
     
     square_area = floor((screen_height-screen_height/10)/rows);
@@ -88,8 +96,8 @@ function [tidx,M] = replayExperiment(offset,nsamples,edfdata,samplingRate,decode
             [ymargin+3*ydiff, ymargin+3*ydiff, ymargin+2*ydiff, ymargin+2*ydiff],'w');
 		set(dp,'Edgecolor','k','FaceAlpha',0,'LineWidth',0.5)
 		%stim indicator
-        rp = fill([xmargin+2*xdiff, xmargin+3*xdiff, xmargin+3*xdiff, xmargin+2*xdiff],...
-            [ymargin+3*ydiff, ymargin+3*ydiff, ymargin+2*ydiff, ymargin+2*ydiff],[1.0,1.0,1.0]);
+        %rp = fill([xmargin+2*xdiff, xmargin+3*xdiff, xmargin+3*xdiff, xmargin+2*xdiff],...
+        %    [ymargin+3*ydiff, ymargin+3*ydiff, ymargin+2*ydiff, ymargin+2*ydiff],[1.0,1.0,1.0]);
 		%set(rp,'FaceAlpha',0,'LineWidth',0.5)
 		%text to indicate the result of the trial
 		T = text(screen_width/2,screen_height/2,'');
@@ -128,15 +136,16 @@ function [tidx,M] = replayExperiment(offset,nsamples,edfdata,samplingRate,decode
     tlifetime = -1;
 	dlifetime = -1;
     glifetime = -1;
-    nextevent = 1;
+    nextevent = 0;
     %fast-forward the events based on the specified offset
 	trialnr = 0;
 	lasttarget = 0
 	trialstart = NaN;
     for tt=1:ntrials
-        
+    tidx(tt)    
     while (nextevent < length(edfdata.FEVENT)) && (trialnr < tidx(tt))
     %while edfdata.FEVENT(nextevent).sttime <= edfdata.FSAMPLE.time(offset)
+        nextevent = nextevent + 1;
 		m = edfdata.FEVENT(nextevent).message(1:3:end);
 		if ~isempty(m)
 			if strcmp(m,'00000000') %trial start
@@ -147,16 +156,18 @@ function [tidx,M] = replayExperiment(offset,nsamples,edfdata,samplingRate,decode
 				lasttarget = nextevent;
 			end
 		end
-        nextevent = nextevent + 1;
+        
     end
+    
 	%fast forward to to the next event, which should be prestim
 	%while ~strcmpi(edfdata.FEVENT(nextevent).message(1:3:end),'00000001')
 	%	nextevent = nextevent + 1;
 	%end
     while edfdata.FEVENT(nextevent).sttime >= edfdata.FSAMPLE.time(offset)
 		offset  = offset + 1;
-	end
-
+    end
+    %fast forward to right before the target onset
+    
 	trialnr
 	nextevent;
 	i = 1;
@@ -211,11 +222,20 @@ function [tidx,M] = replayExperiment(offset,nsamples,edfdata,samplingRate,decode
 				elseif strcmp(m, '00000000') %trial start
 					set(fp,'FaceColor',[0.5,0.5,0.5])
 					%set(rp,'EdgeColor','k', 'LineWidth',0.1)
-                    set(rp,'FaceColor',[1.0,1.0,1.0]);
+                    %set(rp,'FaceColor',[1.0,1.0,1.0]);
 					set(T,'String','')
-					trialnr  = trialnr + 1
-					trialstart = edfdata.FEVENT(nextevent).sttime;
+					if edfdata.FEVENT(nextevent).sttime ~= trialstart
+                        trialnr  = trialnr + 1
+                        trialstart = edfdata.FEVENT(nextevent).sttime;
+                    end
+                    %fast forward to 300 ms before target
+                    if ~isempty(qq.trials(trialnr).target)
+                        while edfdata.FSAMPLE.time(offset+i*samplingRate) < qq.trials(trialnr).target.timestamp - 300
+                            offset = offset + 1;
+                        end
+                    end
 					title('Trial start')
+                    
 				elseif strcmp(m,'00000101') %go-cueue
 					set(fp,'FaceColor','w')
                     glifetime = 0;
@@ -228,8 +248,8 @@ function [tidx,M] = replayExperiment(offset,nsamples,edfdata,samplingRate,decode
                             
                 elseif strcmpi(m,'00001111') %stimulation
     
-                    %set(fp, 'FaceColor', 'w')
-                    set(rp,'FaceColor','y');
+                    set(fp, 'FaceColor', 'y')
+                    %set(rp,'FaceColor','y');
                     title('Stimulation')
 				elseif strcmp(m,'00000110') %reward
                     glifetime = -1;
@@ -253,14 +273,15 @@ function [tidx,M] = replayExperiment(offset,nsamples,edfdata,samplingRate,decode
 				elseif strcmpi(m,'00000011') %stimulus blank
 					title('First delay')
 				elseif strcmpi(m,'00000100') %delay
-					title('Second delay')
+					title('Delay')
 				elseif strcmpi(m,'00000001') %fixation start
 					title('Acquired fixation')
 				elseif strcmpi(m,'00100000') %trial end
 					title('End of trial')
                     set(T, 'String', '');                  
 					dostop = 1;
-                    set(rp, 'FaceColor', 'w');
+                    %set(rp, 'FaceColor', 'w');
+                    
 					break;
 				end
             end
