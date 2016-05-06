@@ -79,6 +79,9 @@ function sessions  = parseEDFData(edfdata,nrows,ncols)
                 sessions(sessionnr).trials(trialnr).fixation_start = edfdata.FEVENT(nextevent).sttime;
             elseif strcmpi(m,'00100000') %trial end
                 sessions(sessionnr).trials(trialnr).end = edfdata.FEVENT(nextevent).sttime;
+            elseif strcmpi(m, '00001111') %stimulation
+                sessions(sessionnr).trials(trialnr).stim = edfdata.FEVENT(nextevent).sttime;
+            
 	    elseif strcmpi(m, '11000000') %session start
 		    sessionnr = sessionnr + 1;
 		    sessions(sessionnr).trials = struct;
