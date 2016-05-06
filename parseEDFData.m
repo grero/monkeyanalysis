@@ -64,6 +64,7 @@ function sessions  = parseEDFData(edfdata,nrows,ncols)
                 k = 1;
                 trialstart = edfdata.FEVENT(nextevent).sttime;
                 sessions(sessionnr).trials(trialnr).start = trialstart;
+                %sessions(sessionnr).trials(trialnr).saccade = struct;
             elseif strcmp(m,'00000101') %go-cueue
                 sessions(sessionnr).trials(trialnr).response_cue = edfdata.FEVENT(nextevent).sttime;
             elseif strcmp(m,'00000110') %reward
@@ -85,12 +86,16 @@ function sessions  = parseEDFData(edfdata,nrows,ncols)
             end
         else
             if strcmpi(edfdata.FEVENT(nextevent).codestring, 'ENDSACC')
-                %check that event immediately before this was cue onset, i.e. we want to grap the first saccade after cue
+                %check that the event immediately before this was cue onset, i.e. we want to grab the first saccade after cue
                 m = edfdata.FEVENT(nextevent-3).message(1:3:end);
-                if strcmp(m,'00000101') %go-cueue
-                    event = edfdata.FEVENT(nextevent);
-                    sessions(sessionnr).trials(trialnr).saccade = struct('startx', event.gstx, 'starty', event.gsty, 'endx', event.genx', 'endy', event.geny, 'start_time', event.sttime, 'end_time', event.entime);
-                end
+                %TODO: we also want to get saccades for failed trials
+                %before the co-cue
+                %if strcmp(m,'00000101') %go-cueue
+                event = edfdata.FEVENT(nextevent);
+                if sessionnr > 0 && trialnr > 0 && event.sttime > trialstart
+                    sessions(sessionnr).trials(trialnr).saccade(k) = struct('startx', event.gstx, 'starty', event.gsty, 'endx', event.genx', 'endy', event.geny, 'start_time', event.sttime, 'end_time', event.entime);
+                    k = k+1;
+                %end
             end
         end %if ~isempty(m)
     end
