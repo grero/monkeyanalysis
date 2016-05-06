@@ -33,7 +33,8 @@ function sessions  = parseEDFData(edfdata,nrows,ncols)
     nevents = length(edfdata.FEVENT);
     trialnr = 0;
     sessions = struct;
-    sessionnr = 0;
+    sessionnr = 1;
+    k = 1;
     for nextevent=1:nevents
         m = edfdata.FEVENT(nextevent).message(1:3:end);
         if ~isempty(m)
@@ -60,6 +61,7 @@ function sessions  = parseEDFData(edfdata,nrows,ncols)
                 sessions(sessionnr).trials(trialnr).distractor = struct('row', py, 'column', px, 'timestamp', edfdata.FEVENT(nextevent).sttime);
             elseif strcmp(m, '00000000') %trial start
                 trialnr  = trialnr + 1;
+                k = 1;
                 trialstart = edfdata.FEVENT(nextevent).sttime;
                 sessions(sessionnr).trials(trialnr).start = trialstart;
             elseif strcmp(m,'00000101') %go-cueue
