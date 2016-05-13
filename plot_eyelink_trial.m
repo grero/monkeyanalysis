@@ -22,7 +22,6 @@ function plot_eyelink_trial(edfdata, eyetrials, trial)
         end
         k = k +1;
     end
-    k
     vidx  = (eyetrials(ss).trials(tt).start < edfdata.FSAMPLE.time)&(eyetrials(ss).trials(tt).end > edfdata.FSAMPLE.time);
     gx = double(edfdata.FSAMPLE.gx(1,vidx));
     gy = double(edfdata.FSAMPLE.gy(1,vidx));
