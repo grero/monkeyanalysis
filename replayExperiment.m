@@ -1,4 +1,4 @@
-function M = replayExperiment(offset,nsamples,edfdata,samplingRate,l)
+function M = replayExperiment(offset,nsamples,edfdata,samplingRate,l,rows,cols)
 	%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 	%Replay the experiment from the eye link data contained in the edfdata structure.
 	%Inputs:
@@ -6,45 +6,55 @@ function M = replayExperiment(offset,nsamples,edfdata,samplingRate,l)
 	%	nsamples	:		number of time points to replay
 	%	edfdata		:		eye link data structure contraining the experiment
 	%	l			:		reference to a line plot handle
+    %   rows        :       number of rows used
+    %   cols        :       number of columns
 	%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-	
+    rows = 5;
+    cols = 5;
+	screen_width = 1440;
+    screen_height = 900;
+    %this is taken directly from Jit Hon's DST code
+    squareArea = floor((screen_height-screen_height/10)/rows);
+    xmargin = (screen_width - cols * squareArea) / 2;
+    ymargin = (screen_height - rows * squareArea) / 2;
+    xdiff = (screen_width-2*xmargin)/cols;
+    ydiff = (screen_height-2*ymargin)/rows;
+    %%%%%%
 	M = avifile('tmp.avi','FPS',25);
     if nargin == 4
         %we were not given a line handle, so create it here
         figure
         axis
-        rectangle('Position', [144,90,1440-2*144,900-2*90]);
+        rectangle('Position', [xmargin,ymargin,screen_width-2*xmargin,screen_height-2*ymargin]);
         %the width and height of each square
-        xdiff = (1440-2*144)/5;
-        ydiff = (900-2*90)/5;
+        %xdiff = (screen_width-2*144)/5;
+        %ydiff = (screen_height-2*90)/5;
         %draw the grid
-        for j=0:4
-            line([144, 1440-144], [90+j*ydiff 90+j*ydiff],'Color','k');
+        for j=0:rows-1
+            line([xmargin, screen_width-xmargin], [ymargin+j*ydiff ymargin+j*ydiff],'Color','k');
         end
-        for i=0:4
-            line([144+i*xdiff, 144+i*xdiff], [90 900-90],'Color','k');
+        for i=0:cols-1
+            line([xmargin+i*xdiff, xmargin+i*xdiff], [ymargin screen_height-ymargin],'Color','k');
         end
         hold on
         %Try replacing with a fixation dot
-        fp = fill([144+2*xdiff, 144+3*xdiff, 144+3*xdiff, 144+2*xdiff],...
-            [90+3*ydiff, 90+3*ydiff, 90+2*ydiff, 90+2*ydiff],[0.5,0.5,0.5]);
+        fp = fill([xmargin+2*xdiff, xmargin+3*xdiff, xmargin+3*xdiff, xmargin+2*xdiff],...
+            [ymargin+3*ydiff, ymargin+3*ydiff, ymargin+2*ydiff, ymargin+2*ydiff],[0.5,0.5,0.5]);
         l = plot(edfdata.FSAMPLE.gx(1,1),edfdata.FSAMPLE.gy(1,1),'.');
         %draw a rectangle around the grid; these numbers are from Jit Hon's code
-        rectangle('Position', [144,90,1440-2*144,900-2*90]);
-        %the width and height of each square
-        xdiff = (1440-2*144)/5;
-        ydiff = (900-2*90)/5;
+        rectangle('Position', [xmargin,ymargin,screen_width-2*xmargin,screen_height-2*ymargin]);
+ 
         %draw the grid
-        for j=0:4
-            line([144, 1440-144], [90+j*ydiff 90+j*ydiff],'Color','k');
+        for j=0:rows-1
+            line([xmargin, screen_width-xmargin], [ymargin+j*ydiff ymargin+j*ydiff],'Color','k');
         end
-        for i=0:4
-            line([144+i*xdiff, 144+i*xdiff], [90 900-90],'Color','k');
+        for i=0:cols-1
+            line([xmargin+i*xdiff, xmargin+i*xdiff], [ymargin screen_height-ymargin],'Color','k');
         end
         hold on
         %draw the fixation rectangle; we probably shouldn't do this, since the monkey doens't see a rectangle. 
-        xlim([0,1440]);
-        ylim([0,900]);
+        xlim([0,screen_width]);
+        ylim([0,screen_height]);
     end
 	if nargin == 3
 		samplingRate = 1;
@@ -95,12 +105,12 @@ function M = replayExperiment(offset,nsamples,edfdata,samplingRate,l)
         %check if we have a target event
         if tlifetime == 0 
             %fill the appropriate square
-            h = fill([144+px*xdiff, 144+(px+1)*xdiff, 144+(px+1)*xdiff, 144+px*xdiff],...
-            [90+(py+1)*ydiff, 90+(py+1)*ydiff, 90+py*ydiff, 90+py*ydiff],'r');
+            h = fill([xmargin+px*xdiff, xmargin+(px+1)*xdiff, xmargin+(px+1)*xdiff, xmargin+px*xdiff],...
+            [ymargin+(py+1)*ydiff, ymargin+(py+1)*ydiff, ymargin+py*ydiff, ymargin+py*ydiff],'r');
                 %end
 		elseif  dlifetime == 0
-            h = fill([144+px*xdiff, 144+(px+1)*xdiff, 144+(px+1)*xdiff, 144+px*xdiff],...
-            [90+(py+1)*ydiff, 90+(py+1)*ydiff, 90+py*ydiff, 90+py*ydiff],'g');
+            h = fill([xmargin+px*xdiff, xmargin+(px+1)*xdiff, xmargin+(px+1)*xdiff, xmargin+px*xdiff],...
+            [ymargin+(py+1)*ydiff, ymargin+(py+1)*ydiff, ymargin+py*ydiff, ymargin+py*ydiff],'g');
         end
         %if we are plotting a target, increase it's life time by one
         if tlifetime>-1
