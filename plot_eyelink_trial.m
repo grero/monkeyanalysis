@@ -7,14 +7,14 @@ function plot_eyelink_trial(edfdata, eyetrials, trial)
     %   eyetrials : trial structures parsed from the edfdata 
     %                        (eyetrials = parseEDFData(edfdata, rows, cols)
     %eyetrials = parseEDFData(edfdata,rows,cols);
-    k = 1;
+    k = 0;
     ss = 1;
     tt = 1;
     while k < trial 
         if isempty(eyetrials(ss).trials)
             ss = ss + 1;
-        end
-        if k > length(eyetrials(ss))
+            tt = 1;
+        elseif k > length(eyetrials(ss).trials)
             ss = ss + 1;
             tt = 1;
         else
