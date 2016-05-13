@@ -32,6 +32,19 @@ function plot_eyelink_trial(edfdata, eyetrials, trial)
     plot(t, gx,'b');
     hold on
     plot(t,gy,'r');
-    legend('x', 'y');
+    %add trial markers
+    if ~isempty(eyetrials(ss).trials(tt).target)
+        xx = eyetrials(ss).trials(tt).target.timestamp - x(1);
+        plot([xx xx], get(gca, 'ylim'),'r','LineWidth',2.0)
+    end
+    if ~isempty(eyetrials(ss).trials(tt).response_cue)
+        xx = eyetrials(ss).trials(tt).response_cue - x(1);
+        plot([xx xx], get(gca, 'ylim'),'k', 'LineWidth', 2.0)
+    end
+     if ~isempty(eyetrials(ss).trials(tt).reward)
+        xx = eyetrials(ss).trials(tt).reward - x(1);
+        plot([xx xx], get(gca, 'ylim'),'g', 'LineWidth', 2.0)
+    end
+    legend('x', 'y','target on', 'response cue','reward');
     hold off
 end
