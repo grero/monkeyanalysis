@@ -12,7 +12,7 @@ function plot_eyelink_trial(edfdata, eyetrials, trial,eye,draw_saccades)
     %eyetrials = parseEDFData(edfdata,rows,cols);
     k = 0;
     ss = 1;
-    tt = 1;
+    tt = 0;
     if nargin < 4
         eye = 1;
     end
