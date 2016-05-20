@@ -13,7 +13,7 @@ function rtrials  = getTrialType( trials,varargin )
 	%   					 specifying '~response' will return all trials in which
 	%   					 the response cue was *not* given.
 	%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-    k = 1;
+    k = 0;
 	types = varargin;
 	ntypes = length(types);
     for t=1:length(trials)
@@ -21,20 +21,27 @@ function rtrials  = getTrialType( trials,varargin )
 		i = 1;
 		while include && (i <= ntypes)
             if strfind(types{i},'~') == 1
-                if ~isempty(getfield(trials(t),types{i}(2:end)))
+                if ~isfield(trials(t), types{i}(2:end))
+                    include = 1;
+                elseif ~isempty(getfield(trials(t),types{i}(2:end)))
                     include = 0;
                 end
             else
-                if isempty(getfield(trials(t),types{i}))
+                if ~isfield(trials(t), types{i})
+                    include = 0;
+                elseif isempty(getfield(trials(t),types{i}))
                     include = 0;
                 end
             end
 			i = i + 1;
 		end
 		if include == 1
-            rtrials(k) = trials(t);
             k = k+1;
+            rtrials(k) = trials(t);
 		end
+    end
+    if k == 0
+        rtrials = [];
     end
 end
 
