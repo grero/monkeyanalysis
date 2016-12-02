@@ -7,8 +7,8 @@ function [counts, bins] = getTrialSpikeCounts(sptrain,trials,bins, varargin)
 	%	bins				:		the bins (in ms) in which to compute spike counts
 	%	alignment_event		:		event to which to align the spike trains. The event
 	%								must be a field in the trials structure array,
-	%								e.g. 'response' or 'target'. If the event is not 
-	%								a member of trials, it default to 'prestim', i.e. 
+	%								e.g. 'response' or 'target'. If the event is not
+	%								a member of trials, it default to 'prestim', i.e.
 	%								start of fixation
 	%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 	Args = struct('alignment_event','target','overlap',0);
