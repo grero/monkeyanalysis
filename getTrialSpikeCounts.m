@@ -20,7 +20,7 @@ function [counts, bins] = getTrialSpikeCounts(sptrain,trials,bins, varargin)
 	overlap = Args.overlap;
 	ntrials = length(trials);
 	if overlap == 0
-		counts = zeros(ntrials,length(bins));
+		counts = zeros(ntrials,length(bins)-1);
 	else
 		bs = diff(bins);
 		steps = bs(1)/overlap;
@@ -32,27 +32,27 @@ function [counts, bins] = getTrialSpikeCounts(sptrain,trials,bins, varargin)
 		end
 	end
 	trial_idx = [];
-    spiketimes = sptrain.spiketimes;
-    for t=1:ntrials
-        if ~isempty(trials(t).start) && ~isempty(trials(t).end)
-            idx = (spiketimes >= (trials(t).start*1000))&(spiketimes<=(trials(t).end*1000));
-            alignto = getfield(trials(t),alignment_event);
-            if isstruct(alignto)
-                alignto = alignto.timestamp;
-            end
-            spikes = (spiketimes(idx)'-trials(t).start*1000 - alignto*1000);
-			if overlap == 0
-				c = histc(spikes,bins);
-				counts(t,:) = c;
-			else
-				for j=1:steps
-					counts(t,j:steps:end-(steps-j)) = histc(spikes,bins+(j-1)*overlap);
-				end
+  spiketimes = sptrain.spiketimes;
+  for t=1:ntrials
+      if ~isempty(trials(t).start) && ~isempty(trials(t).end)
+          idx = (spiketimes >= (trials(t).start*1000))&(spiketimes<=(trials(t).end*1000));
+          alignto = getfield(trials(t),alignment_event);
+          if isstruct(alignto)
+              alignto = alignto.timestamp;
+          end
+          spikes = (spiketimes(idx)'-trials(t).start*1000 - alignto*1000);
+		if overlap == 0
+			c = histc(spikes,bins);
+			counts(t,:) = c(1:end-1);
+		else
+			for j=1:steps
+				counts(t,j:steps:end-(steps-j)) = histc(spikes,bins+(j-1)*overlap);
 			end
-        end
-    end
+		end
+      end
+  end
 	if overlap > 0
 		bins = outbins;
 	end
-   
+
 end
