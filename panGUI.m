@@ -22,7 +22,7 @@ function varargout = panGUI(varargin)
 
 % Edit the above text to modify the response to help panGUI
 
-% Last Modified by GUIDE v2.5 18-May-2016 08:55:45
+% Last Modified by GUIDE v2.5 06-Jun-2016 09:53:38
 
 % Begin initialization code - DO NOT EDIT
 gui_Singleton = 1;
@@ -107,7 +107,9 @@ function currentindex_Callback(hObject, eventdata, handles)
 % Hints: get(hObject,'String') returns contents of currentindex as text
 %        str2double(get(hObject,'String')) returns contents of currentindex as a double
 
+        currentindex = str2num(get(handles.currentindex,'String'));
 
+    handles.plotfunc(currentindex)
 % --- Executes during object creation, after setting all properties.
 function currentindex_CreateFcn(hObject, eventdata, handles)
 % hObject    handle to currentindex (see GCBO)
@@ -119,3 +121,10 @@ function currentindex_CreateFcn(hObject, eventdata, handles)
 if ispc && isequal(get(hObject,'BackgroundColor'), get(0,'defaultUicontrolBackgroundColor'))
     set(hObject,'BackgroundColor','white');
 end
+
+
+% --- Executes when figure1 is resized.
+function figure1_SizeChangedFcn(hObject, eventdata, handles)
+% hObject    handle to figure1 (see GCBO)
+% eventdata  reserved - to be defined in a future version of MATLAB
+% handles    structure with handles and user data (see GUIDATA)
