@@ -33,7 +33,7 @@ function sessions  = parseEDFData(edfdata,nrows,ncols)
     nevents = length(edfdata.FEVENT);
     trialnr = 0;
     sessions = struct;
-    sessionnr = 1;
+    sessionnr = 0;
     k = 1;
     for nextevent=1:nevents
         if isempty(edfdata.FEVENT(nextevent).message)
@@ -85,8 +85,8 @@ function sessions  = parseEDFData(edfdata,nrows,ncols)
             elseif strcmpi(m, '00001111') %stimulation
                 sessions(sessionnr).trials(trialnr).stim = edfdata.FEVENT(nextevent).sttime;
             
-	    elseif strcmpi(m, '11000000') %session start
-		    sessionnr = sessionnr + 1;
+	    elseif strcmpi(m(1:3), '110') %session start
+		    sessionnr = sessionnr + 1 %bin2dec(m(4:end));
 		    sessions(sessionnr).trials = struct;
 		    trialnr = 0; %reset the trial counter
             end
