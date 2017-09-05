@@ -36,7 +36,10 @@ function sessions  = parseEDFData(edfdata,nrows,ncols)
     sessionnr = 1;
     k = 1;
     for nextevent=1:nevents
-        m = edfdata.FEVENT(nextevent).message(1:3:end);
+        if isempty(edfdata.FEVENT(nextevent).message)
+            continue
+        end
+        m = strrep(edfdata.FEVENT(nextevent).message, ' ', '');
         if ~isempty(m)
             if ((m(1) == '0') && (m(2) == '1')) %target
                 %get the row and column index
