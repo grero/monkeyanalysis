@@ -104,5 +104,8 @@ function sessions  = parseEDFData(edfdata,nrows,ncols)
                 %end
             end
         end %if ~isempty(m)
+        end
+    if ~isfile('edfdata.mat')
+        save('edfdata.mat','edfdata');
     end
 end
