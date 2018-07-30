@@ -37,35 +37,36 @@ The example shown above represents a failed trial. We might not want to bother w
 As we can see, the function takes two parameters; the trial structure itself and the name of the field we want to keep. For the session we are currently looking at, there were 550 correct trials. 
 Once we have the information of the trial we are interested in, we need to load some neural data. We can start with looking at spike trains, which can be loaded using the function loadSpiketrains. This function accepts a single parameter, which is the .mat file containing all the spike trains for a session. This file is usually also located under the session directory, and its name follows the pattern <animal>_<date>_<session number>_Spiketrains.mat. For our current session, we load the spike trains like this:
 
-	sptrains = loadSpiketrains('Pancake_160713_1_Spiketrains.mat')
+	sptrains = loadSpiketrains('Pancake_230913_1_Spiketrains_area.mat')
 
-	sptrains = 
+	sptrains =
 
-			 channels: [1x110 struct]
-		spikechannels: [13 26 38 40 54 56 59 107 109 110]
+		DLPFC: [1x1 struct]
+		FEF: [1x1 struct]
+		area8: [1x1 struct]
+		vDLPFC: [1x1 struct]
 
-Here we see that the sptrain structure contains a field 'spikechannels', which indicates which channels had at least one single unit for this session. Let's look at the spike trains for channel 40:
+The spiketrains are segreated into different recording areas, in this case DLPFC, FEF, area8 and vDLPFc. Each sptrain structure contains a field 'spikechannels', which indicates which channels had at least one single unit for this session. Let's look at the spike trains for channel 40:
 
-	>> sptrains.channels(40)
+	sptrains.FEF.channels(8)
 
-	ans = 
+	ans =
 
-		cluster: [1x4 struct]
+		cluster: [1x1 struct]])
 
-Now we see that channel 40 had 4 units, and we can further examine one of these units
+Now we see that the 8th FEF channel had a single unit, and we can further examine one of this unit
 
+	sptrains.FEF.channels(8).cluster(1)
 
-	>> sptrains.channels(40).cluster(1)
+	ans =
 
-	ans = 
+		spiketimes: [2803698x1 double]]))
 
-		spiketimes: [157865x1 double]
-
-So the first unit on channel 40 had 157865 spikes, which are encoded in the field 'spiketimes' in units of milliseconds. 
+So the unit on channel 8 had 2803698 spikes, which are encoded in the field 'spiketimes' in units of milliseconds. 
 
 In order to visualize how the activity of this unit changes over the trials, we first need to align each spike to a trial event. One good such event is the onset of the target. We can use the function 'createAlignedRaster' to do the alignment:
 
-	>> [spikes,trial_idx] = createAlignedRaster(sptrains.channels(40).cluster(1),rtrials,'target');
+	>> [spikes,trial_idx] = createAlignedRaster(sptrains.channels(8).cluster(1),rtrials,'target');
 
 As we can see, this function accepts three parameters; the spike train structure containing the spike times we wish to align, the trial structure containing the timing info required for the alignment, and an event within a trial to which to align the spikes. The function returns two variables; 'spikes' is an array containing the aligned spikes, and 'trial_idx' is trial index of each individual spike. We can now plot the aligned spike times using the function 'plotRaster':
 

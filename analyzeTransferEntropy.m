@@ -1,5 +1,8 @@
-function [onsets_f,offsets_f, onsets_b,offsets_b, comboidx_f, comboidx_b] = analyzeTransferEntropy(sptrains,trials,logfile,minnbins)
-	if nargin < 4
+function [onsets_f,offsets_f, onsets_b,offsets_b, comboidx_f, comboidx_b] = analyzeTransferEntropy(sptrains,trials,logfile,minnbins,plotz)
+	if nargin < 5
+        plotz = 0;
+    end
+    if nargin < 4
         minnbins = 5;
     end
     if nargin < 3
@@ -53,11 +56,15 @@ function [onsets_f,offsets_f, onsets_b,offsets_b, comboidx_f, comboidx_b] = anal
                     %if logfile ~= 1
                     %    fprintf(1,'\b
                     %end
-					fname = [cell1 cell2 'transferEntropy.pdf'];
+                    if plotz
+                        fname = [cell1 cell2 'transferEntropyZScore.pdf'];
+                    else
+                        fname = [cell1 cell2 'transferEntropy.pdf'];
+                    end
 					if ~exist(fname)
-						[onset_f,offset_f,onset_b,offset_b,z1,z2] = plotTransferEntropy(cell1,cell2,trials,1,1,minnbins);
+						[onset_f,offset_f,onset_b,offset_b,z1,z2] = plotTransferEntropy(cell1,cell2,trials,1,1,minnbins,plotz);
 					else
-						[onset_f,offset_f,onset_b,offset_b,z1,z2] = plotTransferEntropy(cell1,cell2,trials,0,1,minnbins);
+						[onset_f,offset_f,onset_b,offset_b,z1,z2] = plotTransferEntropy(cell1,cell2,trials,0,1,minnbins,plotz);
                     end
                     all_cnx = [all_cnx z1 z2];
                     if sum(~isnan(onset_f)) > 0
@@ -106,10 +113,12 @@ function [onsets_f,offsets_f, onsets_b,offsets_b, comboidx_f, comboidx_b] = anal
     fprintf('\n');
 	cell1 = sprintf('g%dc%.2ds', sptrains.spikechannels(1), 1);
 	cell2 = sprintf('g%dc%.2ds', sptrains.spikechannels(2), 1);
-    fname = [cell1 cell2 'transferEntropy.mat'];
+    fname = [processed_combos{end} 'transferEntropy.mat'];
     if ~exist(fname,'file')
         fname = [cell2 cell1 'transferEntropy.mat'];
+    
     end
+    
     load(fname);
     %summary
 	npairs_f = length(unique(comboidx_f(~isnan(onsets_f))));

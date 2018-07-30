@@ -50,8 +50,8 @@ function sptrains = loadSpiketrains(fname)
         spikechannels = [spikechannels q(1)]; 
     end
 	if ~isempty(fieldnames(area_sptrains))
-		sptrains = struct()
-		F = fieldnames(area_sptrains)
+		sptrains = struct();
+		F = fieldnames(area_sptrains);
 		for i=1:length(F)
 			f = F(i);
 			sptrains = setfield(sptrains,f{:},loadSpiketrains(getfield(area_sptrains,f{:})));

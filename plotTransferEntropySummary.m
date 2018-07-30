@@ -21,7 +21,7 @@ function plotTransferEntropySummary(fname,zmax,zmin)
 	c = colorbar
 	set(get(c,'ylabel'),'string','Z-score')
 	print('-dpng','fef_dlpfc_cnx.png')
-    
+
     figure
     [mx,mxi] = max(sig_cnx,[],1);
     [s,idx] = sort(mxi);
@@ -34,8 +34,8 @@ function plotTransferEntropySummary(fname,zmax,zmin)
     imagesc(bins(1:size(sig_cnx,1)), 1:length(idx), sig_cnx(:,idx)',[zmin,zmax])
 	c = colorbar
 	set(get(c,'ylabel'),'string','Z-score')
-	print('-dpng','all_sig_cnx.png')
-    
+	print('-depsc','all_sig_cnx.eps')
+
     %all
     figure
     %sort by connection
@@ -43,8 +43,8 @@ function plotTransferEntropySummary(fname,zmax,zmin)
     idxg = zeros(length(processed_combos),2);
     cnx_labels = {'1-32', '33-64', '65-96','97-128', '1-32 -> 33-64', '33-64 -> 1-32', ...
         '1-32 -> 65-96', '65-96 -> 1-32', '1-32 -> 97-128', '97-128 -> 1-32',...
-        '32-64 -> 65-96', '65-96 -> 32-64', '32-64 -> 97-128', '97-128 \\-> 32-64',...
-        '65-96 -> 97-128', '97-128 \\-> 65-96'};
+        '32-64 -> 65-96', '65-96 -> 32-64', '32-64 -> 97-128', '97-128 -> 32-64',...
+        '65-96 -> 97-128', '97-128 -> 65-96'};
     for i=1:length(processed_combos)
         groups = sscanf(processed_combos{i},'g%dc%*dsg%dc%*ds');
         if all(ismember(groups,1:32))
@@ -73,7 +73,7 @@ function plotTransferEntropySummary(fname,zmax,zmin)
             idxg(i,1) = 8;
         elseif ismember(groups(1), 1:32) && ismember(groups(2), 97:128)
             idxg(i,1) = 9;
-            idxg(i,2) = 10; 
+            idxg(i,2) = 10;
         elseif ismember(groups(2), 1:32) && ismember(groups(1), 97:128)
             idxg(i,1) = 9;
             idxg(i,2) = 10;
@@ -101,7 +101,7 @@ function plotTransferEntropySummary(fname,zmax,zmin)
     idxg = idxg(:);
     [mx,mxi] = max(all_cnx,[],1);
     vidx = find(diff(sort(idxg))>0);
-    
+
     %sort by connection type, then by connection strength
     [bx,bidx] = sortrows([idxg mxi']);
     [s,idx] = sort(mxi);
@@ -111,7 +111,7 @@ function plotTransferEntropySummary(fname,zmax,zmin)
     if isnan(zmin)
         zmin = min(all_cnx(:));
     end
-    
+
     imagesc(bins(1:size(all_cnx,1)), 1:length(bidx), all_cnx(:,bidx)',[zmin,zmax])
     hold on
     plot(repmat([bins(1) bins(end)],size(idx,1),1), [vidx vidx],'k')
@@ -121,18 +121,25 @@ function plotTransferEntropySummary(fname,zmax,zmin)
     figure
     ucats = unique(idxg);
     ncats = length(ucats);
+    dy = 0.87/ncats;
     for k=1:ncats
-        subplot(ncats,1,k);
+        ax = subplot(ncats,1,k);
+        set(gca,'Position',[0.05,0.1+dy*(ncats-k), 0.83,0.9*dy]);
         acnx = all_cnx(:,idxg==ucats(k));
         [mx,mxi] = max(acnx,[],1);
         [s,idx] = sort(mxi);
         acnx = acnx(:,idx);
         imagesc(bins(1:size(all_cnx,1)), 1:sum(idxg==ucats(k)), acnx',[zmin,zmax])
-        set(gca,'YTickLabel',[]);
+        set(gca,'YTickLabel',[],'TickDir','out','Box','off','YTick',[]);
         if k ~= ncats
             set(gca,'XTickLabel',[]);
         end
         ylabel(cnx_labels(ucats(k)));
     end
-    print('-dpng','all_area_cnx.png')
+    axc = colorbar;
+    set(axc,'Position',[0.9,0.1,0.02,0.86])
+    set(get(axc,'ylabel'),'String','Transfer entropy Z-score')
+    set(axc, 'Tickdir','out','box','off');
+    print('-depsc','all_area_cnx.eps')
+
 end

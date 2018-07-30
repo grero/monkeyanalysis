@@ -1,4 +1,4 @@
-function plotPopulationRaster(aligned_spikes,trial_idx,cell_idx, trials_to_plot)
+function plotPopulationRaster(aligned_spikes,trial_idx,cell_idx, trials_to_plot,window)
 	%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 	%Plot the population raster returned by getPopulationRaster
 	%Input:
@@ -10,6 +10,9 @@ function plotPopulationRaster(aligned_spikes,trial_idx,cell_idx, trials_to_plot)
 	% 	plotPopulationRaster(aligned_sptrains,trial_idx,cellidx,find(trial_labels==17))
 	%		plots all spikes from all cells for trials at position 17
 	%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+    if nargin < 5
+        window = [min(aligned_spikes),max(aligned_spikes)];
+    end
 	%get the indices of the trials to plot
 	idx = find(ismember(trial_idx,trials_to_plot));
 	trials = trial_idx(idx);
@@ -19,15 +22,15 @@ function plotPopulationRaster(aligned_spikes,trial_idx,cell_idx, trials_to_plot)
 	%k now holds the rank of the trials
 	ntrials = max(k);
 	[cc,cj,ck] = unique(cells);
-	ncells = length(cc);
+	ncells = length(cc)
 	%construct a y-vector
 	y = ck.*ntrials + k;
 	%get the cell
 	figure
 	hold all
 	for c=1:ncells
-		cidx = cells==c;
-		plot(spikes(cidx),y(cidx),'.');
+		cidx = (cells==c)&(spikes>=window(1))&(spikes<=window(2));
+		plot(spikes(cidx),y(cidx),'.','MarkerSize',5);
 	end
 	set(gca,'TickDir','out','Box','Off')
 	xlabel('Time [ms]')

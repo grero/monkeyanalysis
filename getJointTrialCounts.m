@@ -11,7 +11,7 @@ function [counts,bins] = getJointTrialCounts(sptrains,trials,bins,varargin)
 	%	counts			:		[ncells X ntrials X nbins] matrix of spike counts
 	%	bins			:		the input bins
     %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-    nbins = length(bins);
+    nbins = length(bins)-1;
     ntrials = length(trials);
     if iscell(sptrains)
         ncells = length(sptrains);
@@ -28,7 +28,7 @@ function [counts,bins] = getJointTrialCounts(sptrains,trials,bins,varargin)
             clusters = sptrains.channels(sptrains.spikechannels(ch)).cluster;
             for j=1:length(clusters)
                 [counts1,bins] = getTrialSpikeCounts(clusters(j),trials,bins,varargin{:});
-                counts(c,:,:) = counts1;
+								counts(c,:,:) = counts1;
                 c = c+1;
             end
         end

@@ -1,14 +1,21 @@
-function labels = getTrialLabels(trials,event, lmap)
+function [row,column] = getTrialLabels(trials,event, lmap,rescale,nrows,ncols)
 	%%%%%%%%%%%%%%%%%%%%%%%%%%%
 	%Input:
 	%	trials		:		trial structure containing trial information
 	%	event		:		the event to use when assigning labels
 	%	lmap		:		optional mapping between position and label
+	%	rescale		:		indicate whether to rescale the row/column to the used range. Default: true
 	%Output:
 	%	label		:		labels for each trial based on target location
 	%%%%%%%%%%%%%%%%%%%%%%%%%%%
 	if nargin < 2
 		event = 'target';
+    end
+    if nargin < 3
+        lmap = '';
+    end
+	if nargin < 3
+		rescale = true;
 	end
 	ntrials = length(trials);
 	labels = zeros(ntrials,1);
@@ -35,9 +42,18 @@ function labels = getTrialLabels(trials,event, lmap)
 		column(column>3) = 3;
 		row = ones(size(row));
 	end
-	row = row-nanmin(row)+1
-	column = column-nanmin(column)+1
-	nrows = nanmax(row);
-	ncols = nanmax(column);
-	labels = (column-1)*nrows + row;
+	if rescale
+		row = row-nanmin(row)+1;
+		column = column-nanmin(column)+1;
+	end
+	if nargin < 5
+		nrows = nanmax(row);
+	end
+	if nargin < 6
+		ncols = nanmax(column);
+	end
+	if nargout == 1
+		labels = (column-1)*nrows + row;
+		row = labels;
+	end
 end

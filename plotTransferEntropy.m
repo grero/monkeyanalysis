@@ -1,5 +1,8 @@
-function [onsets_f,offsets_f,onsets_b,offsets_b,z1,z2] = plotTransferEntropy(cell1, cell2, trials,save,doplot,minnbins)   
-	if nargin < 6
+function [onsets_f,offsets_f,onsets_b,offsets_b,z1,z2] = plotTransferEntropy(cell1, cell2, trials,save,doplot,minnbins,plotz)
+	if nargin < 7
+        plotz = 0;
+    end
+    if nargin < 6
         minnbins = 5;
     end
     if nargin < 5
@@ -21,7 +24,7 @@ function [onsets_f,offsets_f,onsets_b,offsets_b,z1,z2] = plotTransferEntropy(cel
        [dm,ds,distractors] = getEventTimingDistr(trials,'distractors','target');
     end
     %[rm,rs,response] = getEventTimingDistr(trials,'response');
-    
+
 	if exist(fname,'file')
 		d = load(fname);
         d.step = double(d.step);
@@ -35,11 +38,17 @@ function [onsets_f,offsets_f,onsets_b,offsets_b,z1,z2] = plotTransferEntropy(cel
 		if doplot
 			figure
 			ax1 = subplot(2,1,1);
-			shadedErrorBar(d.bins(1:nbins-d.step),100*squeeze(mean(d.ets(:,:,1,1)./d.e1s(:,:,1,1),2)), 100*squeeze(2*std(d.ets(:,:,1,1)./d.e1s(:,:,1,1),0,2)));
-			hold on
-			plot(d.bins(1:nbins-d.step),100*squeeze(d.et(:,1,1)./d.e1(:,1,1)),'.-')
-			%xlabel('Time [ms]')
-			ylabel(['Relative transfer entropy [%]'])
+            if plotz
+                plot(d.bins(1:nbins-d.step),z1,'.-')
+                ylabel('Transfer entropy z-score')
+                hold on
+            else
+                shadedErrorBar(d.bins(1:nbins-d.step),100*squeeze(mean(d.ets(:,:,1,1)./d.e1s(:,:,1,1),2)), 100*squeeze(2*std(d.ets(:,:,1,1)./d.e1s(:,:,1,1),0,2)));
+                hold on
+                plot(d.bins(1:nbins-d.step),100*squeeze(d.et(:,1,1)./d.e1(:,1,1)),'.-')
+                %xlabel('Time [ms]')
+                ylabel(['Relative transfer entropy [%]'])
+            end
 			set(ax1,'XTickLabel',[]);
 			yl1 = ylim;
 			%prettify plot
@@ -57,11 +66,18 @@ function [onsets_f,offsets_f,onsets_b,offsets_b,z1,z2] = plotTransferEntropy(cel
 			set(get(ax1,'title'),'String','cell1 $\rightarrow$ cell2','interpreter','latex')
 			%reverse
 			ax2 = subplot(2,1,2);
-			shadedErrorBar(d.bins(1:nbins-d.step),100*squeeze(mean(d.ets(:,:,2,1)./d.e1s(:,:,2,1),2)), 100*squeeze(2*std(d.ets(:,:,2,1)./d.e1s(:,:,2,1),0,2)));
-			hold on
-			plot(d.bins(1:nbins-d.step),100*squeeze(d.et(:,2,1)./d.e1(:,2,1)),'.-')
-			xlabel('Time [ms]')
-			ylabel(['Relative transfer entropy [%]'])
+            if plotz
+                plot(d.bins(1:nbins-d.step),z2,'.-')
+                ylabel('Transfer entropy z-score')
+                hold on
+            else
+                shadedErrorBar(d.bins(1:nbins-d.step),100*squeeze(mean(d.ets(:,:,2,1)./d.e1s(:,:,2,1),2)), 100*squeeze(2*std(d.ets(:,:,2,1)./d.e1s(:,:,2,1),0,2)));
+                hold on
+                plot(d.bins(1:nbins-d.step),100*squeeze(d.et(:,2,1)./d.e1(:,2,1)),'.-')
+
+                ylabel(['Relative transfer entropy [%]'])
+            end
+            xlabel('Time [ms]')
 			%prettify plot
 			set(gca,'Box','Off');
 			set(gca, 'TickDir','out');
@@ -81,7 +97,11 @@ function [onsets_f,offsets_f,onsets_b,offsets_b,z1,z2] = plotTransferEntropy(cel
 			set(ax1,'Ylim',oylim);
 			set(ax2,'Ylim',oylim);
 			if save
-				fname = [cell1 cell2 'transferEntropy.pdf'];
+                if plotz
+                    fname = [cell1 cell2 'transferEntropyZScore.pdf'];
+                else
+                    fname = [cell1 cell2 'transferEntropy.pdf'];
+                end
 				print('-dpdf',fname);
 			end
 		end

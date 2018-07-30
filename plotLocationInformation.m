@@ -27,10 +27,10 @@ function plotLocationInformation(I,bins,alignment_event,trials,varargin)
 		if isstruct(alignto)
 			alignto = alignto.timestamp;
         end
-        if isfield(trials(t),'saccade')
-            response(t) = trials(t).saccade.timestamp;
-            response(t) = (response(t)-alignto)*1000;
-        elseif ~isempty(trials(t).response)
+%         if isfield(trials(t),'saccade')
+%             response(t) = trials(t).saccade.timestamp;
+%             response(t) = (response(t)-alignto)*1000;
+        if ~isempty(trials(t).response)
             response(t) = trials(t).response;
             response(t) = (response(t)-alignto)*1000;
         end
@@ -65,12 +65,16 @@ function plotLocationInformation(I,bins,alignment_event,trials,varargin)
         end
     end
     hold on
-    plot(bins(1:length(I)),I,'.-')
+    if ~isempty(Iind) || ~isempty(Is)
+        plot(bins(1:length(I)),I,'.-')
+    else
+        plot(bins(1:length(I)),I,'g','linewidth',1);
+    end
 	yl = ylim;
-	h1 = plot([R,R], [yl(1),yl(2)],'r','linewidth',2);
-	h2 = plot([rl,rl], [yl(1),yl(2)],'r');
-	h3 = plot([rh,rh], [yl(1),yl(2)],'r');
-    h8 = plot([Rm,Rm], [yl(1),yl(2)],'r');
+	h1 = plot([R,R], [yl(1),yl(2)],'b','linewidth',2);
+	%h2 = plot([rl,rl], [yl(1),yl(2)],'r');
+	%h3 = plot([rh,rh], [yl(1),yl(2)],'r');
+    %h8 = plot([Rm,Rm], [yl(1),yl(2)],'r');
     %also plot distractor
     mmd = nanmedian(distractor);
     h10 = plot([mmd,mmd], [yl(1),yl(2)],'g');

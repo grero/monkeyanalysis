@@ -1,4 +1,4 @@
-function readStrobes(fname)
+function [words,ts] = readEvents(fname)
 
     %get the available channels
     pl2 = PL2GetFileIndex(fname);
@@ -10,17 +10,16 @@ function readStrobes(fname)
 			WBChannels = [WBChannels i];
 		end
 	end
-    strobeFile = 'event_data.mat';
-    if ~exist(strobeFile,'file')
-		fprintf(1,'Reading strobe events\n');
-		events = PL2EventTs(fname,'Strobed');
+	fprintf(1,'Reading events\n');
+	k = 1;
+	T = [];
+	I = [];
+	for ch=17:32 %these are the 8 single event channels used
+		events = PL2EventTS(fname,ch);
 		%to align events to the continuous recording, subtract the initial delay from the events
 		%check if we have more than one fragment
 		%this is hackish; to get the frag time stamp, re-read one channel
 		ad = PL2Ad(fname,WBChannels(1));
-        if isempty(ad.Values)
-            ad = Pl2Ad(fname,513);
-        end
 		if size(ad.FragTs,1)>1
 			ts = events.Ts;
 			offset = 0;
@@ -36,7 +35,22 @@ function readStrobes(fname)
 			ts = events.Ts - ad.FragTs;
 		end
 		sv = events.Strobed;
-		fprintf(1,'Saving strobe events to file %s\n',strobeFile);
-		save(strobeFile,'ts','sv');
-    end
+		T = [T;ts];
+		I = [I;k*sv];
+		k = k+1;
+	end
+	[s,sidx] = sort(T); %sort to get the proper order of event time stamps
+	TO = T(sidx);
+	IO = I(sidx);
+	words = zeros(1,16);
+	t0 = TO(1);
+	row = 1;
+	for i=1:length(TO)
+		if TO(i) - t0 > 1
+			row = row  +1;
+			ts(row) = TO(i);
+		end
+		words(row,IO(i));
+		t0 = TO(i);
+	end
 end

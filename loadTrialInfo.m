@@ -20,6 +20,8 @@ function trials = loadTrialInfo(fname)
     %   trials.reward              : time of reward, relative trial start
     %   trials.failure             : time of failure, relative to trial
     %                                start
+    %   trials.nrows               : number of grid rows for this trial
+    %   trials.ncols               : number of grid columns for this trial
     %   trials.end                 : aboslute time of trial end
 	%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 	if ~exist(fname,'file')
@@ -33,26 +35,54 @@ function trials = loadTrialInfo(fname)
 	trials = struct;
 	k = 0;
 	offset = 0;
-
-	for i=1:length(ts)
-		w = words(i,:);
-		t = ts(i);
-		if all(w == zeros(1,8))
-            k = k + 1;
-			offset = t;
-			trials(k).start = t;
-        elseif k >= 1
+	nrows = 5;
+	ncols = 5;
+	i = 1;
+	while i <= length(ts)
+	    w = words(i,:);
+	    t = ts(i);
+	    if w(1) == 1 && w(2) == 1
+		%session start; check for info about grid size
+		if i <= length(ts) - 2
+		    w2 = words(i+1,:);
+		    w3 = words(i+2,:);
+		    if w2(1) == 1 && w2(2) == 1 && w3(1) == 1 && w3(2) == 1
+			ncols = bin2dec(num2str(w2(end:-1:3)));
+			nrows = bin2dec(num2str(w3(end:-1:3)));
+		    end
+		end
+	    elseif all(w == zeros(1,8))
+		k = k + 1;
+		offset = t;
+		trials(k).start = t;
+		trials(k).nrows = nrows;
+		trials(k).ncols = ncols;
+	    elseif k >= 1
             if all(w == [0,0,0,0,0,0,0,1])
                 trials(k).prestim = t - offset;
             elseif (w(1) == 0) && (w(2) == 1)
-                column = bin2dec(num2str(w(5:-1:3)));
-                row = bin2dec(num2str(w(end:-1:6)));
+                if i < size(words,1) && words(i+1,1) == 0 && words(i+1,2) == 1
+                    column = bin2dec(num2str(w(8:-1:3)));
+                    row = bin2dec(num2str(words(i+1,8:-1:3)));
+                    i = i +1;
+                else
+                    column = bin2dec(num2str(w(5:-1:3)));
+                    row = bin2dec(num2str(w(end:-1:6)));
+                end
+
                 trials(k).target.timestamp = t - offset;
                 trials(k).target.row = row;
                 trials(k).target.column = column;
             elseif (w(1) == 1) && (w(2) == 0)
-                column = bin2dec(num2str(w(5:-1:3)));
-                row = bin2dec(num2str(w(end:-1:6)));
+
+                if i < size(words,1) && words(i+1,1) == 1 && words(i+1,2) == 0
+                    column = bin2dec(num2str(w(8:-1:3)));
+                    row = bin2dec(num2str(words(i+1,8:-1:3)));
+                    i = i +1;
+                else
+                    column = bin2dec(num2str(w(5:-1:3)));
+                    row = bin2dec(num2str(w(end:-1:6)));
+                end
                 if ~isfield(trials(k),'distractors')
                     trials(k).distractors = [];
                 end
@@ -70,5 +100,6 @@ function trials = loadTrialInfo(fname)
                 trials(k).end = t;
             end
         end
+        i = i + 1;
 	end
 end
