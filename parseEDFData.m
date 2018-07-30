@@ -62,7 +62,7 @@ function sessions  = parseEDFData(edfdata,nrows,ncols)
                     py = bin2dec(m(end:-1:9));
                 end
                 sessions(sessionnr).trials(trialnr).distractor = struct('row', py, 'column', px, 'timestamp', edfdata.FEVENT(nextevent).sttime);
-            elseif strcmp(m, '00000000') %trial start
+            elseif strcmp(m, '00000010') || strcmp(m, '00000000') %trial start
                 trialnr  = trialnr + 1;
                 k = 1;
                 trialstart = edfdata.FEVENT(nextevent).sttime;
