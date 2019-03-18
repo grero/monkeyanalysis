@@ -440,4 +440,4 @@ Example:
 	qdata = getAlignedLFP(lfpdata.lowpassdata.data.data, trials, 'target', 100,300);
 	plot(qdata(:,1))
 ```
-![single trial lfp sample](P20130923s01a02g040t001_lfp.png)
+![single trial lfp sample](assets/P20130923s01a02g040t001_lfp.png)
