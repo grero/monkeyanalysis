@@ -38,3 +38,8 @@ function response = getEventTime(trials, event, alignment_event)
   end
   response = response(isnan(response)==0);
 end
+
+%!test
+%! trials = loadTrialInfo('~/Documents/research/monkey/newWorkingMemory/Pancake/20130923/session01/event_data.mat');
+%! tt = getEventTime(trials, 'start','start');
+%! assert(tt(1) == 7685.875);
