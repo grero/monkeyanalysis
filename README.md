@@ -7,7 +7,7 @@ These are codes to analyze data recorded from the monkeys performing a delayed m
 ## Getting started
 
 To extract experimental markers, as well as high pass- low pass-filtered continuous data, use the following function:
-
+```matlab
 	function status = FilterPl2(fname,chunksize,chunkidx,redo)
 		%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 		%Extracts strobe events as well as lowpass- and highpass filters wide band data contained in a pl2 file
@@ -17,9 +17,10 @@ To extract experimental markers, as well as high pass- low pass-filtered continu
 		%	chunkidx	:		optional argument to indicate a specific chunk to analyze. The chunk index is calculated from the specified chunk size
 		%	redo		:		optional argument to redo all computation, even if data already exist
 		%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+```
 
 To convert stimulus markers from int16's to binary words, use the following function:
-
+```matlab
 	function words = strobesToWords(strobes)
 		%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 		%Convert int16 strobes to binary words
@@ -29,9 +30,9 @@ To convert stimulus markers from int16's to binary words, use the following func
 		%	words		:	matrix of doubles were each row is the binary represntation
 		%					of a strobe word
 		%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-
+```
 To replay the experiment, use the following function:
-
+```matlab
 	function ans = replayExperiment(offset,nsamples,edfdata,l)
 		%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 		%Replay the experiment from the eye link data contained in the edfdata structure.
@@ -41,9 +42,9 @@ To replay the experiment, use the following function:
 		%	edfdata		:		eye link data structure contraining the experiment
 		%	l			:		reference to a line plot handle
 		%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-
+```
 To load and parse the stimulus markers, use the following function
-
+```matlab
 	function trials = loadTrialInfo(fname)
 		%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 		%Load and parse the event markers contained in the file pointed to by
@@ -54,9 +55,9 @@ To load and parse the stimulus markers, use the following function
 		%Output:
 		%	trials		:		struct array with inforamtion about each trial
 		%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-
+```
 To load spike trains produced by the Plexon Offline sorter, use the following function
-
+```matlab
 	function sptrains = loadPlexonSpiketrains(fname)
 	%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 	%Load spike trains from a .txt file produced by the Plexon offline sorter
@@ -72,9 +73,9 @@ To load spike trains produced by the Plexon Offline sorter, use the following fu
 	%                                                     unit j on channel j,
 	%                                                     in units of miliseconds
 	%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-
+```
 To get spike trains from specific channels, use the following function
-
+```matlab
 	function out_sptrains = getAreaSpiketrain(sptrains, channels)
 		%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 		%Get the spike trains for specific channels
@@ -84,9 +85,9 @@ To get spike trains from specific channels, use the following function
 		%Output:
 		%	out_sptrains	:	the spike trains from the specified channels
 		%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-
+```
 To convert a matrix of 8 bit words to their string representation, use the following function
-
+```matlab
 	function names = wordsToString(words)
 	%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 	%Return the string representation of the 8 bit strobe words
@@ -97,9 +98,9 @@ To convert a matrix of 8 bit words to their string representation, use the follo
 	%	names		:	the string representation of each strobe
 	%					word
 	%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-
+```
 To return trials of a certain type, use the following function
-
+```matlab
 	function rtrials  = getTrialType( trials,type )
 	%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 	%Return a subset of the trials of the specified type. The type should
@@ -111,9 +112,9 @@ To return trials of a certain type, use the following function
 	%   type            :    string indicating which trial type to get.
 	%                        Possible values are: 'target' and'failure'.
 	%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-
+```
 To align a spike train to trial events, use the following funcction
-
+```matlab
 	function [spikes,trial_idx] = createAlignedRaster(sptrain,trials,alignment_event)
 	%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 	%Align spike train to trial start
@@ -126,9 +127,9 @@ To align a spike train to trial events, use the following funcction
 	%                           each trial
 	%   trial_idx   	:       index of the trial to which each spike belongs
 	%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-
+```
 To plot the trial aligned raster, use the following function
-
+```matlab
 	function plotRaster(spikes,trial_idx,trials,alignment_event)
 		%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 		%Plot raster with trials arranged according to location
@@ -141,9 +142,9 @@ To plot the trial aligned raster, use the following function
 		%	alignment_event:	the event used to align the spikes, .e.g. 'target'
 		%
 		%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-
+```
 To plot aligned rasters for multiple spike trains, use the following function
-
+```matlab
 	function plotRasters(sptrains,trials,alignment_event)
 		%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 		%Plot rasters for the specified spike trains. The plots
@@ -153,9 +154,9 @@ To plot aligned rasters for multiple spike trains, use the following function
 		%	trials			:		structure array of trial information
 		%	alignment_event	:		the event to which to align the spike trains
 		%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-
+```
 To compute the spike count for a spike train, use the following function
-
+```matlab
 	function [counts, bins] = getTrialSpikeCounts(sptrain,trials,bins, alignment_event)
 		%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 		%Get the spike count for the supplied spike train in the given bins
@@ -169,9 +170,9 @@ To compute the spike count for a spike train, use the following function
 		%								a member of trials, it default to 'prestim', i.e.
 		%								start of fixation
 		%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-
+```
 To get intervals where a time series exceeds some threshold of a null distribution of the same time series, use the following function
-
+```matlab
 	function [onset,offset] = getSignificantInterval(I,Is,bins,limit,minnbins)
 		%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 		%Find the region(s) where the values in I exceed the specified limit
@@ -189,9 +190,9 @@ To get intervals where a time series exceeds some threshold of a null distributi
 		%	onset	:		onset of the significant region(s)
 		%	offset	:		offset of the significant region(s)
 		%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-
+```
 To plot PSTH for different target locations, use the following function
-
+```matlab
 	function plotLocationPSTH(counts,bins,alignment_event,trials)
 		%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 		%Plot raster for different target locations
@@ -202,9 +203,9 @@ To plot PSTH for different target locations, use the following function
 		%						aligned
 		%	trials			:	structure array of trials information
 		%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-
+```
 To compute the information encoded about target location, use the following function
-
+```matlab
 	function [H,Hc,bins,bias] = computeInformation(counts,bins,trials,shuffle,sort_event)
 		%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 		%Compute the information contained in the counts matrix.
@@ -220,9 +221,9 @@ To compute the information encoded about target location, use the following func
 		%	bins		:		bins used to compute the spike counts
 		%	bias		:		the Panzeri-Treves bias correction factor for the information
 		%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-
+```
 To compute temporal information, use the following function
-
+```matlab
 	function [H,Hc,bins,bias] = computeTemporalInformation(counts,bins,word_size,trials,shuffle,sort_event)
 		%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 		%Compute the information contained in the counts matrix.
@@ -239,10 +240,10 @@ To compute temporal information, use the following function
 		%	bins		:		bins used to compute the spike counts
 		%	bias		:		the Panzeri-Treves bias correction factor for the information
 		%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-
+```
 
 To plot information encoded about target, use the following function
-
+```matlab
 	function plotLocationInformation(I,bins,alignment_event,trials,Is)
 		%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 		%Plot raster for different target locations
@@ -255,9 +256,9 @@ To plot information encoded about target, use the following function
 		%	trials			:	structure array of trials information
 		%	Is				:	[optional] shuffle information obtained by shuffle trial labels
 		%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-
+```
 To compute and plot information for several spike trains, use the following function
-
+```matlab
 	function analyzeLocationInformation(sptrains,trials,bins,alignment_event,sort_event,doplot,dosave,logfile)
 		%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 		%Compute and plot the information for several spike trains. The plots
@@ -276,9 +277,9 @@ To compute and plot information for several spike trains, use the following func
 		%							standard out. Both a file name and a file handle can
 		%							be specified
 		%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-
+```
 To compute visual response fields, use the following function
-
+```matlab
 	function F = computeSpatioTemporalFields(counts,bins,alignment_event,trials)
 		%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 		%Plot raster for different target locations
@@ -291,9 +292,9 @@ To compute visual response fields, use the following function
 		%Output:
 		%	F	[nrows X ncols X nbins]	:	mean triggered response for each location
 		%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-
+```
 To plot visual response fields, use the following function
-
+```matlab
 	function plotResponseFields(F)
 		%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 		%Plot raster for different target locations
@@ -301,9 +302,9 @@ To plot visual response fields, use the following function
 		%	F			    :	[rnows X ncols X nbins] matrix of mean reponse triggered on target
 		%	bins			:	the bins used to compute the spike counts
 		%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-
+```
 To compute and plot visual response fields for multiple cells, use the following function
-
+```matlab
 	function analyzeResponseFields(sptrains,trials,bins,alignment_event)
 		%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 		%Compute and plot the information for several spike trains. The plots
@@ -314,9 +315,9 @@ To compute and plot visual response fields for multiple cells, use the following
 		%	bins			:		the bins into which the spike trains should be discretized
 		%	alignment_event	:		the event to which to align the spike trains
 		%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-
+```
 To compute the response onset of a cell based on when the information about target becomes significant, use the following function
-
+```matlab
 	function [onset,offset] = getResponseOnset(sptrain,bins,trials,alignment_event,sort_event)
 		%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 		%Compute the response onset of the a cell by identifying where the information
@@ -335,9 +336,9 @@ To compute the response onset of a cell based on when the information about targ
 		%	offset			:		the end of the response period, i.e. where the information drops
 		%							below the 95th percentile
 		%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-
+```
 To compute the response onset for a population of cells, use the following function
-
+```matlab
 	function [onset,offset] = analyzeResponseOnset(sptrains,trials,bins,alignment_event,sort_event)
 		%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 		%Compute and plot the information for several spike trains. The plots
@@ -354,9 +355,9 @@ To compute the response onset for a population of cells, use the following funct
 		%	onset			:		array of response onsets for each spike train
 		%	offset			:		array of response offsets for each spike train
 		%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-
+```
 To compute the information transfer between two spike trains, use the following function
-
+```matlab
 	function [E11,E112,bins] = computeInformationTransfer(sptrains, bins, history, trials, alignment_event,shuffle)
 		%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 		%Input:
@@ -376,10 +377,10 @@ To compute the information transfer between two spike trains, use the following 
 		%					The difference between these two quantities is the amount of
 		%					information transfered from spike train 2 to spike train 1
 		%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-
+```
 To compute and plot the transfer information for all pairs of spike trains contained in the structure 'sptrains',
 use the following function
-
+```matlab
 	function analyzeInformationTransfer(sptrains,trials,bins,history, alignment_event)
 		%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 		%Compute and plot the information for several spike trains. The plots
@@ -390,9 +391,9 @@ use the following function
 		%	bins			:		the bins into which the spike trains should be discretized
 		%	alignment_event	:		the event to which to align the spike trains
 		%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-
+```
 To extract a trial structure from an EDF file, use the following function
-
+```matlab
     function trials  = parseEDFData(edfdata,nrows,ncols)
         %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
         %Parse eye link data into a trial structure
@@ -418,7 +419,7 @@ To extract a trial structure from an EDF file, use the following function
         %                                start
         %   trials.end                 : aboslute time of trial end
         %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-
+```
 To get LFP aligned to a particular trial event, use this function
 
 ```matlab
