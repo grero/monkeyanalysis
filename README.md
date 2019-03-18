@@ -16,7 +16,7 @@ To extract experimental markers, as well as high pass- low pass-filtered continu
 		%	chunksize	:		size, in seconds,  of each of the chunks into which the wide band data is divided. Defaults to 100 s
 		%	chunkidx	:		optional argument to indicate a specific chunk to analyze. The chunk index is calculated from the specified chunk size
 		%	redo		:		optional argument to redo all computation, even if data already exist
-		%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%	
+		%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
 To convert stimulus markers from int16's to binary words, use the following function:
 
@@ -103,13 +103,13 @@ To return trials of a certain type, use the following function
 	function rtrials  = getTrialType( trials,type )
 	%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 	%Return a subset of the trials of the specified type. The type should
-	%correspond to a field in the trial structure e.g. 
+	%correspond to a field in the trial structure e.g.
 	%getTrialType(trials,'target') will return all trials in which a
-	%target appeared. 
+	%target appeared.
 	%Input:
 	%   trials          :    trial structure obtained from loadTrialInfo
 	%   type            :    string indicating which trial type to get.
-	%                        Possible values are: 'target' and'failure'. 
+	%                        Possible values are: 'target' and'failure'.
 	%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
 To align a spike train to trial events, use the following funcction
@@ -136,7 +136,7 @@ To plot the trial aligned raster, use the following function
 		%	spikes		:		timestamps of spikes to be plotted, in
 		%						units of ms
 		%	trial_idx	:		the trial index of spike
-		%	trials		:		structure array containing information about the 
+		%	trials		:		structure array containing information about the
 		%						trials used to aligned the spikes
 		%	alignment_event:	the event used to align the spikes, .e.g. 'target'
 		%
@@ -165,8 +165,8 @@ To compute the spike count for a spike train, use the following function
 		%	bins				:		the bins (in ms) in which to compute spike counts
 		%	alignment_event		:		event to which to align the spike trains. The event
 		%								must be a field in the trials structure array,
-		%								e.g. 'response' or 'target'. If the event is not 
-		%								a member of trials, it default to 'prestim', i.e. 
+		%								e.g. 'response' or 'target'. If the event is not
+		%								a member of trials, it default to 'prestim', i.e.
 		%								start of fixation
 		%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
@@ -174,7 +174,7 @@ To get intervals where a time series exceeds some threshold of a null distributi
 
 	function [onset,offset] = getSignificantInterval(I,Is,bins,limit,minnbins)
 		%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-		%Find the region(s) where the values in I exceed the specified limit 
+		%Find the region(s) where the values in I exceed the specified limit
 		%of the distribution of values in Is
 		%Input:
 		%	I		:		vector of values
@@ -183,7 +183,7 @@ To get intervals where a time series exceeds some threshold of a null distributi
 		%	bins	:		the bins in which I and Is are computed
 		%	limit	:		the percentile of Ish which I should exceed to be considered
 		%					significant
-		%	minnbins	:		the number of consecutive bins with I > limit(Ish) for 
+		%	minnbins	:		the number of consecutive bins with I > limit(Ish) for
 		%					the result to be considered significant
 		%Output:
 		%	onset	:		onset of the significant region(s)
@@ -198,7 +198,7 @@ To plot PSTH for different target locations, use the following function
 		%Input:
 		%	counts			:	[ntrials X nbins] matrix of spike counts
 		%	bins			:	the bins used to compute the spike counts
-		%	alignment_event	:	the event to which the spike counts were 
+		%	alignment_event	:	the event to which the spike counts were
 		%						aligned
 		%	trials			:	structure array of trials information
 		%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
@@ -250,7 +250,7 @@ To plot information encoded about target, use the following function
 		%	I		 		:	[nbins,1] Information encoded about the target locationo
 		%						per bin
 		%	bins			:	the bins used to compute the spike counts
-		%	alignment_event	:	the event to which the spike counts were 
+		%	alignment_event	:	the event to which the spike counts were
 		%						aligned
 		%	trials			:	structure array of trials information
 		%	Is				:	[optional] shuffle information obtained by shuffle trial labels
@@ -266,13 +266,13 @@ To compute and plot information for several spike trains, use the following func
 		%	sptrains		:		structure array of spike strains
 		%	trials			:		structure array of trial information
 		%	bins			:		the bins into which the spike trains should be discretized
-		%	alignment_event	:		the event to which to align the spike trains. Defaults 
+		%	alignment_event	:		the event to which to align the spike trains. Defaults
 		%							to target
 		%	sort_event		:		the event used to sort the trials. Defaults
 		%							to 'target'
 		%	doplot			:		indicate whether to plot results for ecah cell
 		%	dosave			:		indicate whether the computed values should be saved
-		%	logfile			:		log file to write the result to, defaults to 1, i.e. 
+		%	logfile			:		log file to write the result to, defaults to 1, i.e.
 		%							standard out. Both a file name and a file handle can
 		%							be specified
 		%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
@@ -285,7 +285,7 @@ To compute visual response fields, use the following function
 		%Input:
 		%	counts			:	[ntrials X nbins] matrix of spike counts
 		%	bins			:	the bins used to compute the spike counts
-		%	alignment_event	:	the event to which the spike counts were 
+		%	alignment_event	:	the event to which the spike counts were
 		%						aligned
 		%	trials			:	structure array of trials information
 		%Output:
@@ -301,7 +301,7 @@ To plot visual response fields, use the following function
 		%	F			    :	[rnows X ncols X nbins] matrix of mean reponse triggered on target
 		%	bins			:	the bins used to compute the spike counts
 		%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-	
+
 To compute and plot visual response fields for multiple cells, use the following function
 
 	function analyzeResponseFields(sptrains,trials,bins,alignment_event)
@@ -323,12 +323,12 @@ To compute the response onset of a cell based on when the information about targ
 		%about target locatoin exceeds the 95th percentile of the shuffled information
 		%for at least 5 bins
 		%Input:
-		%	sptrain			:		structure with a field 'spiketimes' corresponding to the 
+		%	sptrain			:		structure with a field 'spiketimes' corresponding to the
 		%							spike times of this cell
 		%	bins			:		bins used to compute spike counts
 		%	trials			:		structure array with trial information
 		%	alignment_event	:		event used to align the spikes. Defaults to 'target'
-		%	sort_event		:		event used to sort the trials. Defaults to the same as 
+		%	sort_event		:		event used to sort the trials. Defaults to the same as
 		%							alignment event
 		%Output:
 		%	onset			:		the response onset of the cell, relative to alignment_event
@@ -346,7 +346,7 @@ To compute the response onset for a population of cells, use the following funct
 		%	sptrains		:		structure array of spike strains
 		%	trials			:		structure array of trial information
 		%	bins			:		the bins into which the spike trains should be discretized
-		%	alignment_event	:		the event to which to align the spike trains. Defaults 
+		%	alignment_event	:		the event to which to align the spike trains. Defaults
 		%							to target
 		%	sort_event		:		the event used to sort the trials. Defaults
 		%							to 'target'
