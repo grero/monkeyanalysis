@@ -418,3 +418,26 @@ To extract a trial structure from an EDF file, use the following function
         %                                start
         %   trials.end                 : aboslute time of trial end
         %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+To get LFP aligned to a particular trial event, use this function
+
+```matlab
+	function qdata = getAlignedLFP(lfpdata, trials, event, t0,t1, alignment_event)
+		%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+		% Align the single channel data lfpdata to trials using the specified trial-event,
+		% e.g.
+		% aligned_lfp = getAlignedLFP(lfpdata, trials, 'target', 100,300,'start');
+		% to obtain the LFP aligned to target onset, grabbing a window from 100 ms before
+		% to 300 ms afater target.
+		%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+```
+
+Example:
+```matlab
+	cd('Pancake/20130923/sessoin01');
+	trials = loadTrialInfo("event_data.mat");
+	lfpdata = load("array02/channel040/lowpass.mat");
+	qdata = getAlignedLFP(lfpdata.lowpassdata.data.data, trials, 'target', 100,300);
+	plot(qdata(:,1))
+```
+![single trial lfp sample](P20130923s01a02g040t001_lfp.png)
